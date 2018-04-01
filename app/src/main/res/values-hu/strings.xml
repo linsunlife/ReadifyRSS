@@ -169,9 +169,9 @@
         <item>Örökké</item>
     </string-array>
     <string-array name="settings_keep_times_per_feed">
-        <item>1 day</item>
-        <item>2 days</item>
-        <item>4 days</item>
+        <item>1 nap</item>
+        <item>2 nap</item>
+        <item>4 nap</item>
         <item>1 hét</item>
         <item>2 hét</item>
         <item>1 hónap</item>
