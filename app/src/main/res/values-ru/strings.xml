@@ -135,7 +135,7 @@
     <string name="settings_display_entries_fullscreen">Полноэкранный режим</string>
     <string name="settings_display_entries_fullscreen_description">Автоматически открывать новости на весь экран</string>
     <string name="settings_refresh_on_open">Обновлять при запуске</string>
-    <string name="settings_refresh_on_open_description">Обновлять все ленты пии запуске приложения</string>
+    <string name="settings_refresh_on_open_description">Обновлять все ленты при запуске приложения</string>
     <string name="settings_refresh_wifi_only">Обновлять только по WiFi</string>
     <string name="settings_refresh_wifi_only_description">Автоматическое обновление будет выполняться только при включённом WiFi</string>
     <string name="settings_screen_proxy">Прокси-сервер</string>
@@ -220,6 +220,8 @@
     <string name="blue">Синий</string>
     <string name="transparency">Прозрачный</string>
     <string name="all_feeds">Все ленты (включая будущие)</string>
+    <string name="marked_as_read">Отмечено как прочитанное</string>
+    <string name="undo">Отменить</string>
     <string name="website_or_feed">(сайта или ленты новостей)</string>
     <string name="art_rtl">Support articles Right to Left</string>
     <string name="fix_en_ar">Disable to fix english articles</string>
