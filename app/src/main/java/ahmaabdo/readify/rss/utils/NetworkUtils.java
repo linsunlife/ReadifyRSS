@@ -35,6 +35,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Authenticator;
@@ -125,35 +126,20 @@ public class NetworkUtils {
         }
     }
 
-    public static synchronized void deleteEntriesImagesCache(long keepDateBorderTime) {
+    public static synchronized void deleteEntryImagesCache(final int entryId, long keepDateBorderTime) {
         if (IMAGE_FOLDER_FILE.exists()) {
-
-            // We need to exclude favorite entries images to this cleanup
-            Cursor cursor = MainApplication.getContext().getContentResolver().query(FeedData.EntryColumns.FAVORITES_CONTENT_URI, FeedData.EntryColumns.PROJECTION_ID, null, null, null);
-            if (cursor != null) {
-                HashSet<Long> favIds = new HashSet<>();
-                while (cursor.moveToNext()) {
-                    favIds.add(cursor.getLong(0));
+            File[] files = IMAGE_FOLDER_FILE.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.startsWith(entryId + ID_SEPARATOR);
                 }
-
-                File[] files = IMAGE_FOLDER_FILE.listFiles();
-                if (files != null) {
-                    for (File file : files) {
-                        if (file.lastModified() < keepDateBorderTime) {
-                            boolean isAFavoriteEntryImage = false;
-                            for (Long favId : favIds) {
-                                if (file.getName().startsWith(favId + ID_SEPARATOR)) {
-                                    isAFavoriteEntryImage = true;
-                                    break;
-                                }
-                            }
-                            if (!isAFavoriteEntryImage) {
-                                file.delete();
-                            }
-                        }
+            });
+            if (files != null) {
+                for (File file : files) {
+                    if (file.lastModified() < keepDateBorderTime) {
+                        file.delete();
                     }
                 }
-                cursor.close();
             }
         }
     }
