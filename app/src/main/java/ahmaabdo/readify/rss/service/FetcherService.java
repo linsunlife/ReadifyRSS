@@ -393,25 +393,23 @@ public class FetcherService extends IntentService {
     }
 
     private void deleteOldEntries(long keepDateBorderTime) {
-        if (keepDateBorderTime > 0) {
-            String where = EntryColumns.DATE + '<' + keepDateBorderTime + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE;
-            // Delete the entries
-            MainApplication.getContext().getContentResolver().delete(EntryColumns.CONTENT_URI, where, null);
-            // Delete the cache files
-            NetworkUtils.deleteEntriesImagesCache(keepDateBorderTime);
-        }
         Cursor cursor = MainApplication.getContext().getContentResolver().query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.KEEP_TIME}, null, null, null);
         while (cursor.moveToNext()) {
             long feedid = cursor.getLong(0);
             long keepTimeLocal = cursor.getLong(1) * 86400000l;
-            long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : 0;
+            long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
             if (keepDateBorderTimeLocal > 0) {
                 String where = EntryColumns.DATE + '<' + keepDateBorderTimeLocal + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + "=" + String.valueOf(feedid);
+                Cursor cursor2 = MainApplication.getContext().getContentResolver().query(EntryColumns.CONTENT_URI, EntryColumns.PROJECTION_ID, where, null, null);
+                while (cursor2.moveToNext()) {
+                    int entryId = cursor2.getInt(0);
+                    NetworkUtils.deleteEntryImagesCache(entryId, keepDateBorderTimeLocal);
+                }
+                cursor2.close();
                 MainApplication.getContext().getContentResolver().delete(EntryColumns.CONTENT_URI, where, null);
             }
         }
         cursor.close();
-
     }
 
     private int refreshFeeds(final long keepDateBorderTime) {
@@ -470,6 +468,7 @@ public class FetcherService extends IntentService {
             int idPosition = cursor.getColumnIndex(FeedColumns._ID);
             int titlePosition = cursor.getColumnIndex(FeedColumns.NAME);
             int fetchModePosition = cursor.getColumnIndex(FeedColumns.FETCH_MODE);
+            int keepTimePosition = cursor.getColumnIndex(FeedColumns.KEEP_TIME);
             int realLastUpdatePosition = cursor.getColumnIndex(FeedColumns.REAL_LAST_UPDATE);
             int iconPosition = cursor.getColumnIndex(FeedColumns.ICON);
             int retrieveFullscreenPosition = cursor.getColumnIndex(FeedColumns.RETRIEVE_FULLTEXT);
@@ -488,7 +487,10 @@ public class FetcherService extends IntentService {
                 String contentType = connection.getContentType();
                 int fetchMode = cursor.getInt(fetchModePosition);
 
-                handler = new RssAtomParser(new Date(cursor.getLong(realLastUpdatePosition)), keepDateBorderTime, id, cursor.getString(titlePosition), feedUrl,
+                long keepTimeLocal = cursor.getInt(keepTimePosition) * 86400000l;
+                long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
+
+                handler = new RssAtomParser(new Date(cursor.getLong(realLastUpdatePosition)), keepDateBorderTimeLocal, id, cursor.getString(titlePosition), feedUrl,
                         cursor.getInt(retrieveFullscreenPosition) == 1);
                 handler.setFetchImages(NetworkUtils.needDownloadPictures());
 

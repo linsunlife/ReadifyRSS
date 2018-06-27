@@ -376,7 +376,8 @@ public class RssAtomParser extends DefaultHandler {
                 mEntryUpdateDate = mPreviousEntryUpdateDate;
             }
 
-            if (mTitle != null && (mEntryDate == null || (mEntryDate.after(mRealLastUpdateDate) && mEntryDate.after(mKeepDateBorder)))) {
+            // this condition check breaks the possibility of changing keep time for individual feeds
+            if (mTitle != null && (mEntryDate == null || (/*mEntryDate.after(mRealLastUpdateDate) &&*/ mEntryDate.after(mKeepDateBorder)))) {
                 ContentValues values = new ContentValues();
 
                 if (mEntryDate != null && mEntryDate.getTime() > mNewRealLastUpdate) {
