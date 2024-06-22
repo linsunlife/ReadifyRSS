@@ -169,6 +169,17 @@
         <item>3 月</item>
         <item>永远</item>
     </string-array>
+    <string-array name="settings_keep_times_per_feed">
+        <item>1 天</item>
+        <item>2 天</item>
+        <item>4 天</item>
+        <item>1 周</item>
+        <item>2 周</item>
+        <item>1 月</item>
+        <item>2 月</item>
+        <item>3 月</item>
+        <item>默认</item>
+    </string-array>
     <string-array name="settings_font_sizes">
         <item>-2</item>
         <item>-1</item>
