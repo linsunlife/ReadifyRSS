@@ -1,5 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ahmaabdo.readify.rss"
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET" />
