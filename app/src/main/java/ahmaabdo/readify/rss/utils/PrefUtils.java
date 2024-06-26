@@ -52,6 +52,7 @@ public class PrefUtils {
     public static final String FONT_SERIF = "font_serif";
     public static final String LAST_SCHEDULED_REFRESH = "lastscheduledrefresh";
     public static final String SHOW_READ = "show_read";
+    public static final String DRAWER_POSITION = "drawer_position";
 
     public static boolean getBoolean(String key, boolean defValue) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext());

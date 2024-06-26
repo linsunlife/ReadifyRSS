@@ -66,8 +66,6 @@ import ahmaabdo.readify.rss.utils.UiUtils;
 
 public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String STATE_CURRENT_DRAWER_POS = "STATE_CURRENT_DRAWER_POS";
-
     private static final String FEED_UNREAD_NUMBER = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME + " WHERE " +
             EntryColumns.IS_READ + " IS NULL AND " + EntryColumns.FEED_ID + '=' + FeedColumns.TABLE_NAME + '.' + FeedColumns._ID + ')';
 
@@ -100,7 +98,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mTitle;
     private BitmapDrawable mIcon;
-    private int mCurrentDrawerPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,11 +186,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
         }
 
-
-        if (savedInstanceState != null) {
-            mCurrentDrawerPos = savedInstanceState.getInt(STATE_CURRENT_DRAWER_POS);
-        }
-
         getLoaderManager().initLoader(LOADER_ID, null, this);
 
         if (PrefUtils.getBoolean(PrefUtils.REFRESH_ENABLED, true)) {
@@ -225,7 +217,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
 
     private void selectDrawerItem(int position) {
-        mCurrentDrawerPos = position;
+        PrefUtils.putInt(PrefUtils.DRAWER_POSITION, position);
 
         if (mDrawerAdapter == null)
             return;
@@ -292,13 +284,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
             builder.show();
         }
         refreshTitle(0);
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt(STATE_CURRENT_DRAWER_POS, mCurrentDrawerPos);
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -393,7 +378,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
             mDrawerList.post(new Runnable() {
                 public void run() {
                     mDrawerList.setAdapter(mDrawerAdapter);
-                    selectDrawerItem(mCurrentDrawerPos);
+                    selectDrawerItem(PrefUtils.getInt(PrefUtils.DRAWER_POSITION, 0));
                 }
             });
         }
@@ -409,7 +394,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
 
     public void refreshTitle(int mNewEntriesNumber) {
-        switch (mCurrentDrawerPos) {
+        switch (PrefUtils.getInt(PrefUtils.DRAWER_POSITION, 0)) {
             case 0:
                 getSupportActionBar().setTitle(R.string.all);
                 break;
