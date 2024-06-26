@@ -88,8 +88,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
     };
     Uri newUri;
     boolean showFeedInfo = true;
-    FloatingActionButton fab;
-    FloatingActionMenu fab2;
     private EntriesListFragment mEntriesFragment;
     private DrawerLayout mDrawerLayout;
     private View mLeftDrawer;
@@ -115,15 +113,15 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         boolean useLightTheme = PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true);
-        fab2 = findViewById(R.id.fab);
-        fab2.setMenuButtonColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A700);
-        fab2.setMenuButtonColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A900);
+        FloatingActionMenu floatingActionMenu = findViewById(R.id.fab);
+        floatingActionMenu.setMenuButtonColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A700);
+        floatingActionMenu.setMenuButtonColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A900);
 
-        fab = findViewById(R.id.fab_google);
-        fab.setColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A900);
-        fab.setColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A700);
-        fab.setColorRippleResId(useLightTheme ? R.color.light_A500 : R.color.dark_A300);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton googleFloatingActionButton = findViewById(R.id.fab_google);
+        googleFloatingActionButton.setColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A900);
+        googleFloatingActionButton.setColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A700);
+        googleFloatingActionButton.setColorRippleResId(useLightTheme ? R.color.light_A500 : R.color.dark_A300);
+        googleFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeActivity.this, AddGoogleNewsActivity.class));
@@ -131,11 +129,11 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         });
 
 
-        fab = findViewById(R.id.fab_feed);
-        fab.setColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A900);
-        fab.setColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A700);
-        fab.setColorRippleResId(useLightTheme ? R.color.light_A500 : R.color.dark_A300);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton feedFloatingActionButton = findViewById(R.id.fab_feed);
+        feedFloatingActionButton.setColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A900);
+        feedFloatingActionButton.setColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A700);
+        feedFloatingActionButton.setColorRippleResId(useLightTheme ? R.color.light_A500 : R.color.dark_A300);
+        feedFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Intent.ACTION_INSERT).setData(FeedData.FeedColumns.CONTENT_URI));
