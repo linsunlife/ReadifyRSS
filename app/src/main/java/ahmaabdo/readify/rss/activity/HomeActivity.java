@@ -128,7 +128,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
             }
         });
 
-
         FloatingActionButton feedFloatingActionButton = findViewById(R.id.fab_feed);
         feedFloatingActionButton.setColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A900);
         feedFloatingActionButton.setColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A700);
@@ -139,7 +138,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 startActivity(new Intent(Intent.ACTION_INSERT).setData(FeedData.FeedColumns.CONTENT_URI));
             }
         });
-
 
         mLeftDrawer = findViewById(R.id.left_drawer);
         mDrawerList = findViewById(R.id.drawer_list);
@@ -168,7 +166,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 return false;
             }
         });
-
 
         mLeftDrawer.setBackgroundColor((ContextCompat.getColor(getApplicationContext(), useLightTheme ? R.color.light_primary_color : R.color.dark_background)));
         mDrawerList.setBackgroundColor((ContextCompat.getColor(getApplicationContext(), useLightTheme ? R.color.light_background : R.color.dark_primary_color_dark)));
@@ -214,7 +211,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
     }
 
-
     private void selectDrawerItem(int position) {
         PrefUtils.putInt(PrefUtils.DRAWER_POSITION, position);
 
@@ -223,7 +219,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
         mDrawerAdapter.setSelectedItem(position);
         mIcon = null;
-
 
         switch (position) {
             case 0:
@@ -347,7 +342,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         }
     }
 
-
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         CursorLoader cursorLoader = new CursorLoader(this,
@@ -391,7 +385,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         mDrawerAdapter.setCursor(null);
     }
 
-
     public void refreshTitle(int mNewEntriesNumber) {
         switch (PrefUtils.getInt(PrefUtils.DRAWER_POSITION, 0)) {
             case 0:
@@ -429,5 +422,4 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 }
         }
     }
-
 }
