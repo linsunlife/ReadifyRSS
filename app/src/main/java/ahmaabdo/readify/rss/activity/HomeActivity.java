@@ -114,14 +114,15 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        boolean useLightTheme = PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true);
         fab2 = findViewById(R.id.fab);
-        fab2.setMenuButtonColorNormalResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A100 : R.color.dark_A700);
-        fab2.setMenuButtonColorPressedResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A300 : R.color.dark_A900);
+        fab2.setMenuButtonColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A700);
+        fab2.setMenuButtonColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A900);
 
         fab = findViewById(R.id.fab_google);
-        fab.setColorNormalResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A100 : R.color.dark_A900);
-        fab.setColorPressedResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A300 : R.color.dark_A700);
-        fab.setColorRippleResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A500 : R.color.dark_A300);
+        fab.setColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A900);
+        fab.setColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A700);
+        fab.setColorRippleResId(useLightTheme ? R.color.light_A500 : R.color.dark_A300);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,9 +132,9 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
 
         fab = findViewById(R.id.fab_feed);
-        fab.setColorNormalResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A100 : R.color.dark_A900);
-        fab.setColorPressedResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A300 : R.color.dark_A700);
-        fab.setColorRippleResId(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_A500 : R.color.dark_A300);
+        fab.setColorNormalResId(useLightTheme ? R.color.light_A100 : R.color.dark_A900);
+        fab.setColorPressedResId(useLightTheme ? R.color.light_A300 : R.color.dark_A700);
+        fab.setColorRippleResId(useLightTheme ? R.color.light_A500 : R.color.dark_A300);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,8 +172,8 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         });
 
 
-        mLeftDrawer.setBackgroundColor((ContextCompat.getColor(getApplicationContext(), PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_primary_color : R.color.dark_background)));
-        mDrawerList.setBackgroundColor((ContextCompat.getColor(getApplicationContext(), PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_background : R.color.dark_primary_color_dark)));
+        mLeftDrawer.setBackgroundColor((ContextCompat.getColor(getApplicationContext(), useLightTheme ? R.color.light_primary_color : R.color.dark_background)));
+        mDrawerList.setBackgroundColor((ContextCompat.getColor(getApplicationContext(), useLightTheme ? R.color.light_background : R.color.dark_primary_color_dark)));
         mDrawerLayout = findViewById(R.id.drawer_layout);
         if (mDrawerLayout != null) {
             mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
