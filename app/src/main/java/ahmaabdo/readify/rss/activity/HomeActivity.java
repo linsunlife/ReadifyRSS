@@ -319,8 +319,8 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
     public void onBackPressed() {
         // Before exiting from app the navigation drawer is opened
-        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (mDrawerLayout != null && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.openDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
