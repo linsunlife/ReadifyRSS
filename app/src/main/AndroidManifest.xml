@@ -29,6 +29,7 @@
 
         <activity
             android:name=".activity.HomeActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTask">
             <intent-filter>
@@ -43,6 +44,7 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.AboutApp"
+            android:exported="true"
             android:label="@string/about_spaRSS"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.MaterialAboutActivity">
@@ -58,6 +60,7 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".activity.EntryActivity"
+            android:exported="true"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Slidr.Light">
@@ -72,7 +75,7 @@
             android:name=".activity.GeneralPrefsActivity"
             android:label="@string/menu_settings"
             android:launchMode="singleTask" />
-        <activity android:name=".widget.WidgetConfigActivity">
+        <activity android:name=".widget.WidgetConfigActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -80,6 +83,7 @@
 
         <activity
             android:name=".activity.EditFeedActivity"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
@@ -149,7 +153,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".widget.WidgetProvider">
+        <receiver android:name=".widget.WidgetProvider" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -159,7 +163,7 @@
                 android:resource="@xml/widgetinfo" />
         </receiver>
 
-        <receiver android:name=".widget.TickerWidgetProvider">
+        <receiver android:name=".widget.TickerWidgetProvider" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -176,12 +180,12 @@
         <service android:name=".widget.TickerWidgetService" />
 
 
-        <receiver android:name=".receiver.BootCompletedBroadcastReceiver">
+        <receiver android:name=".receiver.BootCompletedBroadcastReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".receiver.ConnectionChangeReceiver">
+        <receiver android:name=".receiver.ConnectionChangeReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
