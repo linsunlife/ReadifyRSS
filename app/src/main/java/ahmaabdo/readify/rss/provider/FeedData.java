@@ -45,6 +45,7 @@
 
 package ahmaabdo.readify.rss.provider;
 
+import ahmaabdo.readify.rss.BuildConfig;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -55,7 +56,7 @@ import ahmaabdo.readify.rss.utils.PrefUtils;
 
 public class FeedData {
     public static final String CONTENT = "content://";
-    public static final String AUTHORITY = "ahmaabdo.readify.rss.provider.FeedData";
+    public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider.FeedData";
     public static final String CONTENT_AUTHORITY = CONTENT + AUTHORITY;
     public static final String FEEDS_TABLE_WITH_GROUP_PRIORITY = FeedColumns.TABLE_NAME + " LEFT JOIN (SELECT " + FeedColumns._ID + " AS joined_feed_id, " + FeedColumns.PRIORITY +
             " AS group_priority FROM " + FeedColumns.TABLE_NAME + ") AS f ON (" + FeedColumns.TABLE_NAME + '.' + FeedColumns.GROUP_ID + " = f.joined_feed_id)";

@@ -23,7 +23,7 @@
 
         <provider
             android:name=".provider.FeedDataContentProvider"
-            android:authorities="ahmaabdo.readify.rss.provider.FeedData"
+            android:authorities="${applicationId}.provider.FeedData"
             android:exported="true"
             android:writePermission="ahmaabdo.readify.rss.provider.WRITE_PERMISSION" />
 
