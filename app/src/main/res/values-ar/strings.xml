@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">عن التطبيق</string>
     <string name="welcome_title">مرحبا بك في Readify. هل ترغب في إضافة خلاصة جديدة؟</string>
     <string name="never">أبدا</string>

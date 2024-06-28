@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">אודות Readify</string>
     <string name="welcome_title">ברוך בואך Readify. האם ברצונך להוסיף ערוץ אחד?</string>
     <string name="never">אף פעם</string>

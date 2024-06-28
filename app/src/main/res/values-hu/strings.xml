@@ -2,7 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
 
     <!-- GENERAL -->
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">A Readify névjegye</string>
     <string name="welcome_title">Üdvözöl a Readify. Szeretnél hozzáadni egy hírforrást?</string>
     <string name="never">soha</string>

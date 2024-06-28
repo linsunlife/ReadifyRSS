@@ -23,7 +23,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
 
     <!-- GENERAL -->
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">Про Readify</string>
     <string name="welcome_title">Добро пожаловать в Readify! Хотите добавить новую ленту?</string>
     <string name="never">никогда</string>

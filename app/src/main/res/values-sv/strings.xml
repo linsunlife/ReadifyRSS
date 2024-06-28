@@ -22,7 +22,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
 
     <!-- GENERAL -->
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">Om Readify</string>
     <string name="welcome_title">Välkommen till Readify. Skulle du vilja lägga till en feed?</string>
     <string name="never">aldrig</string>

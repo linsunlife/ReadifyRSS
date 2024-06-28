@@ -23,7 +23,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
 
     <!-- GENERAL -->
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">Acerca de Readify</string>
     <string name="welcome_title">Bienvenido a Readify. ¿Le gustaría agregar una fuente de contenidos?</string>
     <string name="never">nunca</string>

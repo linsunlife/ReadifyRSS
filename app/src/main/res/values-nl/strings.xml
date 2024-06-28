@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">Over Readify</string>
     <string name="welcome_title">Welkom bij Readify. Wilt u een feed toevoegen?</string>
     <string name="never">nooit</string>

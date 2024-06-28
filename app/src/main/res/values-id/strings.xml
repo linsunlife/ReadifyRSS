@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">Tentang Readify</string>
     <string name="welcome_title">Selamat datang di Readify. Apakah anda ingin menambahkan satu umpan?</string>
     <string name="never">tidak pernah</string>

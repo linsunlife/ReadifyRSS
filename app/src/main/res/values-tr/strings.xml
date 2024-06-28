@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">Readify Hakkında</string>
     <string name="welcome_title">Readify\'ye hoşgeldin. Yeni bir besleme eklemek ister misin ?</string>
     <string name="menu_settings">Ayarlar</string>

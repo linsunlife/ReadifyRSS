@@ -26,7 +26,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
 
     <!-- GENERAL -->
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">O aplikácii Readify</string>
     <string name="welcome_title">Vitajte v aplikácii Readify. Chcete pridať nový zdroj?</string>
     <string name="never">nikdy</string>

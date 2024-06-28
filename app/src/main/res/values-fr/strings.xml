@@ -25,7 +25,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
 
     <!-- GENERAL -->
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">À propos de Readify</string>
     <string name="welcome_title">Bienvenue sur Readify. Voulez-vous ajouter un flux ?</string>
     <string name="never">jamais</string>

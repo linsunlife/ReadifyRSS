@@ -25,7 +25,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en">
 
     <!-- GENERAL -->
-    <string name="app_name">Readify</string>
     <string name="about_spaRSS">spaRSSi buruz</string>
     <string name="welcome_title">Ongi etorri spaRSSera. Jario bat gehitu nahiko al zenuke?</string>
     <string name="never">inoiz</string>
