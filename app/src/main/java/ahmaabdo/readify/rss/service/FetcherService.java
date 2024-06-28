@@ -471,7 +471,7 @@ public class FetcherService extends IntentService {
             int keepTimePosition = cursor.getColumnIndex(FeedColumns.KEEP_TIME);
             int realLastUpdatePosition = cursor.getColumnIndex(FeedColumns.REAL_LAST_UPDATE);
             int iconPosition = cursor.getColumnIndex(FeedColumns.ICON);
-            int retrieveFullscreenPosition = cursor.getColumnIndex(FeedColumns.RETRIEVE_FULLTEXT);
+            int retrieveFullTextPosition = cursor.getColumnIndex(FeedColumns.RETRIEVE_FULLTEXT);
             int httpAuthLoginPosition = cursor.getColumnIndex(FeedColumns.HTTP_AUTH_LOGIN);
             int httpAuthPasswordPosition = cursor.getColumnIndex(FeedColumns.HTTP_AUTH_PASSWORD);
             final String httpAuthLoginValue = cursor.getString(httpAuthLoginPosition);
@@ -491,7 +491,7 @@ public class FetcherService extends IntentService {
                 long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
 
                 handler = new RssAtomParser(new Date(cursor.getLong(realLastUpdatePosition)), keepDateBorderTimeLocal, id, cursor.getString(titlePosition), feedUrl,
-                        cursor.getInt(retrieveFullscreenPosition) == 1);
+                        cursor.getInt(retrieveFullTextPosition) == 1);
                 handler.setFetchImages(NetworkUtils.needDownloadPictures());
 
                 if (fetchMode == 0) {
