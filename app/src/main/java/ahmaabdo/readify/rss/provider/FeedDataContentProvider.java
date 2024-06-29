@@ -565,7 +565,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
         if (FeedColumns.TABLE_NAME.equals(table)
                 && (values.containsKey(FeedColumns.NAME) || values.containsKey(FeedColumns.URL) || values.containsKey(FeedColumns.PRIORITY))) {
-            OPML.exportToOPML();
+            OPML.exportTo("Readify_auto_backup.opml");
         }
         if (count > 0) {
             notifyChangeOnAllUris(matchCode, uri);
@@ -740,7 +740,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
         if (count > 0) {
             if (FeedColumns.TABLE_NAME.equals(table)) {
-                OPML.exportToOPML();
+                OPML.exportTo("Readify_auto_backup.opml");
             }
 
             notifyChangeOnAllUris(matchCode, uri);

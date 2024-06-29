@@ -328,7 +328,7 @@ public class EditFeedsListFragment extends ListFragment {
                     @Override
                     public void run() {
                         try {
-                            OPML.importFromFile(contentResolver.openInputStream(uri));
+                            OPML.importFrom(contentResolver.openInputStream(uri));
                         } catch (Exception e) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -344,7 +344,7 @@ public class EditFeedsListFragment extends ListFragment {
                     @Override
                     public void run() {
                         try {
-                            OPML.exportToFile(contentResolver.openOutputStream(uri));
+                            OPML.exportTo(contentResolver.openOutputStream(uri));
                             getActivity().runOnUiThread(new Runnable() {
                                 @SuppressLint("StringFormatInvalid")
                                 @Override

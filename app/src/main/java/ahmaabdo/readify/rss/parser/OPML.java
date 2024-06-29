@@ -93,18 +93,17 @@ public class OPML {
 
     private static final OPMLParser mParser = new OPMLParser();
 
-    public static void importFromFile(InputStream input) throws IOException, SAXException {
+    public static void importFrom(InputStream input) throws IOException, SAXException {
         Xml.parse(new InputStreamReader(input), mParser);
     }
 
-    public static void exportToOPML() {
+    public static void exportTo(final String fileName) {
         final String backupPath = PrefUtils.getString(PrefUtils.BACKUP_PATH, null);
         if (backupPath != null) {
             new Thread(new Runnable() { // To not block the UI
                 @Override
                 public void run() {
                     try {
-                        String fileName = "Readify_auto_backup.opml";
                         DocumentFile backupFolder = DocumentFile.fromTreeUri(MainApplication.getContext(), Uri.parse(backupPath));
                         DocumentFile backupFile = backupFolder.findFile(fileName);
                         if (backupFile != null && backupFile.exists()) {
@@ -112,7 +111,7 @@ public class OPML {
                         }
                         backupFile = backupFolder.createFile("*/*", fileName);
                         OutputStream outputStream = MainApplication.getContext().getContentResolver().openOutputStream(backupFile.getUri());
-                        OPML.exportToFile(outputStream);
+                        exportTo(outputStream);
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to export OPML", e);
                     }
@@ -121,7 +120,7 @@ public class OPML {
         }
     }
 
-    public static void exportToFile(OutputStream output) throws IOException {
+    public static void exportTo(OutputStream output) throws IOException {
         Cursor cursor = MainApplication.getContext().getContentResolver()
                 .query(FeedColumns.GROUPS_CONTENT_URI, FEEDS_PROJECTION, null, null, null);
 
