@@ -20,7 +20,6 @@
 
 package ahmaabdo.readify.rss.activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -28,14 +27,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -49,13 +46,11 @@ import android.widget.ListView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
-import java.io.File;
 
 import ahmaabdo.readify.rss.Constants;
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.adapter.DrawerAdapter;
 import ahmaabdo.readify.rss.fragment.EntriesListFragment;
-import ahmaabdo.readify.rss.parser.OPML;
 import ahmaabdo.readify.rss.provider.FeedData;
 import ahmaabdo.readify.rss.provider.FeedData.EntryColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
@@ -76,7 +71,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
             ") > 0)";
 
     private static final int LOADER_ID = 0;
-    private static final int PERMISSIONS_REQUEST_IMPORT_FROM_OPML = 1;
     private final SharedPreferences.OnSharedPreferenceChangeListener mShowReadListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -195,20 +189,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 startService(new Intent(HomeActivity.this, FetcherService.class).setAction(FetcherService.ACTION_REFRESH_FEEDS));
             }
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED && new File(OPML.BACKUP_OPML).exists()) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
-                builder.setMessage(R.string.storage_request_explanation).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        ActivityCompat.requestPermissions(HomeActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_IMPORT_FROM_OPML);
-                    }
-                });
-                builder.show();
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_IMPORT_FROM_OPML);
-            }
-        }
-
     }
 
     private void selectDrawerItem(int position) {
@@ -401,25 +381,5 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
             getSupportActionBar().setTitle(getSupportActionBar().getTitle().toString() + " (" + String.valueOf(mNewEntriesNumber) + ")");
         }
         invalidateOptionsMenu();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_IMPORT_FROM_OPML:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                // Perform automated import of the backup
-                                OPML.importFromFile(OPML.BACKUP_OPML);
-                            } catch (Exception ig) {
-                                ig.printStackTrace();
-                            }
-                        }
-                    }).start();
-                }
-        }
     }
 }
