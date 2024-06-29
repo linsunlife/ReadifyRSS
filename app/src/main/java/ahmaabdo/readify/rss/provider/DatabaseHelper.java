@@ -45,14 +45,18 @@
 
 package ahmaabdo.readify.rss.provider;
 
+import ahmaabdo.readify.rss.utils.PrefUtils;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import java.io.File;
+import java.io.OutputStream;
 
 import ahmaabdo.readify.rss.parser.OPML;
 import ahmaabdo.readify.rss.provider.FeedData.EntryColumns;
@@ -70,10 +74,12 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String ADD = " ADD ";
 
     private final Handler mHandler;
+    private final Context mContext;
 
     public DatabaseHelper(Handler handler, Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         mHandler = handler;
+        mContext = context;
     }
 
     @Override
@@ -82,35 +88,34 @@ class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL(createTable(FilterColumns.TABLE_NAME, FilterColumns.COLUMNS));
         database.execSQL(createTable(EntryColumns.TABLE_NAME, EntryColumns.COLUMNS));
         database.execSQL(createTable(TaskColumns.TABLE_NAME, TaskColumns.COLUMNS));
-
-        // Check if we need to import the backup
-        File backupFile = new File(OPML.BACKUP_OPML);
-        final boolean hasBackup = backupFile.exists();
-        mHandler.post(new Runnable() { // In order to it after the database is created
-            @Override
-            public void run() {
-                new Thread(new Runnable() { // To not block the UI
-                    @Override
-                    public void run() {
-                        try {
-                            if (hasBackup) {
-                                // Perform an automated import of the backup
-                                OPML.importFromFile(OPML.BACKUP_OPML);
-                            }
-                        } catch (Exception ignored) {
-                            Log.e(TAG, "Exception", ignored);
-                        }
-                    }
-                }).start();
-            }
-        });
     }
 
     public void exportToOPML() {
-        try {
-            OPML.exportToFile(OPML.BACKUP_OPML);
-        } catch (Exception ignored) {
-            Log.e(TAG, "Exception", ignored);
+        final String backupPath = PrefUtils.getString(PrefUtils.BACKUP_PATH, null);
+        if (backupPath != null) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    new Thread(new Runnable() { // To not block the UI
+                        @Override
+                        public void run() {
+                            try {
+                                String fileName = "Readify_auto_backup.opml";
+                                DocumentFile backupFolder = DocumentFile.fromTreeUri(mContext, Uri.parse(backupPath));
+                                DocumentFile backupFile = backupFolder.findFile(fileName);
+                                if (backupFile != null && backupFile.exists()) {
+                                    backupFile.delete();
+                                }
+                                backupFile = backupFolder.createFile("*/*", fileName);
+                                OutputStream outputStream = mContext.getContentResolver().openOutputStream(backupFile.getUri());
+                                OPML.exportToFile(outputStream);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Failed to export OPML", e);
+                            }
+                        }
+                    }).start();
+                }
+            });
         }
     }
 

@@ -48,8 +48,6 @@ package ahmaabdo.readify.rss.parser;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Xml;
 
@@ -66,8 +64,6 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FilterColumns;
 
 public class OPML {
-
-    public static final String BACKUP_OPML = Environment.getExternalStorageDirectory() + "/Readify_auto_backup.opml";
 
     private static final String[] FEEDS_PROJECTION = new String[]{FeedColumns._ID, FeedColumns.IS_GROUP, FeedColumns.NAME, FeedColumns.URL,
             FeedColumns.RETRIEVE_FULLTEXT};
@@ -90,114 +86,9 @@ public class OPML {
     private static final String CLOSING = "</body>\n</opml>\n";
 
     private static final OPMLParser mParser = new OPMLParser();
-    private static boolean mAutoBackupEnabled = true;
-
-    public static void importFromFile(String filename) throws IOException, SAXException {
-        if (BACKUP_OPML.equals(filename)) {
-            mAutoBackupEnabled = false;  // Do not write the auto backup file while reading it...
-        }
-
-        try {
-            Xml.parse(new InputStreamReader(new FileInputStream(filename)), mParser);
-        } finally {
-            mAutoBackupEnabled = true;
-        }
-    }
 
     public static void importFromFile(InputStream input) throws IOException, SAXException {
         Xml.parse(new InputStreamReader(input), mParser);
-    }
-
-    public static void exportToFile(String filename) throws IOException {
-        if (BACKUP_OPML.equals(filename) && !mAutoBackupEnabled) {
-            return;
-        }
-
-        Cursor cursor = MainApplication.getContext().getContentResolver()
-                .query(FeedColumns.GROUPS_CONTENT_URI, FEEDS_PROJECTION, null, null, null);
-
-        StringBuilder builder = new StringBuilder(START);
-        builder.append(System.currentTimeMillis());
-        builder.append(AFTER_DATE);
-
-        while (cursor.moveToNext()) {
-            builder.append(OUTLINE_TITLE);
-            builder.append(cursor.isNull(2) ? "" : TextUtils.htmlEncode(cursor.getString(2)));
-            if (cursor.getInt(1) == 1) { // If it is a group
-                builder.append(OUTLINE_NORMAL_CLOSING);
-
-                Cursor cursorChildren = MainApplication.getContext().getContentResolver()
-                        .query(FeedColumns.FEEDS_FOR_GROUPS_CONTENT_URI(cursor.getString(0)), FEEDS_PROJECTION, null, null, null);
-                while (cursorChildren.moveToNext()) {
-                    builder.append("\t");
-                    builder.append(OUTLINE_TITLE);
-                    builder.append(cursorChildren.isNull(2) ? "" : TextUtils.htmlEncode(cursorChildren.getString(2)));
-                    builder.append(OUTLINE_XMLURL);
-                    builder.append(TextUtils.htmlEncode(cursorChildren.getString(3)));
-                    builder.append(OUTLINE_RETRIEVE_FULLTEXT);
-                    builder.append(cursorChildren.getInt(4) == 1 ? Constants.TRUE : "false");
-
-                    Cursor cursorFilters = MainApplication.getContext().getContentResolver()
-                            .query(FilterColumns.FILTERS_FOR_FEED_CONTENT_URI(cursorChildren.getString(0)), FILTERS_PROJECTION, null, null, null);
-                    if (cursorFilters.getCount() != 0) {
-                        builder.append(OUTLINE_NORMAL_CLOSING);
-                        while (cursorFilters.moveToNext()) {
-                            builder.append("\t");
-                            builder.append(FILTER_TEXT);
-                            builder.append(TextUtils.htmlEncode(cursorFilters.getString(0)));
-                            builder.append(FILTER_IS_REGEX);
-                            builder.append(cursorFilters.getInt(1) == 1 ? Constants.TRUE : "false");
-                            builder.append(FILTER_IS_APPLIED_TO_TITLE);
-                            builder.append(cursorFilters.getInt(2) == 1 ? Constants.TRUE : "false");
-                            builder.append(FILTER_IS_ACCEPT_RULE);
-                            builder.append(cursorFilters.getInt(3) == 1 ? Constants.TRUE : "false");
-                            builder.append(FILTER_CLOSING);
-                        }
-                        builder.append("\t");
-                        builder.append(OUTLINE_END);
-                    } else {
-                        builder.append(OUTLINE_INLINE_CLOSING);
-                    }
-                    cursorFilters.close();
-                }
-                cursorChildren.close();
-
-                builder.append(OUTLINE_END);
-            } else {
-                builder.append(OUTLINE_XMLURL);
-                builder.append(TextUtils.htmlEncode(cursor.getString(3)));
-                builder.append(OUTLINE_RETRIEVE_FULLTEXT);
-                builder.append(cursor.getInt(4) == 1 ? Constants.TRUE : "false");
-                Cursor cursorFilters = MainApplication.getContext().getContentResolver()
-                        .query(FilterColumns.FILTERS_FOR_FEED_CONTENT_URI(cursor.getString(0)), FILTERS_PROJECTION, null, null, null);
-                if (cursorFilters.getCount() != 0) {
-                    builder.append(OUTLINE_NORMAL_CLOSING);
-                    while (cursorFilters.moveToNext()) {
-                        builder.append(FILTER_TEXT);
-                        builder.append(TextUtils.htmlEncode(cursorFilters.getString(0)));
-                        builder.append(FILTER_IS_REGEX);
-                        builder.append(cursorFilters.getInt(1) == 1 ? Constants.TRUE : "false");
-                        builder.append(FILTER_IS_APPLIED_TO_TITLE);
-                        builder.append(cursorFilters.getInt(2) == 1 ? Constants.TRUE : "false");
-                        builder.append(FILTER_IS_ACCEPT_RULE);
-                        builder.append(cursorFilters.getInt(3) == 1 ? Constants.TRUE : "false");
-                        builder.append(FILTER_CLOSING);
-                    }
-                    builder.append(OUTLINE_END);
-                } else {
-                    builder.append(OUTLINE_INLINE_CLOSING);
-                }
-                cursorFilters.close();
-            }
-        }
-        builder.append(CLOSING);
-
-        cursor.close();
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-
-        writer.write(builder.toString());
-        writer.close();
     }
 
     public static void exportToFile(OutputStream output) throws IOException {
