@@ -45,20 +45,14 @@
 
 package ahmaabdo.readify.rss.provider;
 
-import ahmaabdo.readify.rss.utils.PrefUtils;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.os.Environment;
-import android.os.Handler;
-import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 
 import java.io.File;
-import java.io.OutputStream;
 
-import ahmaabdo.readify.rss.parser.OPML;
 import ahmaabdo.readify.rss.provider.FeedData.EntryColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FilterColumns;
@@ -73,13 +67,8 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String ALTER_TABLE = "ALTER TABLE ";
     private static final String ADD = " ADD ";
 
-    private final Handler mHandler;
-    private final Context mContext;
-
-    public DatabaseHelper(Handler handler, Context context) {
+    public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mHandler = handler;
-        mContext = context;
     }
 
     @Override
@@ -88,35 +77,6 @@ class DatabaseHelper extends SQLiteOpenHelper {
         database.execSQL(createTable(FilterColumns.TABLE_NAME, FilterColumns.COLUMNS));
         database.execSQL(createTable(EntryColumns.TABLE_NAME, EntryColumns.COLUMNS));
         database.execSQL(createTable(TaskColumns.TABLE_NAME, TaskColumns.COLUMNS));
-    }
-
-    public void exportToOPML() {
-        final String backupPath = PrefUtils.getString(PrefUtils.BACKUP_PATH, null);
-        if (backupPath != null) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    new Thread(new Runnable() { // To not block the UI
-                        @Override
-                        public void run() {
-                            try {
-                                String fileName = "Readify_auto_backup.opml";
-                                DocumentFile backupFolder = DocumentFile.fromTreeUri(mContext, Uri.parse(backupPath));
-                                DocumentFile backupFile = backupFolder.findFile(fileName);
-                                if (backupFile != null && backupFile.exists()) {
-                                    backupFile.delete();
-                                }
-                                backupFile = backupFolder.createFile("*/*", fileName);
-                                OutputStream outputStream = mContext.getContentResolver().openOutputStream(backupFile.getUri());
-                                OPML.exportToFile(outputStream);
-                            } catch (Exception e) {
-                                Log.e(TAG, "Failed to export OPML", e);
-                            }
-                        }
-                    }).start();
-                }
-            });
-        }
     }
 
     private String createTable(String tableName, String[][] columns) {

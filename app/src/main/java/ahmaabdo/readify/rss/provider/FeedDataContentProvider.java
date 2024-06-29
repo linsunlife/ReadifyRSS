@@ -45,6 +45,7 @@
 
 package ahmaabdo.readify.rss.provider;
 
+import ahmaabdo.readify.rss.parser.OPML;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -56,7 +57,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -237,8 +237,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        mDatabaseHelper = new DatabaseHelper(new Handler(), getContext());
-
+        mDatabaseHelper = new DatabaseHelper(getContext());
         return true;
     }
 
@@ -382,7 +381,6 @@ public class FeedDataContentProvider extends ContentProvider {
                     values.put(FeedColumns.PRIORITY, 1);
                 }
                 cursor.close();
-
                 newId = database.insert(FeedColumns.TABLE_NAME, null, values);
                 break;
             }
@@ -567,7 +565,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
         if (FeedColumns.TABLE_NAME.equals(table)
                 && (values.containsKey(FeedColumns.NAME) || values.containsKey(FeedColumns.URL) || values.containsKey(FeedColumns.PRIORITY))) {
-            mDatabaseHelper.exportToOPML();
+            OPML.exportToOPML();
         }
         if (count > 0) {
             notifyChangeOnAllUris(matchCode, uri);
@@ -742,7 +740,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
         if (count > 0) {
             if (FeedColumns.TABLE_NAME.equals(table)) {
-                mDatabaseHelper.exportToOPML();
+                OPML.exportToOPML();
             }
 
             notifyChangeOnAllUris(matchCode, uri);

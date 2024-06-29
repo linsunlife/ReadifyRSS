@@ -45,10 +45,14 @@
 
 package ahmaabdo.readify.rss.parser;
 
+import ahmaabdo.readify.rss.utils.PrefUtils;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
+import android.support.v4.provider.DocumentFile;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Xml;
 
 import org.xml.sax.Attributes;
@@ -64,6 +68,8 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FilterColumns;
 
 public class OPML {
+
+    private static final String TAG = "OPML";
 
     private static final String[] FEEDS_PROJECTION = new String[]{FeedColumns._ID, FeedColumns.IS_GROUP, FeedColumns.NAME, FeedColumns.URL,
             FeedColumns.RETRIEVE_FULLTEXT};
@@ -89,6 +95,30 @@ public class OPML {
 
     public static void importFromFile(InputStream input) throws IOException, SAXException {
         Xml.parse(new InputStreamReader(input), mParser);
+    }
+
+    public static void exportToOPML() {
+        final String backupPath = PrefUtils.getString(PrefUtils.BACKUP_PATH, null);
+        if (backupPath != null) {
+            new Thread(new Runnable() { // To not block the UI
+                @Override
+                public void run() {
+                    try {
+                        String fileName = "Readify_auto_backup.opml";
+                        DocumentFile backupFolder = DocumentFile.fromTreeUri(MainApplication.getContext(), Uri.parse(backupPath));
+                        DocumentFile backupFile = backupFolder.findFile(fileName);
+                        if (backupFile != null && backupFile.exists()) {
+                            backupFile.delete();
+                        }
+                        backupFile = backupFolder.createFile("*/*", fileName);
+                        OutputStream outputStream = MainApplication.getContext().getContentResolver().openOutputStream(backupFile.getUri());
+                        OPML.exportToFile(outputStream);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to export OPML", e);
+                    }
+                }
+            }).start();
+        }
     }
 
     public static void exportToFile(OutputStream output) throws IOException {
