@@ -45,7 +45,9 @@
 
 package ahmaabdo.readify.rss.fragment;
 
-import android.Manifest;
+import ahmaabdo.readify.rss.MainApplication;
+import ahmaabdo.readify.rss.utils.PrefUtils;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ListFragment;
@@ -54,13 +56,10 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
-import android.util.Pair;
+import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -72,15 +71,11 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import ahmaabdo.readify.rss.MainApplication;
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.activity.AddGoogleNewsActivity;
 import ahmaabdo.readify.rss.adapter.FeedsCursorAdapter;
@@ -91,9 +86,8 @@ import ahmaabdo.readify.rss.view.DragNDropListener;
 
 public class EditFeedsListFragment extends ListFragment {
 
-    private static final int REQUEST_PICK_OPML_FILE = 1;
-    private static final int PERMISSIONS_REQUEST_IMPORT_FROM_OPML = 1;
-    private static final int PERMISSIONS_REQUEST_EXPORT_TO_OPML = 2;
+    private static final int REQUEST_CODE_IMPORT_OPML = 1;
+    private static final int REQUEST_CODE_EXPORT_OPML = 2;
 
     private DragNDropExpandableListView mListView;
 
@@ -292,39 +286,15 @@ public class EditFeedsListFragment extends ListFragment {
                 return true;
             }
             case R.id.menu_export:
+                Intent exportIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                exportIntent.setType("*/*"); // 设置 OPML 文件类型
+                exportIntent.putExtra(Intent.EXTRA_TITLE, "Readify_" + System.currentTimeMillis() + ".opml"); // 设置默认文件名
+                startActivityForResult(exportIntent, REQUEST_CODE_EXPORT_OPML);
+                return true;
             case R.id.menu_import: {
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    // Should we explain?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
-                        builder.setMessage(R.string.storage_request_explanation).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogInterface, int id) {
-                                if (item.getItemId() == R.id.menu_export) {
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_EXPORT_TO_OPML);
-                                } else if (item.getItemId() == R.id.menu_import) {
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_IMPORT_FROM_OPML);
-                                }
-                            }
-                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialogInterface, int id) {
-                                //Canceled Dialog
-                            }
-                        });
-                        builder.show();
-                    } else {
-                        if (item.getItemId() == R.id.menu_export) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_EXPORT_TO_OPML);
-                        } else if (item.getItemId() == R.id.menu_import) {
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_IMPORT_FROM_OPML);
-                        }
-                    }
-                } else {
-                    if (item.getItemId() == R.id.menu_export) {
-                        exportToOpml();
-                    } else if (item.getItemId() == R.id.menu_import) {
-                        importFromOpml();
-                    }
-                }
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("*/*");
+                startActivityForResult(intent, REQUEST_CODE_IMPORT_OPML);
                 return true;
             }
         }
@@ -333,136 +303,53 @@ public class EditFeedsListFragment extends ListFragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_EXPORT_TO_OPML: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    exportToOpml();
-                }
-                return;
-            }
-            case PERMISSIONS_REQUEST_IMPORT_FROM_OPML: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    importFromOpml();
-                }
-                return;
-            }
-        }
-    }
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, final Intent data) {
-        if (requestCode == REQUEST_PICK_OPML_FILE) {
-            if (resultCode == Activity.RESULT_OK) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            final Uri uri = data.getData();
+            if (requestCode == REQUEST_CODE_IMPORT_OPML) {
                 new Thread(new Runnable() { // To not block the UI
                     @Override
                     public void run() {
                         try {
-                            OPML.importFromFile(data.getData().getPath()); // Try to read it by its path
+                            OPML.importFromFile(MainApplication.getContext().getContentResolver().openInputStream(uri));
                         } catch (Exception e) {
-                            try { // Try to read it directly as an InputStream (for Google Drive)
-                                OPML.importFromFile(MainApplication.getContext().getContentResolver().openInputStream(data.getData()));
-                            } catch (Exception unused) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity(), R.string.error_feed_import, Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), R.string.error_feed_import, Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     }
                 }).start();
-            } else {
-                displayCustomFilePicker();
-            }
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void displayCustomFilePicker() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setTitle(R.string.select_file);
-
-        try {
-            final String[] fileNames = Environment.getExternalStorageDirectory().list(new FilenameFilter() {
-                @Override
-                public boolean accept(File dir, String filename) {
-                    return new File(dir, filename).isFile();
-                }
-            });
-            builder.setItems(fileNames, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, final int which) {
-                    new Thread(new Runnable() { // To not block the UI
-                        @Override
-                        public void run() {
-                            try {
-                                OPML.importFromFile(Environment.getExternalStorageDirectory().toString() + File.separator
-                                        + fileNames[which]);
-                            } catch (Exception e) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity(), R.string.error_feed_import, Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
+            } else if (requestCode == REQUEST_CODE_EXPORT_OPML) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            final String filename = uri.getPath();
+                            OPML.exportToFile(MainApplication.getContext().getContentResolver().openOutputStream(uri));
+                            getActivity().runOnUiThread(new Runnable() {
+                                @SuppressLint("StringFormatInvalid")
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), String.format(getString(R.string.message_exported_to), filename),
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        } catch (Exception e) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getActivity(), R.string.error_feed_export, Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
-                    }).start();
-                }
-            });
-            builder.show();
-        } catch (Exception unused) {
-            Toast.makeText(getActivity(), R.string.error_feed_import, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void importFromOpml() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
-                || Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY)) {
-            try {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*");
-                startActivityForResult(intent, REQUEST_PICK_OPML_FILE);
-            } catch (Exception unused) {
-                displayCustomFilePicker();
-            }
-        } else {
-            Toast.makeText(getActivity(), R.string.error_external_storage_not_available, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void exportToOpml() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final String filename = Environment.getExternalStorageDirectory().toString() + "/Readify_"
-                                + System.currentTimeMillis() + ".opml";
-                        OPML.exportToFile(filename);
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getActivity(), String.format(getString(R.string.message_exported_to), filename),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } catch (Exception e) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getActivity(), R.string.error_feed_export, Toast.LENGTH_LONG).show();
-                            }
-                        });
                     }
-                }
-            }).start();
-        } else {
-            Toast.makeText(getActivity(), R.string.error_external_storage_not_available, Toast.LENGTH_LONG).show();
+                }).start();
+            }
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
