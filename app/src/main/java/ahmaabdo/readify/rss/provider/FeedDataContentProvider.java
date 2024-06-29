@@ -384,8 +384,6 @@ public class FeedDataContentProvider extends ContentProvider {
                 cursor.close();
 
                 newId = database.insert(FeedColumns.TABLE_NAME, null, values);
-                mDatabaseHelper.exportToOPML();
-
                 break;
             }
             case URI_FILTERS: {
