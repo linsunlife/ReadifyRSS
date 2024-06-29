@@ -45,7 +45,6 @@
 
 package ahmaabdo.readify.rss.fragment;
 
-import ahmaabdo.readify.rss.MainApplication;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -55,10 +54,8 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -73,9 +70,6 @@ import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FilenameFilter;
-
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.activity.AddGoogleNewsActivity;
 import ahmaabdo.readify.rss.adapter.FeedsCursorAdapter;
@@ -88,6 +82,7 @@ public class EditFeedsListFragment extends ListFragment {
 
     private static final int REQUEST_CODE_IMPORT_OPML = 1;
     private static final int REQUEST_CODE_EXPORT_OPML = 2;
+    private static final int REQUEST_CODE_BACKUP_PATH = 3;
 
     private DragNDropExpandableListView mListView;
 
@@ -285,16 +280,36 @@ public class EditFeedsListFragment extends ListFragment {
                         }).setNegativeButton(android.R.string.cancel, null).show();
                 return true;
             }
-            case R.id.menu_export:
-                Intent exportIntent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                exportIntent.setType("*/*"); // 设置 OPML 文件类型
-                exportIntent.putExtra(Intent.EXTRA_TITLE, "Readify_" + System.currentTimeMillis() + ".opml"); // 设置默认文件名
-                startActivityForResult(exportIntent, REQUEST_CODE_EXPORT_OPML);
+            case R.id.menu_backup_path:
+                selectBackupPath();
                 return true;
+            case R.id.menu_export:
             case R.id.menu_import: {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.setType("*/*");
-                startActivityForResult(intent, REQUEST_CODE_IMPORT_OPML);
+                if (getBackupPath() == null) {
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setMessage(R.string.question_backup_path_permission)
+                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    selectBackupPath();
+                                }
+                            }).setNegativeButton(android.R.string.no, null).show();
+                    return true;
+                }
+                int requestCode;
+                Intent intent = null;
+                if (item.getItemId() == R.id.menu_export) {
+                    requestCode = REQUEST_CODE_EXPORT_OPML;
+                    intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                    intent.putExtra(Intent.EXTRA_TITLE, "Readify_" + System.currentTimeMillis() + ".opml"); // 设置默认文件名
+                } else {
+                    requestCode = REQUEST_CODE_IMPORT_OPML;
+                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                }
+                intent.setType("*/*"); // 设置 OPML 文件类型
+                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, getBackupPath());
+                startActivityForResult(intent, requestCode);
                 return true;
             }
         }
@@ -307,12 +322,13 @@ public class EditFeedsListFragment extends ListFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             final Uri uri = data.getData();
+            final ContentResolver contentResolver = getActivity().getContentResolver();
             if (requestCode == REQUEST_CODE_IMPORT_OPML) {
                 new Thread(new Runnable() { // To not block the UI
                     @Override
                     public void run() {
                         try {
-                            OPML.importFromFile(MainApplication.getContext().getContentResolver().openInputStream(uri));
+                            OPML.importFromFile(contentResolver.openInputStream(uri));
                         } catch (Exception e) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -328,13 +344,12 @@ public class EditFeedsListFragment extends ListFragment {
                     @Override
                     public void run() {
                         try {
-                            final String filename = uri.getPath();
-                            OPML.exportToFile(MainApplication.getContext().getContentResolver().openOutputStream(uri));
+                            OPML.exportToFile(contentResolver.openOutputStream(uri));
                             getActivity().runOnUiThread(new Runnable() {
                                 @SuppressLint("StringFormatInvalid")
                                 @Override
                                 public void run() {
-                                    Toast.makeText(getActivity(), String.format(getString(R.string.message_exported_to), filename),
+                                    Toast.makeText(getActivity(), String.format(getString(R.string.message_exported_to), uri.getPath()),
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -348,8 +363,28 @@ public class EditFeedsListFragment extends ListFragment {
                         }
                     }
                 }).start();
+            } else if (requestCode == REQUEST_CODE_BACKUP_PATH) {
+                saveBackupPath(uri);
+                contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private Uri getBackupPath() {
+        String uriString = PrefUtils.getString(PrefUtils.BACKUP_PATH, null);
+        return uriString != null ? Uri.parse(uriString) : null;
+    }
+
+    private void saveBackupPath(Uri uri) {
+        PrefUtils.putString(PrefUtils.BACKUP_PATH, uri.toString());
+    }
+
+    private void selectBackupPath() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        Uri startDir = getBackupPath();
+        if (startDir != null) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, startDir);
+        }
+        startActivityForResult(intent, REQUEST_CODE_BACKUP_PATH);
     }
 }

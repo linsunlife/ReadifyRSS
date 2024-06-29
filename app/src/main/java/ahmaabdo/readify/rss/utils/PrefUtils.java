@@ -53,6 +53,7 @@ public class PrefUtils {
     public static final String LAST_SCHEDULED_REFRESH = "lastscheduledrefresh";
     public static final String SHOW_READ = "show_read";
     public static final String DRAWER_POSITION = "drawer_position";
+    public static final String BACKUP_PATH = "backup_path";
 
     public static boolean getBoolean(String key, boolean defValue) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext());

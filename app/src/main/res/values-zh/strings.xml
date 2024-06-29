@@ -47,8 +47,10 @@
     <string name="new_feed_title">新的订阅</string>
     <string name="context_menu_edit">编辑</string>
     <string name="menu_add_group">添加分组</string>
+    <string name="menu_backup_path">备份路径</string>
     <string name="menu_import">导入OPML</string>
     <string name="menu_export">导出OPML</string>
+    <string name="question_backup_path_permission">根据Android的文件权限要求，请指定并授予备份路径的权限。</string>
     <string name="error_feed_error">该订阅地址无法访问。</string>
     <string name="error_feed_process">该订阅处理失败。</string>
     <string name="error_feed_url_exists">该订阅地址已存在。</string>
