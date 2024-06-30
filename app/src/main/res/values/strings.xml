@@ -48,7 +48,7 @@
     <string name="no_feeds">No feeds</string>
     <string name="no_filters">No rules</string>
     <string name="context_menu_delete">Delete</string>
-    <string name="edit_feed_title">Edit feeds</string>
+    <string name="manage_feed_title">Manage feeds</string>
     <string name="new_feed_title">New feed</string>
     <string name="context_menu_edit">Edit</string>
     <string name="menu_add_group">Add group</string>

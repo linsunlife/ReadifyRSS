@@ -16,7 +16,7 @@
     <string name="no_feeds">אין ערוצים</string>
     <string name="no_filters">אין כללים</string>
     <string name="context_menu_delete">מחק</string>
-    <string name="edit_feed_title">ערוך ערוץ</string>
+    <string name="manage_feed_title">ערוך ערוץ</string>
     <string name="new_feed_title">ערוץ חדש</string>
     <string name="context_menu_edit">ערוך</string>
     <string name="menu_add_group">הוסף קבוצה</string>

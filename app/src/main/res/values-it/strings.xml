@@ -43,7 +43,7 @@
     <string name="no_feeds">Nessun feed</string>
     <string name="no_filters">Nessun filtro</string>
     <string name="context_menu_delete">Elimina</string>
-    <string name="edit_feed_title">Modifica feed</string>
+    <string name="manage_feed_title">Modifica feed</string>
     <string name="new_feed_title">Nuovo feed</string>
     <string name="context_menu_edit">Modifica</string>
     <string name="menu_add_group">Aggiungi gruppo</string>

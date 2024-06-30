@@ -45,7 +45,7 @@
     <string name="no_feeds">Nenhum feed</string>
     <string name="no_filters">Nenhuma regra</string>
     <string name="context_menu_delete">Excluir</string>
-    <string name="edit_feed_title">Editar feed</string>
+    <string name="manage_feed_title">Editar feed</string>
     <string name="new_feed_title">Novo feed</string>
     <string name="context_menu_edit">Editar</string>
     <string name="menu_add_group">Novo grupo</string>

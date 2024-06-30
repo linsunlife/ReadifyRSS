@@ -43,7 +43,7 @@
     <string name="no_feeds">Нет лент</string>
     <string name="no_filters">Нет фильтров</string>
     <string name="context_menu_delete">Удалить</string>
-    <string name="edit_feed_title">Редактировать ленту</string>
+    <string name="manage_feed_title">Редактировать ленту</string>
     <string name="new_feed_title">Новая лента</string>
     <string name="context_menu_edit">Редактировать</string>
     <string name="menu_add_group">Добавить группу</string>

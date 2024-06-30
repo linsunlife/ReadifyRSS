@@ -19,8 +19,8 @@
         tools:ignore="AlwaysShowAction" />
 
     <item
-        android:id="@+id/edit_feeds"
-        android:title="@string/edit_feed_title" />
+        android:id="@+id/manage_feeds"
+        android:title="@string/manage_feed_title" />
     <item
         android:id="@+id/settings"
         android:orderInCategory="100"

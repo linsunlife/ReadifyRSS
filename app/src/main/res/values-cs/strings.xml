@@ -46,7 +46,7 @@
     <string name="no_feeds">Žádné zdroje</string>
     <string name="no_filters">Žádné filtry</string>
     <string name="context_menu_delete">Smazat</string>
-    <string name="edit_feed_title">Upravit zdroj</string>
+    <string name="manage_feed_title">Upravit zdroj</string>
     <string name="new_feed_title">Nový zdroj</string>
     <string name="context_menu_edit">Upravit</string>
     <string name="menu_add_group">Přidat skupinu</string>

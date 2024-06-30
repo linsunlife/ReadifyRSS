@@ -369,7 +369,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
                 }
                 return true;
 
-            case R.id.edit_feeds: {
+            case R.id.manage_feeds: {
                 startActivity(new Intent(getActivity(), EditFeedsListActivity.class));
                 return true;
             }

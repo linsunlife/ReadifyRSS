@@ -46,7 +46,7 @@
     <string name="menu_add_feed">Pridať zdroj</string>
     <string name="no_filters">Žiadne filtre</string>
     <string name="context_menu_delete">Zmazať</string>
-    <string name="edit_feed_title">Upraviť zdroj</string>
+    <string name="manage_feed_title">Upraviť zdroj</string>
     <string name="new_feed_title">Nový zdroj</string>
     <string name="context_menu_edit">Upraviť</string>
     <string name="menu_add_group">Pridať skupinu</string>

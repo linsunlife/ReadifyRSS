@@ -19,7 +19,7 @@
     <string name="no_feeds">フィードはありません</string>
     <string name="no_filters">ルールはありません</string>
     <string name="context_menu_delete">削除</string>
-    <string name="edit_feed_title">フィードを編集</string>
+    <string name="manage_feed_title">フィードを編集</string>
     <string name="new_feed_title">新しいフィード</string>
     <string name="context_menu_edit">編集</string>
     <string name="menu_add_group">グループを追加</string>

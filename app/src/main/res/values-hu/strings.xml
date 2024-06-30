@@ -27,7 +27,7 @@
     <string name="no_feeds">Nincsenek hírforrások</string>
     <string name="no_filters">Nincsenek szabályok</string>
     <string name="context_menu_delete">Törlés</string>
-    <string name="edit_feed_title">Hírforrás szerkesztése</string>
+    <string name="manage_feed_title">Hírforrás szerkesztése</string>
     <string name="new_feed_title">Új hírforrás</string>
     <string name="context_menu_edit">Szerkesztés</string>
     <string name="menu_add_group">Csoport hozzáadása</string>

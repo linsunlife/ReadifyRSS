@@ -19,7 +19,7 @@
     <string name="no_feeds">Geen feeds</string>
     <string name="no_filters">Geen regels</string>
     <string name="context_menu_delete">Verwijderen</string>
-    <string name="edit_feed_title">Feed bewerken</string>
+    <string name="manage_feed_title">Feed bewerken</string>
     <string name="new_feed_title">Nieuwe feed</string>
     <string name="context_menu_edit">Bewerken</string>
     <string name="menu_add_group">Groep toevoegen</string>

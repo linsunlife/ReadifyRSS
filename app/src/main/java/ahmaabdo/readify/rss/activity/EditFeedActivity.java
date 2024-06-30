@@ -297,7 +297,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
             mKeepTime.setSelection(selectedValues.length - 1);
             mRetrieveFulltextCb.setChecked(true);
         } else if (intent.getAction().equals(Intent.ACTION_EDIT)) {
-            setTitle(R.string.edit_feed_title);
+            setTitle(R.string.manage_feed_title);
 
             buttonLayout.setVisibility(View.GONE);
 

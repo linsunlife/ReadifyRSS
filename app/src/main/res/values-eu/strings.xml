@@ -45,7 +45,7 @@
     <string name="no_feeds">Jariorik ez</string>
     <string name="no_filters">Araurik ez</string>
     <string name="context_menu_delete">Ezabatu</string>
-    <string name="edit_feed_title">Jarioa editatu</string>
+    <string name="manage_feed_title">Jarioa editatu</string>
     <string name="new_feed_title">Jario berria</string>
     <string name="context_menu_edit">Editatu</string>
     <string name="menu_add_group">Taldea gehitu</string>

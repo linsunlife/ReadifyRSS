@@ -19,7 +19,7 @@
     <string name="no_feeds">لا توجد خلاصات</string>
     <string name="no_filters">لا توجد قواعد</string>
     <string name="context_menu_delete">حذف</string>
-    <string name="edit_feed_title">تعديل الخلاصات</string>
+    <string name="manage_feed_title">تعديل الخلاصات</string>
     <string name="new_feed_title">خلاصة جديدة</string>
     <string name="context_menu_edit">تعديل</string>
     <string name="menu_add_group">أضف مجموعة</string>

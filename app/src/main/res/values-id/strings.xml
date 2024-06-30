@@ -19,7 +19,7 @@
     <string name="no_feeds">Tidak ada umpan</string>
     <string name="no_filters">Tidak ada peraturan</string>
     <string name="context_menu_delete">Hapus</string>
-    <string name="edit_feed_title">Sunting umpan</string>
+    <string name="manage_feed_title">Sunting umpan</string>
     <string name="new_feed_title">Umpan baru</string>
     <string name="context_menu_edit">Sunting</string>
     <string name="menu_add_group">Tambahkan grup</string>
