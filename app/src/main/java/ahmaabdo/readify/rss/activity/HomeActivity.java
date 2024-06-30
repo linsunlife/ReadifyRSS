@@ -129,7 +129,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         feedFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_INSERT).setData(FeedData.FeedColumns.CONTENT_URI));
+                startActivity(new Intent(Intent.ACTION_INSERT, FeedData.FeedColumns.CONTENT_URI, getApplicationContext(), EditFeedActivity.class));
             }
         });
 
@@ -154,7 +154,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 if (id > 0) {
-                    startActivity(new Intent(Intent.ACTION_EDIT).setData(FeedColumns.CONTENT_URI(id)));
+                    startActivity(new Intent(Intent.ACTION_EDIT, FeedColumns.CONTENT_URI(id), getApplicationContext(), EditFeedActivity.class));
                     return true;
                 }
                 return false;
@@ -249,7 +249,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                     .setItems(new CharSequence[]{getString(R.string.google_news_title), getString(R.string.add_custom_feed)}, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             if (which == 1) {
-                                startActivity(new Intent(Intent.ACTION_INSERT).setData(FeedColumns.CONTENT_URI));
+                                startActivity(new Intent(Intent.ACTION_INSERT, FeedColumns.CONTENT_URI, getApplicationContext(), EditFeedActivity.class));
                             } else {
                                 startActivity(new Intent(HomeActivity.this, AddGoogleNewsActivity.class));
                             }

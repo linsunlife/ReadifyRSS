@@ -45,6 +45,7 @@
 
 package ahmaabdo.readify.rss.fragment;
 
+import ahmaabdo.readify.rss.activity.EditFeedActivity;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -102,7 +103,7 @@ public class EditFeedsListFragment extends ListFragment {
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                startActivity(new Intent(Intent.ACTION_EDIT).setData(FeedColumns.CONTENT_URI(id)));
+                startActivity(new Intent(Intent.ACTION_EDIT, FeedColumns.CONTENT_URI(id), getActivity(), EditFeedActivity.class));
                 return true;
             }
         });
@@ -110,7 +111,7 @@ public class EditFeedsListFragment extends ListFragment {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                 if (v.findViewById(R.id.indicator).getVisibility() != View.VISIBLE) { // This is no a real group
-                    startActivity(new Intent(Intent.ACTION_EDIT).setData(FeedColumns.CONTENT_URI(id)));
+                    startActivity(new Intent(Intent.ACTION_EDIT, FeedColumns.CONTENT_URI(id), getActivity(), EditFeedActivity.class));
                     return true;
                 }
                 return false;
@@ -244,7 +245,7 @@ public class EditFeedsListFragment extends ListFragment {
                         .setItems(new CharSequence[]{getString(R.string.add_custom_feed), getString(R.string.google_news_title)}, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 if (which == 0) {
-                                    startActivity(new Intent(Intent.ACTION_INSERT).setData(FeedColumns.CONTENT_URI));
+                                    startActivity(new Intent(Intent.ACTION_INSERT, FeedColumns.CONTENT_URI, getActivity(), EditFeedActivity.class));
                                 } else {
                                     startActivity(new Intent(getActivity(), AddGoogleNewsActivity.class));
                                 }

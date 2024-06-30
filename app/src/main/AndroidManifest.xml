@@ -19,7 +19,6 @@
         <service android:name=".service.RefreshService" />
         <service android:name=".service.FetcherService" />
 
-
         <provider
             android:name=".provider.FeedDataContentProvider"
             android:authorities="${applicationId}.provider.FeedData"
@@ -43,14 +42,9 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activity.AboutApp"
-            android:exported="true"
             android:label="@string/about_spaRSS"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.MaterialAboutActivity">
-            <intent-filter>
-                <action android:name="about_activity_intent" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
 
         <activity
@@ -59,21 +53,16 @@
             android:launchMode="singleTask" />
         <activity
             android:name=".activity.EntryActivity"
-            android:exported="true"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
             android:theme="@style/Theme.Slidr.Light">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/vnd.spaRSS.entry" />
-            </intent-filter>
         </activity>
 
         <activity
             android:name=".activity.GeneralPrefsActivity"
             android:label="@string/menu_settings"
             android:launchMode="singleTask" />
+
         <activity android:name=".widget.WidgetConfigActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
@@ -84,21 +73,6 @@
             android:name=".activity.EditFeedActivity"
             android:exported="true"
             android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.EDIT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.item/vnd.spaRSS.feed" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.INSERT" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="vnd.android.cursor.dir/vnd.spaRSS.feed" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

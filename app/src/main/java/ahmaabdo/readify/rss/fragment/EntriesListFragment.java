@@ -20,6 +20,7 @@
 
 package ahmaabdo.readify.rss.fragment;
 
+import ahmaabdo.readify.rss.activity.EntryActivity;
 import android.app.LoaderManager;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -294,8 +295,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         if (id >= 0) { // should not happen, but I had a crash with this on PlayStore...
-            startActivity(new Intent(Intent.ACTION_VIEW, ContentUris.withAppendedId(mUri, id)));
-
+            startActivity(new Intent(getActivity(), EntryActivity.class).setData(ContentUris.withAppendedId(mUri, id)));
         }
     }
 

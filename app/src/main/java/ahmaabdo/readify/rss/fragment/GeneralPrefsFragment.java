@@ -45,6 +45,7 @@
 
 package ahmaabdo.readify.rss.fragment;
 
+import ahmaabdo.readify.rss.activity.AboutApp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -98,6 +99,14 @@ public class GeneralPrefsFragment extends PreferenceFragment {
             }
         });
 
+        preference = findPreference(PrefUtils.ABOUT);
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                startActivity(new Intent(getActivity(), AboutApp.class));
+                return true;
+            }
+        });
     }
 
     @Override

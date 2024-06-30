@@ -184,10 +184,9 @@
         <PreferenceScreen
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:key="about"
             android:title="@string/about_spaRSS">
-            <intent android:action="about_activity_intent" />
         </PreferenceScreen>
-
 
     </PreferenceCategory>
 

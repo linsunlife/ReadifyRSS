@@ -54,6 +54,7 @@ public class PrefUtils {
     public static final String SHOW_READ = "show_read";
     public static final String DRAWER_POSITION = "drawer_position";
     public static final String BACKUP_PATH = "backup_path";
+    public static final String ABOUT = "about";
 
     public static boolean getBoolean(String key, boolean defValue) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext());

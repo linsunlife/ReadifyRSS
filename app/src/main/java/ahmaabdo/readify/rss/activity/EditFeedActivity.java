@@ -275,7 +275,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
             mTabHost.setCurrentTab(savedInstanceState.getInt(STATE_CURRENT_TAB));
         }
 
-        if (intent.getAction().equals(Intent.ACTION_INSERT) || intent.getAction().equals(Intent.ACTION_SEND)) {
+        if (intent.getAction().equals(Intent.ACTION_INSERT)) {
             setTitle(R.string.new_feed_title);
 
             //Forcing the keyboard to appear
@@ -285,10 +285,6 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
             mNameEditText.setVisibility(View.INVISIBLE);
             mNameTextView.setVisibility(View.INVISIBLE);
 
-
-            if (intent.hasExtra(Intent.EXTRA_TEXT)) {
-                mUrlEditText.setText(intent.getStringExtra(Intent.EXTRA_TEXT));
-            }
             String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
             mKeepTime.setSelection(selectedValues.length - 1);
             mRetrieveFulltextCb.setChecked(true);
