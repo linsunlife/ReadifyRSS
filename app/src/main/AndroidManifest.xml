@@ -35,28 +35,29 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activity.AddGoogleNewsActivity"
             android:label="@string/google_news_title"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden" />
+
         <activity
             android:name=".activity.AboutApp"
             android:label="@string/about_spaRSS"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.MaterialAboutActivity">
-        </activity>
+            android:theme="@style/AppTheme.MaterialAboutActivity" />
 
         <activity
             android:name=".activity.EditFeedsListActivity"
             android:label="@string/feeds"
             android:launchMode="singleTask" />
+
         <activity
             android:name=".activity.EntryActivity"
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.Slidr.Light">
-        </activity>
+            android:theme="@style/Theme.Slidr.Light" />
 
         <activity
             android:name=".activity.GeneralPrefsActivity"
@@ -152,18 +153,20 @@
 
         <service android:name=".widget.TickerWidgetService" />
 
-
         <receiver android:name=".receiver.BootCompletedBroadcastReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+
         <receiver android:name=".receiver.ConnectionChangeReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
         <receiver android:name=".service.RefreshService$RefreshAlarmReceiver" />
+
     </application>
 
 </manifest>
