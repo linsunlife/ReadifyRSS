@@ -288,7 +288,7 @@ public class EditFeedsListFragment extends ListFragment {
             case R.id.menu_import: {
                 if (getBackupPath() == null) {
                     new AlertDialog.Builder(getActivity())
-                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle(R.string.question_backup_path_permission_title)
                             .setMessage(R.string.question_backup_path_permission)
                             .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                 @Override
