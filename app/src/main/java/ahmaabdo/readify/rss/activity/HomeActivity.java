@@ -283,14 +283,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         super.finish();
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-        // We reset the current drawer position
-        selectDrawerItem(0);
-    }
-
     public void onBackPressed() {
         // Before exiting from app the navigation drawer is opened
         if (mDrawerLayout != null && !mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
