@@ -203,14 +203,17 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         switch (position) {
             case 0:
                 newUri = EntryColumns.ALL_ENTRIES_CONTENT_URI;
+                showFeedInfo = true;
                 break;
             case 1:
                 newUri = EntryColumns.FAVORITES_CONTENT_URI;
+                showFeedInfo = true;
                 break;
             default:
                 long feedOrGroupId = mDrawerAdapter.getItemId(position);
                 if (mDrawerAdapter.isItemAGroup(position)) {
                     newUri = EntryColumns.ENTRIES_FOR_GROUP_CONTENT_URI(feedOrGroupId);
+                    showFeedInfo = true;
                 } else {
                     byte[] iconBytes = mDrawerAdapter.getItemIcon(position);
                     Bitmap bitmap = UiUtils.getScaledBitmap(iconBytes, 24);
