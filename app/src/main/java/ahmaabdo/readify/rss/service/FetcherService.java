@@ -399,7 +399,7 @@ public class FetcherService extends IntentService {
             long keepTimeLocal = cursor.getLong(1) * 86400000l;
             long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
             if (keepDateBorderTimeLocal > 0) {
-                String where = EntryColumns.DATE + '<' + keepDateBorderTimeLocal + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + "=" + String.valueOf(feedid);
+                String where = EntryColumns.DATE + '<' + keepDateBorderTimeLocal + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + "=" + String.valueOf(feedid);
                 Cursor cursor2 = MainApplication.getContext().getContentResolver().query(EntryColumns.CONTENT_URI, EntryColumns.PROJECTION_ID, where, null, null);
                 while (cursor2.moveToNext()) {
                     int entryId = cursor2.getInt(0);
