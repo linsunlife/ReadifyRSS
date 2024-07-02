@@ -299,7 +299,7 @@ public class EditFeedsListFragment extends ListFragment {
                     return true;
                 }
                 int requestCode;
-                Intent intent = null;
+                Intent intent;
                 if (item.getItemId() == R.id.menu_export) {
                     requestCode = REQUEST_CODE_EXPORT_OPML;
                     intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -309,7 +309,6 @@ public class EditFeedsListFragment extends ListFragment {
                     intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 }
                 intent.setType("*/*"); // 设置 OPML 文件类型
-                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, getBackupPath());
                 startActivityForResult(intent, requestCode);
                 return true;
             }
@@ -381,11 +380,6 @@ public class EditFeedsListFragment extends ListFragment {
     }
 
     private void selectBackupPath() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        Uri startDir = getBackupPath();
-        if (startDir != null) {
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, startDir);
-        }
-        startActivityForResult(intent, REQUEST_CODE_BACKUP_PATH);
+        startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), REQUEST_CODE_BACKUP_PATH);
     }
 }
