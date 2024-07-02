@@ -439,12 +439,17 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
 
     private void startRefresh() {
         if (!PrefUtils.getBoolean(PrefUtils.IS_REFRESHING, false)) {
-            if (mUri != null && FeedDataContentProvider.URI_MATCHER.match(mUri) == FeedDataContentProvider.URI_ENTRIES_FOR_FEED) {
-                getActivity().startService(new Intent(getActivity(), FetcherService.class).setAction(FetcherService.ACTION_REFRESH_FEEDS).putExtra(Constants.FEED_ID,
-                        mUri.getPathSegments().get(1)));
-            } else {
-                getActivity().startService(new Intent(getActivity(), FetcherService.class).setAction(FetcherService.ACTION_REFRESH_FEEDS));
+            Intent intent = new Intent(getActivity(), FetcherService.class);
+            intent.setAction(FetcherService.ACTION_REFRESH_FEEDS);
+            if (mUri != null) {
+                int match = FeedDataContentProvider.URI_MATCHER.match(mUri);
+                if (match == FeedDataContentProvider.URI_ENTRIES_FOR_FEED) {
+                    intent.putExtra(Constants.FEED_ID, mUri.getPathSegments().get(1));
+                } else if (match == FeedDataContentProvider.URI_ENTRIES_FOR_GROUP) {
+                    intent.putExtra(Constants.GROUP_ID, mUri.getPathSegments().get(1));
+                }
             }
+            getActivity().startService(intent);
         }
         refreshSwipeProgress();
     }

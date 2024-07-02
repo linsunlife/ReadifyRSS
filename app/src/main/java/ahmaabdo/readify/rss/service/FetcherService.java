@@ -212,7 +212,8 @@ public class FetcherService extends IntentService {
             deleteOldEntries(keepDateBorderTime);
 
             String feedId = intent.getStringExtra(Constants.FEED_ID);
-            int newCount = (feedId == null ? refreshFeeds(keepDateBorderTime) : refreshFeed(feedId, keepDateBorderTime));
+            String groupId = intent.getStringExtra(Constants.GROUP_ID);
+            int newCount = (feedId == null ? refreshFeeds(groupId, keepDateBorderTime) : refreshFeed(feedId, keepDateBorderTime));
 
             if (newCount > 0) {
 
@@ -412,9 +413,10 @@ public class FetcherService extends IntentService {
         cursor.close();
     }
 
-    private int refreshFeeds(final long keepDateBorderTime) {
+    private int refreshFeeds(String groupId, final long keepDateBorderTime) {
         ContentResolver cr = getContentResolver();
-        final Cursor cursor = cr.query(FeedColumns.CONTENT_URI, FeedColumns.PROJECTION_ID, null, null, null);
+        String where = groupId == null ? null : FeedColumns.GROUP_ID + "=" + groupId;
+        final Cursor cursor = cr.query(FeedColumns.CONTENT_URI, FeedColumns.PROJECTION_ID, where, null, null);
         int nbFeed = cursor.getCount();
 
         ExecutorService executor = Executors.newFixedThreadPool(THREAD_NUMBER, new ThreadFactory() {
