@@ -487,10 +487,7 @@ public class FetcherService extends IntentService {
                 String contentType = connection.getContentType();
                 int fetchMode = cursor.getInt(fetchModePosition);
 
-                long keepTimeLocal = cursor.getInt(keepTimePosition) * 86400000l;
-                long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
-
-                handler = new RssAtomParser(new Date(cursor.getLong(realLastUpdatePosition)), keepDateBorderTimeLocal, id, cursor.getString(titlePosition), feedUrl,
+                handler = new RssAtomParser(new Date(cursor.getLong(realLastUpdatePosition)), id, cursor.getString(titlePosition), feedUrl,
                         cursor.getInt(retrieveFullTextPosition) == 1);
                 handler.setFetchImages(NetworkUtils.needDownloadPictures());
 

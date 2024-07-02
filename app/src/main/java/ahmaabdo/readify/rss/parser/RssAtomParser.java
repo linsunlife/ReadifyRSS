@@ -142,7 +142,6 @@ public class RssAtomParser extends DefaultHandler {
     private final Uri mFeedEntriesUri;
     private final String mFeedName;
     private final String mFeedBaseUrl;
-    private final Date mKeepDateBorder;
     private final FeedFilters mFilters;
     private final ArrayList<ContentProviderOperation> mInserts = new ArrayList<>();
     private final ArrayList<ArrayList<String>> mInsertedEntriesImages = new ArrayList<>();
@@ -178,8 +177,7 @@ public class RssAtomParser extends DefaultHandler {
     private StringBuilder mGuid;
     private StringBuilder mAuthor, mTmpAuthor;
 
-    public RssAtomParser(Date realLastUpdateDate, long keepDateBorderTime, final String id, String feedName, String url, boolean retrieveFullText) {
-        mKeepDateBorder = new Date(keepDateBorderTime);
+    public RssAtomParser(Date realLastUpdateDate, final String id, String feedName, String url, boolean retrieveFullText) {
         mRealLastUpdateDate = realLastUpdateDate;
         mNewRealLastUpdate = realLastUpdateDate.getTime();
         mId = id;
@@ -364,20 +362,19 @@ public class RssAtomParser extends DefaultHandler {
 
             boolean updateOnly = false;
             // Old mEntryDate but recent update date => we need to not insert it!
-            if (mEntryUpdateDate != null && mEntryDate != null && (mEntryDate.before(mRealLastUpdateDate) || mEntryDate.before(mKeepDateBorder))) {
+            if (mEntryUpdateDate != null && mEntryDate != null && mEntryDate.before(mRealLastUpdateDate)) {
                 updateOnly = true;
                 if (mEntryUpdateDate.after(mEntryDate)) {
                     mEntryDate = mEntryUpdateDate;
                 }
             } else if (mEntryDate == null && mEntryUpdateDate != null) { // only one updateDate, copy it into mEntryDate
                 mEntryDate = mEntryUpdateDate;
-            } else if (mEntryDate == null && mEntryUpdateDate == null) { // nothing, we need to retrieve the previous date
+            } else if (mEntryDate == null) { // nothing, we need to retrieve the previous date
                 mEntryDate = mPreviousEntryDate;
                 mEntryUpdateDate = mPreviousEntryUpdateDate;
             }
 
-            // this condition check breaks the possibility of changing keep time for individual feeds
-            if (mTitle != null && (mEntryDate == null || (/*mEntryDate.after(mRealLastUpdateDate) &&*/ mEntryDate.after(mKeepDateBorder)))) {
+            if (mTitle != null) {
                 ContentValues values = new ContentValues();
 
                 if (mEntryDate != null && mEntryDate.getTime() > mNewRealLastUpdate) {
