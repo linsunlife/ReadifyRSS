@@ -22,7 +22,6 @@ package ahmaabdo.readify.rss.fragment;
 
 import ahmaabdo.readify.rss.activity.EntryActivity;
 import android.app.LoaderManager;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -33,9 +32,6 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -58,11 +54,9 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import ahmaabdo.readify.rss.Constants;
-import ahmaabdo.readify.rss.MainApplication;
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.activity.EditFeedsListActivity;
 import ahmaabdo.readify.rss.activity.GeneralPrefsActivity;
@@ -96,7 +90,6 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
             }
         }
     };
-    private Cursor mJustMarkedAsReadEntries;
     private Button mRefreshListBtn;
     private Uri mUri, mOriginalUri;
     private boolean mShowFeedInfo = false;
@@ -268,9 +261,6 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
     @Override
     public void onStop() {
         PrefUtils.unregisterOnPrefChangeListener(mPrefListener);
-        if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
-            mJustMarkedAsReadEntries.close();
-        }
         refreshUI();
         super.onStop();
         mListView.getViewTreeObserver().removeOnScrollChangedListener(this);
@@ -381,62 +371,8 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
                 return true;
             }
 
-            case R.id.menu_all_read: {
-                if (mEntriesCursorAdapter != null) {
-                    markAllRead();
-                    // If we are on "all items" uri, we can remove the notification here
-                    if (mUri != null && EntryColumns.CONTENT_URI.equals(mUri) && Constants.NOTIF_MGR != null) {
-                        Constants.NOTIF_MGR.cancel(0);
-                    }
-                }
-                return true;
-            }
-
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void markAllRead() {
-        if (mEntriesCursorAdapter != null) {
-            Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.coordinator_layout), R.string.marked_as_read, Snackbar.LENGTH_LONG)
-                    .setActionTextColor(ContextCompat.getColor(getActivity(), R.color.light_primary_color))
-                    .setAction(R.string.undo, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            new Thread() {
-                                @Override
-                                public void run() {
-                                    if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
-                                        ArrayList<Integer> ids = new ArrayList<>();
-                                        while (mJustMarkedAsReadEntries.moveToNext()) {
-                                            ids.add(mJustMarkedAsReadEntries.getInt(0));
-                                        }
-                                        ContentResolver cr = MainApplication.getContext().getContentResolver();
-                                        String where = BaseColumns._ID + " IN (" + TextUtils.join(",", ids) + ')';
-                                        cr.update(FeedData.EntryColumns.CONTENT_URI, FeedData.getUnreadContentValues(), where, null);
-
-                                        mJustMarkedAsReadEntries.close();
-                                    }
-                                }
-                            }.start();
-                        }
-                    });
-            snackbar.getView().setBackgroundResource(R.color.material_grey_900);
-            snackbar.show();
-
-            new Thread() {
-                @Override
-                public void run() {
-                    ContentResolver cr = MainApplication.getContext().getContentResolver();
-                    String where = EntryColumns.WHERE_UNREAD + Constants.DB_AND + '(' + EntryColumns.FETCH_DATE + Constants.DB_IS_NULL + Constants.DB_OR + EntryColumns.FETCH_DATE + "<=" + mListDisplayDate + ')';
-                    if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
-                        mJustMarkedAsReadEntries.close();
-                    }
-                    mJustMarkedAsReadEntries = cr.query(mUri, new String[]{BaseColumns._ID}, where, null, null);
-                    cr.update(mUri, FeedData.getReadContentValues(), where, null);
-                }
-            }.start();
-        }
     }
 
 
