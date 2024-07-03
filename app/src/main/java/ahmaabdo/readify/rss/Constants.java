@@ -34,6 +34,7 @@ public final class Constants {
 
     public static final String FEED_ID = "feedid";
     public static final String GROUP_ID = "groupid";
+    public static final String EntriesListDisplayDate = "entries_list_display_date";
 
     public static final String DB_COUNT = "COUNT(*)";
     public static final String DB_IS_TRUE = "=1";

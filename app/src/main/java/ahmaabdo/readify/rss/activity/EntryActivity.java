@@ -67,7 +67,7 @@ public class EntryActivity extends BaseActivity {
 
         mEntryFragment = (EntryFragment) getFragmentManager().findFragmentById(R.id.entry_fragment);
         if (savedInstanceState == null) { // Put the data only the first time (the fragment will save its state)
-            mEntryFragment.setData(getIntent().getData());
+            mEntryFragment.setData(getIntent().getData(), getIntent().getLongExtra(Constants.EntriesListDisplayDate, Long.MAX_VALUE));
         }
 
         Toolbar toolbar = findViewById(R.id.entry_toolbar);
@@ -117,6 +117,6 @@ public class EntryActivity extends BaseActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mEntryFragment.setData(intent.getData());
+        mEntryFragment.setData(intent.getData(), intent.getLongExtra(Constants.EntriesListDisplayDate, Long.MAX_VALUE));
     }
 }

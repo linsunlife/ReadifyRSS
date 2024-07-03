@@ -54,6 +54,8 @@ import android.text.TextUtils;
 import ahmaabdo.readify.rss.Constants;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 
+import java.util.Date;
+
 public class FeedData {
     public static final String CONTENT = "content://";
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".provider.FeedData";
@@ -75,12 +77,14 @@ public class FeedData {
     public static ContentValues getReadContentValues() {
         ContentValues values = new ContentValues();
         values.put(EntryColumns.IS_READ, true);
+        values.put(EntryColumns.READ_DATE, new Date().getTime());
         return values;
     }
 
     public static ContentValues getUnreadContentValues() {
         ContentValues values = new ContentValues();
         values.putNull(EntryColumns.IS_READ);
+        values.putNull(EntryColumns.READ_DATE);
         return values;
     }
 
@@ -182,6 +186,7 @@ public class FeedData {
         public static final String DATE = "date";
         public static final String FETCH_DATE = "fetch_date";
         public static final String IS_READ = "isread";
+        public static final String READ_DATE = "read_date";
         public static final String LINK = "link";
         public static final String IS_FAVORITE = "favorite";
         public static final String ENCLOSURE = "enclosure";
@@ -198,7 +203,7 @@ public class FeedData {
         }
 
         public static final String[][] COLUMNS = new String[][]{{_ID, TYPE_PRIMARY_KEY}, {FEED_ID, TYPE_EXTERNAL_ID}, {TITLE, TYPE_TEXT},
-                {ABSTRACT, TYPE_TEXT}, {MOBILIZED_HTML, TYPE_TEXT}, {DATE, TYPE_DATE_TIME}, {FETCH_DATE, TYPE_DATE_TIME}, {IS_READ, TYPE_BOOLEAN}, {LINK, TYPE_TEXT},
+                {ABSTRACT, TYPE_TEXT}, {MOBILIZED_HTML, TYPE_TEXT}, {DATE, TYPE_DATE_TIME}, {FETCH_DATE, TYPE_DATE_TIME}, {IS_READ, TYPE_BOOLEAN}, {READ_DATE, TYPE_DATE_TIME}, {LINK, TYPE_TEXT},
                 {IS_FAVORITE, TYPE_BOOLEAN}, {ENCLOSURE, TYPE_TEXT}, {GUID, TYPE_TEXT}, {AUTHOR, TYPE_TEXT}, {IMAGE_URL, TYPE_TEXT}};
 
         public static Uri ENTRIES_FOR_FEED_CONTENT_URI(long feedId) {

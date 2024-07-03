@@ -89,6 +89,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (PrefUtils.SHOW_READ.equals(key)) {
+                mListDisplayDate = new Date().getTime();
                 getLoaderManager().restartLoader(ENTRIES_LOADER_ID, null, mEntriesLoader);
             } else if (PrefUtils.IS_REFRESHING.equals(key)) {
                 refreshSwipeProgress();
@@ -108,7 +109,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
             String entriesOrder = PrefUtils.getBoolean(PrefUtils.DISPLAY_OLDEST_FIRST, false) ? Constants.DB_ASC : Constants.DB_DESC;
             String where = "(" + EntryColumns.FETCH_DATE + Constants.DB_IS_NULL + Constants.DB_OR + EntryColumns.FETCH_DATE + "<=" + mListDisplayDate + ')';
             if (!FeedData.shouldShowReadEntries(mUri)) {
-                where += Constants.DB_AND + EntryColumns.WHERE_UNREAD;
+                where += Constants.DB_AND + "(" + EntryColumns.WHERE_UNREAD + Constants.DB_OR + EntryColumns.READ_DATE + ">" + mListDisplayDate + ")";
             }
             CursorLoader cursorLoader = new CursorLoader(getActivity(), mUri, null, where, null, EntryColumns.DATE + entriesOrder);
             cursorLoader.setUpdateThrottle(150);
@@ -294,7 +295,10 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
     @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
         if (id >= 0) { // should not happen, but I had a crash with this on PlayStore...
-            startActivity(new Intent(getActivity(), EntryActivity.class).setData(ContentUris.withAppendedId(mUri, id)));
+            Intent intent = new Intent(getActivity(), EntryActivity.class);
+            intent.setData(ContentUris.withAppendedId(mUri, id));
+            intent.putExtra(Constants.EntriesListDisplayDate, mListDisplayDate);
+            startActivity(intent);
         }
     }
 

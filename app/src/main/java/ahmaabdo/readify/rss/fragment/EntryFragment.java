@@ -366,7 +366,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
     }
 
 
-    public void setData(Uri uri) {
+    public void setData(Uri uri, long entriesListDisplayDate) {
         mCurrentPagerPos = -1;
 
         mBaseUri = FeedData.EntryColumns.PARENT_URI(uri.getPath());
@@ -378,9 +378,8 @@ public class EntryFragment extends SwipeRefreshFragment implements
 
         if (mBaseUri != null) {
             Bundle b = getActivity().getIntent().getExtras();
-
             String whereClause = FeedData.shouldShowReadEntries(mBaseUri) ||
-                    (b != null && b.getBoolean(Constants.INTENT_FROM_WIDGET, false)) ? null : EntryColumns.WHERE_UNREAD;
+                    (b != null && b.getBoolean(Constants.INTENT_FROM_WIDGET, false)) ? null : EntryColumns.WHERE_UNREAD + Constants.DB_OR + EntryColumns.READ_DATE + ">" + entriesListDisplayDate;
             String entriesOrder = PrefUtils.getBoolean(PrefUtils.DISPLAY_OLDEST_FIRST, false) ? Constants.DB_ASC : Constants.DB_DESC;
 
             // Load the entriesIds list. Should be in a loader... but I was too lazy to do so
