@@ -331,7 +331,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (TextUtils.isEmpty(newText)) {
-                    setData(mOriginalUri, true);
+                    setData(mOriginalUri, true, true);
                 } else {
                     setData(EntryColumns.SEARCH_URI(newText), true, true);
                 }
@@ -341,7 +341,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
         searchView.setOnCloseListener(new SearchView.OnCloseListener() {
             @Override
             public boolean onClose() {
-                setData(mOriginalUri, true);
+                setData(mOriginalUri, mShowFeedInfo, false);
                 return false;
             }
         });
@@ -469,10 +469,10 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
         mUri = uri;
         if (!isSearchUri) {
             mOriginalUri = mUri;
+            mShowFeedInfo = showFeedInfo;
         }
-        mShowFeedInfo = showFeedInfo;
 
-        mEntriesCursorAdapter = new EntriesCursorAdapter(getActivity(), mUri, Constants.EMPTY_CURSOR, mShowFeedInfo);
+        mEntriesCursorAdapter = new EntriesCursorAdapter(getActivity(), mUri, Constants.EMPTY_CURSOR, showFeedInfo);
         setListAdapter(mEntriesCursorAdapter);
 
         mListDisplayDate = new Date().getTime();
