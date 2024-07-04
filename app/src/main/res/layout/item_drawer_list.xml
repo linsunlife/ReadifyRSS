@@ -73,16 +73,4 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/dividerVertical"
         android:visibility="gone" />
-
-    <View
-        android:id="@+id/separator_group"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@android:id/icon"
-        android:layout_toLeftOf="@+id/entries_number"
-        android:layout_toRightOf="@android:id/icon"
-        android:layout_toStartOf="@+id/entries_number"
-        android:background="?android:attr/dividerVertical"
-        android:visibility="gone" />
 </RelativeLayout>

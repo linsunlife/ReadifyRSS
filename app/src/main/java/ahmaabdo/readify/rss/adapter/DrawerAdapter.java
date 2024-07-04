@@ -107,7 +107,6 @@ public class DrawerAdapter extends BaseAdapter {
             holder.stateTxt = convertView.findViewById(android.R.id.text2);
             holder.entriesNumberTxt = convertView.findViewById(R.id.entries_number);
             holder.separator = convertView.findViewById(R.id.separator);
-            holder.separatorGroup = convertView.findViewById(R.id.separator_group);
             convertView.setTag(R.id.holder, holder);
         }
         ViewHolder holder = (ViewHolder) convertView.getTag(R.id.holder);
@@ -127,7 +126,6 @@ public class DrawerAdapter extends BaseAdapter {
             holder.entriesNumberTxt.setText("");
             convertView.setPadding(0, 0, 0, 0);
             holder.separator.setVisibility(View.GONE);
-            holder.separatorGroup.setVisibility(View.GONE);
 
             Integer entriesNumber = null;
             if (position == 0 || position == 1) {
@@ -150,7 +148,6 @@ public class DrawerAdapter extends BaseAdapter {
 
                 if (mFeedsCursor.getInt(POS_IS_GROUP) == 1) {
                     holder.titleTxt.setAllCaps(true);
-                    holder.separatorGroup.setVisibility(View.VISIBLE);
                     holder.iconView.setImageResource(isGroupExpanded(position) ? R.drawable.group_expanded : R.drawable.group_collapsed);
                     holder.iconView.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -163,7 +160,6 @@ public class DrawerAdapter extends BaseAdapter {
                     });
                     holder.titleTxt.setTextColor(GROUP_TEXT_COLOR);
                     holder.titleTxt.setAllCaps(false);
-                    holder.separatorGroup.setVisibility(View.VISIBLE);
                 } else {
                     holder.stateTxt.setVisibility(View.VISIBLE);
 
@@ -309,6 +305,6 @@ public class DrawerAdapter extends BaseAdapter {
         public TextView titleTxt;
         public TextView stateTxt;
         public TextView entriesNumberTxt;
-        public View separator, separatorGroup;
+        public View separator;
     }
 }
