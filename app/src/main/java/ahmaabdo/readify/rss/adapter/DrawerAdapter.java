@@ -20,6 +20,7 @@
 
 package ahmaabdo.readify.rss.adapter;
 
+import ahmaabdo.readify.rss.Constants;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,6 +38,7 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -57,8 +59,7 @@ public class DrawerAdapter extends BaseAdapter {
     private static final int POS_ICON = 4;
     private static final int POS_LAST_UPDATE = 5;
     private static final int POS_ERROR = 6;
-    private static final int POS_UNREAD = 7;
-    private static final int POS_IS_GROUP_EXPANDED = 8;
+    private static final int POS_IS_GROUP_EXPANDED = 7;
 
     private static final int GROUP_TEXT_COLOR = Color.parseColor("#BBBBBB");
 
@@ -75,19 +76,18 @@ public class DrawerAdapter extends BaseAdapter {
     private int mSelectedItem;
     private final Context mContext;
     private Cursor mFeedsCursor;
-    private int mAllUnreadNumber, mFavoritesNumber;
+    private int mAllNumber, mFavoritesNumber;
+    private HashMap<Long, Integer> entriesNumbers;
 
     public DrawerAdapter(Context context, Cursor feedCursor) {
         mContext = context;
         mFeedsCursor = feedCursor;
-
         updateNumbers();
     }
 
     public void setSelectedItem(int selectedItem) {
         mSelectedItem = selectedItem;
     }
-
 
     public void setCursor(Cursor feedCursor) {
         mFeedsCursor = feedCursor;
@@ -105,7 +105,7 @@ public class DrawerAdapter extends BaseAdapter {
             holder.iconView = convertView.findViewById(android.R.id.icon);
             holder.titleTxt = convertView.findViewById(android.R.id.text1);
             holder.stateTxt = convertView.findViewById(android.R.id.text2);
-            holder.unreadTxt = convertView.findViewById(R.id.unread_count);
+            holder.entriesNumberTxt = convertView.findViewById(R.id.entries_number);
             holder.separator = convertView.findViewById(R.id.separator);
             holder.separatorGroup = convertView.findViewById(R.id.separator_group);
             convertView.setTag(R.id.holder, holder);
@@ -124,12 +124,14 @@ public class DrawerAdapter extends BaseAdapter {
             holder.titleTxt.setText("");
             holder.titleTxt.setAllCaps(false);
             holder.stateTxt.setVisibility(View.GONE);
-            holder.unreadTxt.setText("");
+            holder.entriesNumberTxt.setText("");
             convertView.setPadding(0, 0, 0, 0);
             holder.separator.setVisibility(View.GONE);
             holder.separatorGroup.setVisibility(View.GONE);
 
+            Integer entriesNumber = null;
             if (position == 0 || position == 1) {
+                entriesNumber = position == 0 ? mAllNumber : mFavoritesNumber;
                 holder.titleTxt.setText(position == 0 ? R.string.all : R.string.favorites);
                 holder.iconView.setImageResource(position == 0 ? R.drawable.ic_statusbar_rss : R.drawable.ic_star);
                 if (position == mSelectedItem) {
@@ -138,14 +140,12 @@ public class DrawerAdapter extends BaseAdapter {
                     holder.iconView.setColorFilter(ContextCompat.getColor(mContext, PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_base_text : R.color.dark_base_text));
                 }
 
-                int unread = position == 0 ? mAllUnreadNumber : mFavoritesNumber;
-                if (unread != 0) {
-                    holder.unreadTxt.setText(String.valueOf(unread));
-                }
                 if (position == 1)
                     holder.separator.setVisibility(View.VISIBLE);
             }
             if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2)) {
+                final long id = mFeedsCursor.getLong(POS_ID);
+                entriesNumber = entriesNumbers.get(id);
                 holder.titleTxt.setText((mFeedsCursor.isNull(POS_NAME) ? mFeedsCursor.getString(POS_URL) : mFeedsCursor.getString(POS_NAME)));
 
                 if (mFeedsCursor.getInt(POS_IS_GROUP) == 1) {
@@ -190,21 +190,14 @@ public class DrawerAdapter extends BaseAdapter {
                         holder.stateTxt.setText(new StringBuilder(mContext.getString(R.string.error)).append(COLON).append(mFeedsCursor.getString(POS_ERROR)));
                     }
 
-                    final long feedId = mFeedsCursor.getLong(POS_ID);
-                    Bitmap bitmap = UiUtils.getFaviconBitmap(feedId, mFeedsCursor, POS_ICON);
-
+                    Bitmap bitmap = UiUtils.getFaviconBitmap(id, mFeedsCursor, POS_ICON);
                     if (bitmap != null) {
                         holder.iconView.setImageBitmap(bitmap);
                     } else {
                         ColorGenerator generator = ColorGenerator.DEFAULT;
-                        int color = generator.getColor(Long.valueOf(feedId));
+                        int color = generator.getColor(id);
                         TextDrawable textDrawable = TextDrawable.builder().buildRound(holder.titleTxt.getText().toString().substring(0, 1).toUpperCase(), color);
                         holder.iconView.setImageDrawable(textDrawable);
-                    }
-
-                    int unread = mFeedsCursor.getInt(POS_UNREAD);
-                    if (unread != 0) {
-                        holder.unreadTxt.setText(String.valueOf(unread));
                     }
                 }
                 if ((mFeedsCursor.isNull(POS_NAME) ? mFeedsCursor.getString(POS_URL) : mFeedsCursor.getString(POS_NAME)).startsWith("ERROR:")) {
@@ -212,6 +205,9 @@ public class DrawerAdapter extends BaseAdapter {
                     convertView = inflater.inflate(R.layout.item_drawer_null, parent, false);
                     return convertView;
                 }
+            }
+            if (entriesNumber != null && entriesNumber > 0) {
+                holder.entriesNumberTxt.setText(String.valueOf(entriesNumber));
             }
         }
         return convertView;
@@ -265,16 +261,46 @@ public class DrawerAdapter extends BaseAdapter {
     }
 
     private void updateNumbers() {
-        mAllUnreadNumber = mFavoritesNumber = 0;
+        mAllNumber = mFavoritesNumber = 0;
+        entriesNumbers = new HashMap<>();
+        boolean showRead = PrefUtils.getBoolean(PrefUtils.SHOW_READ, true);
 
         // Gets the numbers of entries (should be in a thread, but it's way easier like this and it shouldn't be so slow)
-        Cursor numbers = mContext.getContentResolver().query(EntryColumns.CONTENT_URI, new String[]{FeedData.ALL_UNREAD_NUMBER, FeedData.FAVORITES_NUMBER}, null, null, null);
-        if (numbers != null) {
-            if (numbers.moveToFirst()) {
-                mAllUnreadNumber = numbers.getInt(0);
-                mFavoritesNumber = numbers.getInt(1);
+        String allNumber = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME +
+                (showRead ? ")" : " WHERE " + EntryColumns.IS_READ + " IS NULL)");
+        Cursor cursor1 = mContext.getContentResolver().query(EntryColumns.CONTENT_URI, new String[]{allNumber, FeedData.FAVORITES_NUMBER}, null, null, null);
+        if (cursor1 != null) {
+            if (cursor1.moveToFirst()) {
+                mAllNumber = cursor1.getInt(0);
+                mFavoritesNumber = cursor1.getInt(1);
             }
-            numbers.close();
+            cursor1.close();
+        }
+
+        String entriesNumber = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME + " WHERE " +
+                EntryColumns.FEED_ID + '=' + FeedData.FeedColumns.TABLE_NAME + '.' + FeedData.FeedColumns._ID +
+                (showRead ? ")" : " AND " + EntryColumns.IS_READ + " IS NULL)");
+        Cursor cursor2 = mContext.getContentResolver().query(FeedData.FeedColumns.GROUPED_FEEDS_CONTENT_URI,
+                new String[]{FeedData.FeedColumns._ID, entriesNumber, FeedData.FeedColumns.IS_GROUP, FeedData.FeedColumns.GROUP_ID},
+                null, null, null);
+        if (cursor2 != null) {
+            while (cursor2.moveToNext()) {
+                long id = cursor2.getLong(0);
+                int number = cursor2.getInt(1);
+                int isGroup = cursor2.getInt(2);
+                long groupId = cursor2.getLong(3);
+                if (isGroup != 1) {
+                    entriesNumbers.put(id, number);
+                    if (groupId != 0) {
+                        Integer value = entriesNumbers.get(groupId);
+                        if (value == null) {
+                            value = 0;
+                        }
+                        entriesNumbers.put(groupId, value + number);
+                    }
+                }
+            }
+            cursor2.close();
         }
     }
 
@@ -282,7 +308,7 @@ public class DrawerAdapter extends BaseAdapter {
         public ImageView iconView;
         public TextView titleTxt;
         public TextView stateTxt;
-        public TextView unreadTxt;
+        public TextView entriesNumberTxt;
         public View separator, separatorGroup;
     }
 }

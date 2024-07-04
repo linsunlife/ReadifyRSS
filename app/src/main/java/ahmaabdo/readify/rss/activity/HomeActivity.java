@@ -60,15 +60,6 @@ import java.util.ArrayList;
 
 public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String FEED_UNREAD_NUMBER = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME + " WHERE " +
-            EntryColumns.IS_READ + " IS NULL AND " + EntryColumns.FEED_ID + '=' + FeedColumns.TABLE_NAME + '.' + FeedColumns._ID + ')';
-
-    private static final String WHERE_UNREAD_ONLY = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME + " WHERE " +
-            EntryColumns.IS_READ + " IS NULL AND " + EntryColumns.FEED_ID + "=" + FeedColumns.TABLE_NAME + '.' + FeedColumns._ID + ") > 0" +
-            " OR (" + FeedColumns.IS_GROUP + "=1 AND (SELECT " + Constants.DB_COUNT + " FROM " + FeedData.ENTRIES_TABLE_WITH_FEED_INFO +
-            " WHERE " + EntryColumns.IS_READ + " IS NULL AND " + FeedColumns.GROUP_ID + '=' + FeedColumns.TABLE_NAME + '.' + FeedColumns._ID +
-            ") > 0)";
-
     private static final int LOADER_ID = 0;
     private final SharedPreferences.OnSharedPreferenceChangeListener mShowReadListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
@@ -353,8 +344,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 FeedColumns.GROUPED_FEEDS_CONTENT_URI,
                 new String[]{FeedColumns._ID, FeedColumns.URL, FeedColumns.NAME,
                         FeedColumns.IS_GROUP, FeedColumns.ICON, FeedColumns.LAST_UPDATE,
-                        FeedColumns.ERROR, FEED_UNREAD_NUMBER,
-                        FeedColumns.IS_GROUP_EXPANDED},
+                        FeedColumns.ERROR, FeedColumns.IS_GROUP_EXPANDED},
                 FeedColumns.IS_GROUP + Constants.DB_IS_TRUE + Constants.DB_OR +
                         FeedColumns.GROUP_ID + Constants.DB_IS_NULL + Constants.DB_OR +
                         FeedColumns.GROUP_ID + " IN (SELECT " + FeedColumns._ID +

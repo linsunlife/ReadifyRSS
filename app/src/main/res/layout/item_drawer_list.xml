@@ -25,9 +25,9 @@
         android:layout_marginStart="14dp"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@android:id/icon"
-        android:layout_toLeftOf="@+id/unread_count"
+        android:layout_toLeftOf="@+id/entries_number"
         android:layout_toRightOf="@android:id/icon"
-        android:layout_toStartOf="@+id/unread_count"
+        android:layout_toStartOf="@+id/entries_number"
         android:gravity="center_vertical"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:orientation="vertical">
@@ -53,7 +53,7 @@
 
     <!-- unread counter -->
     <TextView
-        android:id="@+id/unread_count"
+        android:id="@+id/entries_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -80,9 +80,9 @@
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
         android:layout_toEndOf="@android:id/icon"
-        android:layout_toLeftOf="@+id/unread_count"
+        android:layout_toLeftOf="@+id/entries_number"
         android:layout_toRightOf="@android:id/icon"
-        android:layout_toStartOf="@+id/unread_count"
+        android:layout_toStartOf="@+id/entries_number"
         android:background="?android:attr/dividerVertical"
         android:visibility="gone" />
 </RelativeLayout>
