@@ -17,6 +17,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="fill"
         android:choiceMode="singleChoice"
-        android:groupIndicator="@android:color/transparent" />
+        android:groupIndicator="@android:color/transparent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp" />
 
 </FrameLayout>
