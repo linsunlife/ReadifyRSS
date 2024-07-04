@@ -39,7 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="fill"
-                android:footerDividersEnabled="false" />
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp" />
 
         </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
