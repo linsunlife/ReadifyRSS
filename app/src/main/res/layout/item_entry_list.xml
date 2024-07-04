@@ -34,7 +34,8 @@
             android:maxLines="4"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="?attr/colorReadState"
-            android:textIsSelectable="false" />
+            android:textIsSelectable="false"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@android:id/text2"
