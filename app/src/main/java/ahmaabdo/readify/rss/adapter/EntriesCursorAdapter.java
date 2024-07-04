@@ -133,13 +133,13 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         }
 
         holder.isFavorite = cursor.getInt(mFavoritePos) == 1;
-        UpdateStarImgView(holder);
-        holder.starImgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleFavoriteState(entryID, view);
-            }
-        });
+        if (holder.isFavorite) {
+            holder.starImgView.setImageResource(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, false) ? R.drawable.favorite_light : R.drawable.favorite_dark);
+            holder.starImgView.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.starImgView.setVisibility(View.GONE);
+        }
         holder.readImgView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,11 +168,6 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             holder.authorTextView.setEnabled(false);
             holder.isRead = true;
         }
-    }
-
-    private void UpdateStarImgView(ViewHolder holder) {
-        int starred = PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, false) ? R.drawable.favorite_light : R.drawable.favorite_dark;
-        holder.starImgView.setImageResource(holder.isFavorite ? starred : R.drawable.unstar_light);
     }
 
     public void toggleReadState(final long id, View view) {
