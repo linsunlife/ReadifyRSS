@@ -143,7 +143,7 @@ public class DragNDropExpandableListView extends ExpandableListView {
         item.setDrawingCacheEnabled(true);
         Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
         item.setDrawingCacheEnabled(false);
-        v.setBackgroundResource(R.color.Indigo_500);
+        v.setBackgroundResource(R.color.primary_1);
         v.setImageBitmap(bitmap);
 
         WindowManager mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

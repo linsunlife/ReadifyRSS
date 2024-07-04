@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import ahmaabdo.readify.rss.R;
-import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.view.SwipeRefreshLayout;
 
 public abstract class SwipeRefreshListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -59,16 +58,7 @@ public abstract class SwipeRefreshListFragment extends ListFragment implements S
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mRefreshLayout.setColorScheme(
-                PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ?
-                        R.color.Indigo_300 : R.color.dark_A300,
-                PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ?
-                        R.color.Indigo_700 : R.color.dark_A700,
-                PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ?
-                        R.color.Indigo_300 : R.color.dark_A300,
-                PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ?
-                        R.color.Indigo_700 : R.color.dark_A700);
+        mRefreshLayout.setColorScheme(R.color.primary_1, R.color.primary_1, R.color.primary_1, R.color.primary_1);
         mRefreshLayout.setOnRefreshListener(this);
     }
 

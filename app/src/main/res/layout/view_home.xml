@@ -27,7 +27,9 @@
                 android:layout_gravity="end|bottom"
                 android:layout_margin="@dimen/fap_margin"
                 android:src="@drawable/ic_check"
-                fab:fab_label="@string/menu_all_read" />
+                fab:fab_label="@string/menu_all_read"
+                fab:fab_colorNormal="@color/primary_1"
+                fab:fab_colorPressed="@color/primary_1" />
 
     </FrameLayout>
 

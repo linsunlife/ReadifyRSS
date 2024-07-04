@@ -9,6 +9,6 @@
         android:right="10dp"
         android:top="10dp"/>
 
-    <solid android:color="@color/dark_A700"/>
+    <solid android:color="@color/primary_1"/>
 
 </shape>
