@@ -72,11 +72,4 @@
 
     </LinearLayout>
 
-    <ImageView
-            android:id="@+id/read_icon"
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:layout_toLeftOf="@+id/txt_layout"
-            android:layout_toStartOf="@+id/txt_layout" />
-
 </RelativeLayout>

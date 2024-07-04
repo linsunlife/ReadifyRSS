@@ -97,7 +97,6 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             holder.authorTextView = view.findViewById(R.id.author);
             holder.mainImgView = view.findViewById(R.id.main_icon);
             holder.starImgView = view.findViewById(R.id.favorite_icon);
-            holder.readImgView = view.findViewById(R.id.read_icon);
             view.setTag(R.id.holder, holder);
         }
 
@@ -140,12 +139,6 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         else {
             holder.starImgView.setVisibility(View.GONE);
         }
-        holder.readImgView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleReadState(entryID, view);
-            }
-        });
 
         if (mShowFeedInfo && mFeedNamePos > -1) {
             if (feedName != null) {
@@ -256,7 +249,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     private static class ViewHolder {
         public TextView authorTextView, dateTextView, titleTextView;
-        public ImageView mainImgView, starImgView, readImgView;
+        public ImageView mainImgView, starImgView;
         public boolean isRead, isFavorite;
         public long entryID = -1;
     }
