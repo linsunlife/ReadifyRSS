@@ -60,13 +60,15 @@ public class FeedsCursorAdapter extends CursorLoaderExpandableListAdapter {
         final long feedId = cursor.getLong(mIdPos);
         Bitmap bitmap = UiUtils.getFaviconBitmap(feedId, cursor, mIconPos);
 
+        String space = "";
         if (bitmap != null) {
             textView.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(context.getResources(), bitmap), null, null, null);
+            space = " ";
         } else {
             textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         }
 
-        textView.setText((cursor.isNull(mNamePos) ? cursor.getString(mLinkPos) : cursor.getString(mNamePos)));
+        textView.setText(space + ((cursor.isNull(mNamePos) ? cursor.getString(mLinkPos) : cursor.getString(mNamePos))));
     }
 
     @Override
