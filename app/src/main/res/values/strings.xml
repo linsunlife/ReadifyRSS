@@ -51,6 +51,8 @@
     <string name="manage_feed_title">Manage feeds</string>
     <string name="new_feed_title">New feed</string>
     <string name="context_menu_edit">Edit</string>
+    <string name="popup_menu_read_above">Mark above as read</string>
+    <string name="popup_menu_read_below">Mark below as read</string>
     <string name="menu_add_group">Add group</string>
     <string name="menu_backup_path">Backup Path</string>
     <string name="menu_import">Import from OPML</string>

@@ -46,6 +46,8 @@
     <string name="manage_feed_title">管理订阅</string>
     <string name="new_feed_title">新的订阅</string>
     <string name="context_menu_edit">编辑</string>
+    <string name="popup_menu_read_above">以上标记为已读</string>
+    <string name="popup_menu_read_below">以下标记为已读</string>
     <string name="menu_add_group">添加分组</string>
     <string name="menu_backup_path">备份路径</string>
     <string name="menu_import">导入OPML</string>

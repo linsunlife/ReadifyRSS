@@ -51,10 +51,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
@@ -69,6 +73,9 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.utils.NetworkUtils;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
@@ -152,6 +159,54 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             holder.authorTextView.setEnabled(false);
             holder.isRead = true;
         }
+    }
+
+    @Override
+    public View getView(final int position, final View convertView, final ViewGroup parent) {
+        View view = super.getView(position, convertView, parent);
+        view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(final View view) {
+                PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+                popupMenu.getMenuInflater().inflate(R.menu.entry_list_popup_menu, popupMenu.getMenu());
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        List<Long> ids = new ArrayList<>();
+                        switch (item.getItemId()) {
+                            case R.id.read_above:
+                                for (int i = 0; i < position; i++) {
+                                    ids.add(EntriesCursorAdapter.this.getItemId(i));
+                                }
+                                readEntries(ids);
+                                return true;
+                            case R.id.read_below:
+                                for (int i = position + 1; i < EntriesCursorAdapter.this.getCount(); i++) {
+                                    ids.add(EntriesCursorAdapter.this.getItemId(i));
+                                }
+                                readEntries(ids);
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+                popupMenu.show();
+                return true;
+            }
+        });
+        return view;
+    }
+
+    private void readEntries(final List<Long> ids) {
+        new Thread() {
+            @Override
+            public void run() {
+                ContentResolver cr = MainApplication.getContext().getContentResolver();
+                String where = BaseColumns._ID + " IN (" + TextUtils.join(",", ids) + ')';
+                cr.update(mUri, FeedData.getReadContentValues(), where, null);
+            }
+        }.start();
     }
 
     public void toggleReadState(final long id, View view) {

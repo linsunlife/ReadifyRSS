@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+            android:id="@+id/read_above"
+            android:title="@string/popup_menu_read_above" />
+    <item
+            android:id="@+id/read_below"
+            android:title="@string/popup_menu_read_below" />
+</menu>
