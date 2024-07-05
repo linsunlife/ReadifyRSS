@@ -58,8 +58,6 @@ import android.widget.ImageView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.squareup.picasso.Picasso;
 
 import ahmaabdo.readify.rss.Constants;
@@ -68,7 +66,6 @@ import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.provider.FeedData;
 import ahmaabdo.readify.rss.provider.FeedData.EntryColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
-import ahmaabdo.readify.rss.utils.CircleTransform;
 import ahmaabdo.readify.rss.utils.NetworkUtils;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.StringUtils;
@@ -77,8 +74,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     private final Uri mUri;
     private final boolean mShowFeedInfo;
-    private final CircleTransform mCircleTransform = new CircleTransform();
-    private int mIdPos, mTitlePos, mMainImgPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedIdPos, mFeedIconPos, mFeedNamePos;
+    private int mIdPos, mTitlePos, mMainImgPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos;
 
     public EntriesCursorAdapter(Context context, Uri uri, Cursor cursor, boolean showFeedInfo) {
         super(context, R.layout.item_entry_list, cursor, 0);
@@ -113,22 +109,16 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             holder.authorTextView.setVisibility(View.VISIBLE);
         }
 
-        final long entryID = cursor.getLong(mIdPos);
-        final long feedId = cursor.getLong(mFeedIdPos);
-        String feedName = cursor.getString(mFeedNamePos);
-
-        holder.entryID = entryID;
+        long entryID = cursor.getLong(mIdPos);
         String mainImgUrl = cursor.getString(mMainImgPos);
         mainImgUrl = TextUtils.isEmpty(mainImgUrl) ? null : NetworkUtils.getDownloadedOrDistantImageUrl(entryID, mainImgUrl);
 
-        ColorGenerator generator = ColorGenerator.DEFAULT;
-        int color = generator.getColor(Long.valueOf(feedId)); // The color is specific to the feedId (which shouldn't change)
-        TextDrawable letterDrawable = TextDrawable.builder().buildRound((feedName != null ? feedName.substring(0, 1).toUpperCase() : ""), color);
         if (mainImgUrl != null && PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
-            Picasso.with(context).load(mainImgUrl).transform(mCircleTransform).placeholder(letterDrawable).error(letterDrawable).into(holder.mainImgView);
+            holder.mainImgView.setVisibility(View.VISIBLE);
+            Picasso.with(context).load(mainImgUrl).into(holder.mainImgView);
         } else {
+            holder.mainImgView.setVisibility(View.GONE);
             Picasso.with(context).cancelRequest(holder.mainImgView);
-            holder.mainImgView.setImageDrawable(letterDrawable);
         }
 
         holder.isFavorite = cursor.getInt(mFavoritePos) == 1;
@@ -141,6 +131,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         }
 
         if (mShowFeedInfo && mFeedNamePos > -1) {
+            String feedName = cursor.getString(mFeedNamePos);
             if (feedName != null) {
                 holder.dateTextView.setText(Html.fromHtml(new StringBuilder("<font color='#247ab0'>").append(feedName).append("</font>").append(Constants.COMMA_SPACE).append(StringUtils.getDateTimeString(cursor.getLong(mDatePos))).toString()));
             } else {
@@ -242,8 +233,6 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             mIsReadPos = cursor.getColumnIndex(EntryColumns.IS_READ);
             mFavoritePos = cursor.getColumnIndex(EntryColumns.IS_FAVORITE);
             mFeedNamePos = cursor.getColumnIndex(FeedColumns.NAME);
-            mFeedIdPos = cursor.getColumnIndex(EntryColumns.FEED_ID);
-            mFeedIconPos = cursor.getColumnIndex(FeedColumns.ICON);
         }
     }
 
@@ -251,6 +240,5 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         public TextView authorTextView, dateTextView, titleTextView;
         public ImageView mainImgView, starImgView;
         public boolean isRead, isFavorite;
-        public long entryID = -1;
     }
 }
