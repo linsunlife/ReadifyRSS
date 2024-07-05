@@ -45,10 +45,8 @@
 
 package ahmaabdo.readify.rss.adapter;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Context;
+import ahmaabdo.readify.rss.activity.EntryActivity;
+import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -82,11 +80,13 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
     private final Uri mUri;
     private final boolean mShowFeedInfo;
     private int mIdPos, mTitlePos, mMainImgPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos;
+    private long mEntriesListDisplayDate;
 
-    public EntriesCursorAdapter(Context context, Uri uri, Cursor cursor, boolean showFeedInfo) {
+    public EntriesCursorAdapter(Context context, Uri uri, Cursor cursor, boolean showFeedInfo, long entriesListDisplayDate) {
         super(context, R.layout.item_entry_list, cursor, 0);
         mUri = uri;
         mShowFeedInfo = showFeedInfo;
+        mEntriesListDisplayDate = entriesListDisplayDate;
 
         reinit(cursor);
     }
@@ -164,10 +164,22 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
+        final long id = EntriesCursorAdapter.this.getItemId(position);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (id >= 0) { // should not happen, but I had a crash with this on PlayStore...
+                    Intent intent = new Intent(MainApplication.getContext(), EntryActivity.class);
+                    intent.setData(ContentUris.withAppendedId(mUri, id));
+                    intent.putExtra(Constants.EntriesListDisplayDate, mEntriesListDisplayDate);
+                    MainApplication.getContext().startActivity(intent);
+                }
+            }
+        });
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(final View view) {
-                PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+            public boolean onLongClick(final View v) {
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.entry_list_popup_menu, popupMenu.getMenu());
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override

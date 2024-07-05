@@ -20,9 +20,7 @@
 
 package ahmaabdo.readify.rss.fragment;
 
-import ahmaabdo.readify.rss.activity.EntryActivity;
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -164,7 +162,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
             mShowFeedInfo = savedInstanceState.getBoolean(STATE_SHOW_FEED_INFO);
             mListDisplayDate = savedInstanceState.getLong(STATE_LIST_DISPLAY_DATE);
 
-            mEntriesCursorAdapter = new EntriesCursorAdapter(getActivity(), mUri, Constants.EMPTY_CURSOR, mShowFeedInfo);
+            mEntriesCursorAdapter = new EntriesCursorAdapter(getActivity(), mUri, Constants.EMPTY_CURSOR, mShowFeedInfo, mListDisplayDate);
         }
     }
 
@@ -279,17 +277,6 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
     @Override
     public void onRefresh() {
         startRefresh();
-    }
-
-
-    @Override
-    public void onListItemClick(ListView listView, View view, int position, long id) {
-        if (id >= 0) { // should not happen, but I had a crash with this on PlayStore...
-            Intent intent = new Intent(getActivity(), EntryActivity.class);
-            intent.setData(ContentUris.withAppendedId(mUri, id));
-            intent.putExtra(Constants.EntriesListDisplayDate, mListDisplayDate);
-            startActivity(intent);
-        }
     }
 
     @Override
@@ -408,10 +395,10 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
             mShowFeedInfo = showFeedInfo;
         }
 
-        mEntriesCursorAdapter = new EntriesCursorAdapter(getActivity(), mUri, Constants.EMPTY_CURSOR, showFeedInfo);
+        mListDisplayDate = new Date().getTime();
+        mEntriesCursorAdapter = new EntriesCursorAdapter(getActivity(), mUri, Constants.EMPTY_CURSOR, showFeedInfo, mListDisplayDate);
         setListAdapter(mEntriesCursorAdapter);
 
-        mListDisplayDate = new Date().getTime();
         if (mUri != null) {
             restartLoaders();
         }
