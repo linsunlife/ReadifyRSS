@@ -53,6 +53,8 @@
     <string name="context_menu_edit">Edit</string>
     <string name="popup_menu_read_above">Mark above as read</string>
     <string name="popup_menu_read_below">Mark below as read</string>
+    <string name="popup_menu_toggle_read_state">Toggle read state</string>
+    <string name="popup_menu_toggle_favorite_state">Toggle favorite state</string>
     <string name="menu_add_group">Add group</string>
     <string name="menu_backup_path">Backup Path</string>
     <string name="menu_import">Import from OPML</string>

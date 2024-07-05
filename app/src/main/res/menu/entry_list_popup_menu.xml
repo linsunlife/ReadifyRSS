@@ -6,4 +6,10 @@
     <item
             android:id="@+id/read_below"
             android:title="@string/popup_menu_read_below" />
+    <item
+            android:id="@+id/toggle_read_state"
+            android:title="@string/popup_menu_toggle_read_state" />
+    <item
+            android:id="@+id/toggle_favorite_state"
+            android:title="@string/popup_menu_toggle_favorite_state" />
 </menu>

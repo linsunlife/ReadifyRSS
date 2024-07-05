@@ -198,6 +198,12 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                                 }
                                 readEntries(ids);
                                 return true;
+                            case R.id.toggle_read_state:
+                                toggleReadState(id, v);
+                                return true;
+                            case R.id.toggle_favorite_state:
+                                toggleFavoriteState(id, v);
+                                return true;
                             default:
                                 return false;
                         }
