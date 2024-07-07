@@ -52,6 +52,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -181,6 +182,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             public boolean onLongClick(final View v) {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
                 popupMenu.getMenuInflater().inflate(R.menu.entry_list_popup_menu, popupMenu.getMenu());
+                popupMenu.setGravity(Gravity.END);
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
