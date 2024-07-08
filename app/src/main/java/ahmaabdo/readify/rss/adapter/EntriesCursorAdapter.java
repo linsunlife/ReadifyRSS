@@ -49,17 +49,13 @@ import ahmaabdo.readify.rss.activity.EntryActivity;
 import android.content.*;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.BaseColumns;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
-import android.widget.ResourceCursorAdapter;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 
 import com.squareup.picasso.Picasso;
 
@@ -164,8 +160,10 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
-        View view = super.getView(position, convertView, parent);
+        final View view = super.getView(position, convertView, parent);
         final long id = EntriesCursorAdapter.this.getItemId(position);
+
+        // 单击
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +175,8 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                 }
             }
         });
+
+        // 长按
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
@@ -213,6 +213,84 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                 });
                 popupMenu.show();
                 return true;
+            }
+        });
+
+        // 左右滑动
+        view.setOnTouchListener(new View.OnTouchListener() {
+            private float startX = 0;
+            private float startY = 0;
+            private final float touchSlop = ViewConfiguration.get(view.getContext()).getScaledTouchSlop();
+            private boolean isPressed = false;
+            private final Handler handler = new Handler(Looper.getMainLooper());
+            private final Runnable longPressRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    if (isPressed) {
+                        view.performLongClick();
+                        // 长按事件触发后，将 isPressed 设置为 false，避免后续触发点击事件
+                        isPressed = false;
+                    }
+                }
+            };
+
+            @Override
+            public boolean onTouch(final View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = event.getRawX();
+                        startY = event.getRawY();
+                        // 标志位，表示已经按下
+                        isPressed = true;
+                        // 发送延时消息，长按时间到达后执行 longPressRunnable
+                        handler.postDelayed(longPressRunnable, ViewConfiguration.getLongPressTimeout());
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        float distanceX = Math.abs(event.getRawX() - startX);
+                        float distanceY = Math.abs(event.getRawY() - startY);
+                        // 判断是否有移动
+                        if (distanceX > 0 || distanceY > 0) {
+                            // 移除延时消息，取消长按事件
+                            isPressed = false;
+                            handler.removeCallbacks(longPressRunnable);
+                        }
+                        // 在水平方向上的滑动距离大于竖直方向的，则认为是有效的滑动
+                        if (distanceX > distanceY && distanceX > touchSlop) {
+                            // 请求父视图不要拦截事件
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                            // 实现滑动效果
+                            v.setTranslationX(event.getRawX() - startX);
+                        }
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        // 手指抬起时，移除延时消息，避免误触发长按事件
+                        handler.removeCallbacks(longPressRunnable);
+                        // 允许父视图拦截事件，以便父视图可以处理后续的点击事件
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        float translationX = v.getTranslationX();
+                        // 动画恢复原位
+                        if (translationX != 0)
+                            v.animate().translationX(0).setDuration(200).start();
+                        // 根据滑动距离判断左滑还是右滑，并执行相应操作
+                        if (translationX > touchSlop) {
+                            // 右滑操作
+                            toggleFavoriteState(id, v);
+                        } else if (translationX < -touchSlop) {
+                            // 左滑操作
+                            toggleReadState(id, v);
+                        } else if (isPressed) {
+                            v.performClick();
+                            isPressed = false;
+                        }
+                        return true;
+                    default:
+                        isPressed = false;
+                        handler.removeCallbacks(longPressRunnable);
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        if (v.getTranslationX() != 0)
+                            v.animate().translationX(0).setDuration(200).start();
+                        return false;
+                }
             }
         });
         return view;

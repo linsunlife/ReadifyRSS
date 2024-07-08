@@ -21,7 +21,6 @@
 package ahmaabdo.readify.rss.fragment;
 
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -33,16 +32,12 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -212,7 +207,6 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
                 });
 
         mListView = (ListView) rootView.findViewById(android.R.id.list);
-        mListView.setOnTouchListener(new SwipeGestureListener(mListView.getContext()));
 
         if (PrefUtils.getBoolean(PrefUtils.DISPLAY_TIP, true)) {
             final TextView header = new TextView(mListView.getContext());
@@ -431,55 +425,5 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
             mySwipeRefreshLayout.setRefreshing(false);
         }
     }
-
-
-    private class SwipeGestureListener extends SimpleOnGestureListener implements OnTouchListener {
-        static final int SWIPE_MIN_DISTANCE = 120;
-        static final int SWIPE_MAX_OFF_PATH = 150;
-        static final int SWIPE_THRESHOLD_VELOCITY = 150;
-
-        private final GestureDetector mGestureDetector;
-
-        public SwipeGestureListener(Context context) {
-            mGestureDetector = new GestureDetector(context, this);
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (mListView != null && e1 != null && e2 != null && Math.abs(e1.getY() - e2.getY()) <= SWIPE_MAX_OFF_PATH && Math.abs(velocityX) >= SWIPE_THRESHOLD_VELOCITY) {
-                long id = mListView.pointToRowId(Math.round(e2.getX()), Math.round(e2.getY()));
-                int position = mListView.pointToPosition(Math.round(e2.getX()), Math.round(e2.getY()));
-                View view = mListView.getChildAt(position - mListView.getFirstVisiblePosition());
-
-                if (view != null) {
-                    // Just click on views, the adapter will do the real stuff
-                    if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE) {
-                        mEntriesCursorAdapter.toggleReadState(id, view);
-                    } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE) {
-                        mEntriesCursorAdapter.toggleFavoriteState(id, view);
-                    }
-
-                    // Just simulate a CANCEL event to remove the item highlighting
-                    mListView.post(new Runnable() { // In a post to avoid a crash on 4.0.x
-                        @Override
-                        public void run() {
-                            MotionEvent motionEvent = MotionEvent.obtain(0, 0, MotionEvent.ACTION_CANCEL, 0, 0, 0);
-                            mListView.dispatchTouchEvent(motionEvent);
-                            motionEvent.recycle();
-                        }
-                    });
-                    return true;
-                }
-            }
-
-            return super.onFling(e1, e2, velocityX, velocityY);
-        }
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            return mGestureDetector.onTouchEvent(event);
-        }
-    }
-
 
 }
