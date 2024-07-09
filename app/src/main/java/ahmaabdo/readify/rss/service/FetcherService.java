@@ -213,16 +213,11 @@ public class FetcherService extends IntentService {
 
             String feedId = intent.getStringExtra(Constants.FEED_ID);
             String groupId = intent.getStringExtra(Constants.GROUP_ID);
-            int newCount = (feedId == null ? refreshFeeds(groupId) : refreshFeed(feedId));
-
-            if (newCount > 0) {
-
-                Cursor cursor = getContentResolver().query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT}, EntryColumns.WHERE_UNREAD, null, null);
-
-                cursor.moveToFirst();
-                cursor.close();
-
-
+            if (feedId != null) {
+                refreshFeed(feedId);
+            }
+            else {
+                refreshFeeds(groupId);
             }
 
             mobilizeAllEntries();
