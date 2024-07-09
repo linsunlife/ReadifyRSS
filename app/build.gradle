@@ -58,11 +58,13 @@ dependencies {
 
     implementation "com.github.daniel-stoneuk:material-about-library:2.2.4"
     implementation 'org.jsoup:jsoup:1.10.3'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     implementation 'com.github.clans:fab:1.6.4'
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
     implementation 'com.r0adkll:slidableactivity:2.0.6'
     implementation 'com.ryanjeffreybrooks:indefinitepagerindicator:1.0.3'
+
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
+    implementation 'jp.wasabeef:glide-transformations:2.0.2'
 }

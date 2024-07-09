@@ -59,7 +59,8 @@ import android.view.*;
 import android.widget.*;
 
 import com.amulyakhare.textdrawable.TextDrawable;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
 import ahmaabdo.readify.rss.Constants;
 import ahmaabdo.readify.rss.MainApplication;
@@ -70,6 +71,7 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.utils.NetworkUtils;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.StringUtils;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,11 +123,16 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
         if (mainImgUrl != null && PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
             holder.mainImgView.setVisibility(View.VISIBLE);
-            TextDrawable textDrawable = TextDrawable.builder().buildRect("!", Color.GRAY);
-            Picasso.with(context).load(mainImgUrl).error(textDrawable).into(holder.mainImgView);
+            int radius = 30; // 圆角半径，单位为像素
+            int margin = 0; // 可选参数，设置圆角与 ImageView 边缘的距离
+            TextDrawable textDrawable = TextDrawable.builder().buildRoundRect("!", Color.GRAY, radius);
+            Glide.with(context)
+                    .load(mainImgUrl)
+                    .bitmapTransform(new CenterCrop(context), new RoundedCornersTransformation(context, radius, margin))
+                    .error(textDrawable)
+                    .into(holder.mainImgView);
         } else {
             holder.mainImgView.setVisibility(View.GONE);
-            Picasso.with(context).cancelRequest(holder.mainImgView);
         }
 
         holder.isFavorite = cursor.getInt(mFavoritePos) == 1;
