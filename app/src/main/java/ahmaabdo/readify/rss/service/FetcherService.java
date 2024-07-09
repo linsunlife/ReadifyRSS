@@ -399,7 +399,7 @@ public class FetcherService extends IntentService {
                 Cursor cursor2 = MainApplication.getContext().getContentResolver().query(EntryColumns.CONTENT_URI, EntryColumns.PROJECTION_ID, where, null, null);
                 while (cursor2.moveToNext()) {
                     int entryId = cursor2.getInt(0);
-                    NetworkUtils.deleteEntryImagesCache(entryId, keepDateBorderTimeLocal);
+                    NetworkUtils.deleteEntryImagesCache(entryId);
                 }
                 cursor2.close();
                 MainApplication.getContext().getContentResolver().delete(EntryColumns.CONTENT_URI, where, null);

@@ -126,7 +126,7 @@ public class NetworkUtils {
         }
     }
 
-    public static synchronized void deleteEntryImagesCache(final int entryId, long keepDateBorderTime) {
+    public static synchronized void deleteEntryImagesCache(final int entryId) {
         if (IMAGE_FOLDER_FILE.exists()) {
             File[] files = IMAGE_FOLDER_FILE.listFiles(new FilenameFilter() {
                 @Override
@@ -136,9 +136,7 @@ public class NetworkUtils {
             });
             if (files != null) {
                 for (File file : files) {
-                    if (file.lastModified() < keepDateBorderTime) {
-                        file.delete();
-                    }
+                    file.delete();
                 }
             }
         }
