@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,16 +19,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.github.clans.fab.FloatingActionButton
+        <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab_read_all"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
                 android:layout_margin="@dimen/fap_margin"
-                android:src="@drawable/ic_check"
-                fab:fab_label="@string/menu_all_read"
-                fab:fab_colorNormal="@color/primary_1"
-                fab:fab_colorPressed="@color/primary_1" />
+                android:src="@drawable/ic_check" />
 
     </FrameLayout>
 
