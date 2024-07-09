@@ -213,7 +213,7 @@ public class FetcherService extends IntentService {
 
             String feedId = intent.getStringExtra(Constants.FEED_ID);
             String groupId = intent.getStringExtra(Constants.GROUP_ID);
-            int newCount = (feedId == null ? refreshFeeds(groupId, keepDateBorderTime) : refreshFeed(feedId, keepDateBorderTime));
+            int newCount = (feedId == null ? refreshFeeds(groupId) : refreshFeed(feedId));
 
             if (newCount > 0) {
 
@@ -413,7 +413,7 @@ public class FetcherService extends IntentService {
         cursor.close();
     }
 
-    private int refreshFeeds(String groupId, final long keepDateBorderTime) {
+    private int refreshFeeds(String groupId) {
         ContentResolver cr = getContentResolver();
         String where = groupId == null ? null : FeedColumns.GROUP_ID + "=" + groupId;
         final Cursor cursor = cr.query(FeedColumns.CONTENT_URI, FeedColumns.PROJECTION_ID, where, null, null);
@@ -436,7 +436,7 @@ public class FetcherService extends IntentService {
                 public Integer call() {
                     int result = 0;
                     try {
-                        result = refreshFeed(feedId, keepDateBorderTime);
+                        result = refreshFeed(feedId);
                     } catch (Exception ignored) {
                     }
                     return result;
@@ -459,7 +459,7 @@ public class FetcherService extends IntentService {
         return globalResult;
     }
 
-    private int refreshFeed(String feedId, long keepDateBorderTime) {
+    private int refreshFeed(String feedId) {
         RssAtomParser handler = null;
 
         ContentResolver cr = getContentResolver();
