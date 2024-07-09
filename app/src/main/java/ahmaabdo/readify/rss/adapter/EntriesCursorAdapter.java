@@ -48,6 +48,7 @@ package ahmaabdo.readify.rss.adapter;
 import ahmaabdo.readify.rss.activity.EntryActivity;
 import android.content.*;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -57,6 +58,7 @@ import android.text.TextUtils;
 import android.view.*;
 import android.widget.*;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.squareup.picasso.Picasso;
 
 import ahmaabdo.readify.rss.Constants;
@@ -119,7 +121,8 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
         if (mainImgUrl != null && PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
             holder.mainImgView.setVisibility(View.VISIBLE);
-            Picasso.with(context).load(mainImgUrl).into(holder.mainImgView);
+            TextDrawable textDrawable = TextDrawable.builder().buildRect("!", Color.GRAY);
+            Picasso.with(context).load(mainImgUrl).error(textDrawable).into(holder.mainImgView);
         } else {
             holder.mainImgView.setVisibility(View.GONE);
             Picasso.with(context).cancelRequest(holder.mainImgView);
