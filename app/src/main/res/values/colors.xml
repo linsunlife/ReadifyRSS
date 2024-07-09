@@ -16,6 +16,7 @@
     <color name="dark_primary_color">@color/dark_background</color>
     <color name="dark_primary_color_light">#283032</color>
     <color name="dark_accent_color">@color/primary_2</color>
+    <color name="dark_entries_list_background">@color/dark_primary_color_light</color>
 
     <color name="light_background">@android:color/white</color>
     <color name="light_base_text">#DE000000</color>
@@ -26,4 +27,5 @@
     <color name="light_primary_color">@color/primary_1</color>
     <color name="light_primary_color_light">@color/primary_3</color>
     <color name="light_accent_color">@color/primary_1</color>
+    <color name="light_entries_list_background">#DDDDDD</color>
 </resources>

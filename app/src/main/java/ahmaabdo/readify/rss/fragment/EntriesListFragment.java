@@ -29,6 +29,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
@@ -192,6 +193,8 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
     @Override
     public View inflateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_entry_list, container, true);
+        int background = PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_entries_list_background : R.color.dark_entries_list_background;
+        rootView.setBackgroundColor(ContextCompat.getColor(getContext(), background));
 
         if (mEntriesCursorAdapter != null) {
             setListAdapter(mEntriesCursorAdapter);

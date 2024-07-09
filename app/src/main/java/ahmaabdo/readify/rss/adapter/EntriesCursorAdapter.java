@@ -123,7 +123,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
         if (mainImgUrl != null && PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
             holder.mainImgView.setVisibility(View.VISIBLE);
-            int radius = 30; // 圆角半径，单位为像素
+            int radius = 16; // 圆角半径，单位为像素
             int margin = 0; // 可选参数，设置圆角与 ImageView 边缘的距离
             TextDrawable textDrawable = TextDrawable.builder().buildRoundRect("!", Color.GRAY, radius);
             Glide.with(context)
