@@ -92,11 +92,13 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
 
         mTitle = getTitle();
 
+        boolean useLightTheme = PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        if (!useLightTheme)
+            toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Dark);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        boolean useLightTheme = PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true);
         FloatingActionButton readAllFloatingActionButton = findViewById(R.id.fab_read_all);
         readAllFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

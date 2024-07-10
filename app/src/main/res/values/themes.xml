@@ -12,9 +12,7 @@
         <item name="colorReadState">@color/light_read_state</item>
         <item name="android:colorBackground">@color/light_background</item>
         <item name="android:windowBackground">@color/light_background</item>
-        <item name="android:activatedBackgroundIndicator">
-            @drawable/list_activated_background_light
-        </item>
+        <item name="android:activatedBackgroundIndicator">@drawable/list_activated_background_light</item>
     </style>
 
     <style name="Theme.Dark" parent="Theme.AppCompat">
@@ -28,8 +26,7 @@
         <item name="colorReadState">@color/dark_read_state</item>
         <item name="android:colorBackground">@color/dark_background</item>
         <item name="android:windowBackground">@color/dark_background</item>
-        <item name="android:activatedBackgroundIndicator">@drawable/list_activated_background_dark
-        </item>
+        <item name="android:activatedBackgroundIndicator">@drawable/list_activated_background_dark</item>
     </style>
 
     <style name="AppTheme.MaterialAboutActivity" parent="Theme.Mal.Light.DarkActionBar">

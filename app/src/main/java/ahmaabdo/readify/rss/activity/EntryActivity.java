@@ -71,6 +71,8 @@ public class EntryActivity extends BaseActivity {
         }
 
         Toolbar toolbar = findViewById(R.id.entry_toolbar);
+        if (!PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true))
+            toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Dark);
         setSupportActionBar(toolbar);
         //SupportActionBar may produce a null pointer
         if (getSupportActionBar() != null) {

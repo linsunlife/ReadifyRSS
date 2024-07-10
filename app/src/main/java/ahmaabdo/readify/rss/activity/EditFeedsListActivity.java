@@ -20,6 +20,7 @@
 
 package ahmaabdo.readify.rss.activity;
 
+import ahmaabdo.readify.rss.utils.PrefUtils;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -37,6 +38,8 @@ public class EditFeedsListActivity extends BaseActivity {
         setContentView(R.layout.activity_edit_feeds);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        if (!PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true))
+            toolbar.setPopupTheme(R.style.ThemeOverlay_AppCompat_Dark);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);

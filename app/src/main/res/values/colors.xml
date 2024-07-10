@@ -12,7 +12,7 @@
     <color name="dark_secondary_text">#8AFFFFFF</color>
     <color name="dark_disabled">#61FFFFFF</color>
     <color name="dark_dividers">#1FFFFFFF</color>
-    <color name="dark_primary_color_dark">#0C1011</color>
+    <color name="dark_primary_color_dark">@color/dark_background</color>
     <color name="dark_primary_color">@color/dark_background</color>
     <color name="dark_primary_color_light">#283032</color>
     <color name="dark_accent_color">@color/primary_2</color>
