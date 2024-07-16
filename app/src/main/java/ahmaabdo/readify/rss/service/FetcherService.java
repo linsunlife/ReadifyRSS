@@ -389,23 +389,34 @@ public class FetcherService extends IntentService {
     }
 
     private void deleteOldEntries(long keepDateBorderTime) {
-        Cursor cursor = MainApplication.getContext().getContentResolver().query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.KEEP_TIME}, null, null, null);
+        ContentResolver contentResolver = MainApplication.getContext().getContentResolver();
+        Cursor cursor = contentResolver.query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.KEEP_TIME}, null, null, null);
         while (cursor.moveToNext()) {
             long feedid = cursor.getLong(0);
             long keepTimeLocal = cursor.getLong(1) * 86400000l;
             long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
             if (keepDateBorderTimeLocal > 0) {
                 String where = EntryColumns.DATE + '<' + keepDateBorderTimeLocal + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + "=" + String.valueOf(feedid);
-                Cursor cursor2 = MainApplication.getContext().getContentResolver().query(EntryColumns.CONTENT_URI, EntryColumns.PROJECTION_ID, where, null, null);
-                while (cursor2.moveToNext()) {
-                    int entryId = cursor2.getInt(0);
-                    NetworkUtils.deleteEntryImagesCache(entryId);
-                }
-                cursor2.close();
-                MainApplication.getContext().getContentResolver().delete(EntryColumns.CONTENT_URI, where, null);
+                deleteEntryImagesCache(where);
+                contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
             }
         }
         cursor.close();
+
+        String where = EntryColumns.DATE + '<' + keepDateBorderTime + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + Constants.DB_IS_NULL;
+        deleteEntryImagesCache(where);
+        contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
+    }
+
+    private void deleteEntryImagesCache(String where) {
+        Cursor cursor = MainApplication.getContext().getContentResolver().query(EntryColumns.CONTENT_URI, EntryColumns.PROJECTION_ID, where, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                int entryId = cursor.getInt(0);
+                NetworkUtils.deleteEntryImagesCache(entryId);
+            }
+            cursor.close();
+        }
     }
 
     private int refreshFeeds(String groupId) {
