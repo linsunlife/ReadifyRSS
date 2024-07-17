@@ -287,7 +287,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
             String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
             mKeepTime.setSelection(selectedValues.length - 1);
-            mRetrieveFulltextCb.setChecked(true);
+            mRetrieveFulltextCb.setChecked(false);
         } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
             setTitle(R.string.new_feed_title);
 
@@ -295,7 +295,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
             mUrlEditText.setText(intent.getDataString());
             String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
             mKeepTime.setSelection(selectedValues.length - 1);
-            mRetrieveFulltextCb.setChecked(true);
+            mRetrieveFulltextCb.setChecked(false);
         } else if (intent.getAction().equals(Intent.ACTION_EDIT)) {
             setTitle(R.string.manage_feed_title);
 
