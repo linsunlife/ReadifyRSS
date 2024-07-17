@@ -407,12 +407,18 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (mTabHost.getCurrentTab() != 1) {
+        if (mTabHost.getCurrentTab() == 0) {
+            menu.findItem(R.id.menu_delete_feed).setVisible(true);
             menu.findItem(R.id.menu_add_filter).setVisible(false);
             menu.findItem(R.id.menu_help_filter).setVisible(false);
-        } else {
+        } else if (mTabHost.getCurrentTab() == 1) {
+            menu.findItem(R.id.menu_delete_feed).setVisible(false);
             menu.findItem(R.id.menu_add_filter).setVisible(true);
             menu.findItem(R.id.menu_help_filter).setVisible(true);
+        } else {
+            menu.findItem(R.id.menu_delete_feed).setVisible(false);
+            menu.findItem(R.id.menu_add_filter).setVisible(false);
+            menu.findItem(R.id.menu_help_filter).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -423,6 +429,25 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.menu_delete_feed:
+                new AlertDialog.Builder(this)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setMessage(R.string.question_delete_feed)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int id) {
+                                new Thread() {
+                                    @Override
+                                    public void run() {
+                                        String feedId = getIntent().getData().getLastPathSegment();
+                                        ContentResolver cr = getContentResolver();
+                                        if (cr.delete(FeedColumns.CONTENT_URI(feedId), null, null) > 0)
+                                            finish();
+                                    }
+                                }.start();
+                            }
+                        }).setNegativeButton(android.R.string.cancel, null).show();
                 return true;
             case R.id.menu_add_filter: {
                 final View dialogView = getLayoutInflater().inflate(R.layout.dialog_filter_edit, null);

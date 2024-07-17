@@ -4,6 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
+        android:id="@+id/menu_delete_feed"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/context_menu_delete"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
         android:id="@+id/menu_help_filter"
         android:icon="@drawable/ic_help"
         android:title="@string/filter_help"
