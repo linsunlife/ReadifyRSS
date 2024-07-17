@@ -513,13 +513,12 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                         // fill in the grid_item layout
                         SimpleAdapter adapter = new SimpleAdapter(EditFeedActivity.this, data, R.layout.item_search_result, from,
                                 to);
-                        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        builder.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                FeedDataContentProvider.addFeed(EditFeedActivity.this, data.get(which).get(FEED_SEARCH_URL), name.isEmpty() ? data.get(which).get(FEED_SEARCH_TITLE) : name, mRetrieveFulltextCb.isChecked());
-
-                                setResult(RESULT_OK);
-                                finish();
+                                boolean added = FeedDataContentProvider.addFeed(EditFeedActivity.this, data.get(which).get(FEED_SEARCH_URL), name.isEmpty() ? data.get(which).get(FEED_SEARCH_TITLE) : name, mRetrieveFulltextCb.isChecked());
+                                if (added)
+                                    Toast.makeText(EditFeedActivity.this, R.string.add_feed_result, Toast.LENGTH_SHORT).show();
                             }
                         });
                         builder.show();

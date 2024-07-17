@@ -126,7 +126,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
     private DatabaseHelper mDatabaseHelper;
 
-    public static void addFeed(Context context, String url, String name, boolean retrieveFullText) {
+    public static boolean addFeed(Context context, String url, String name, boolean retrieveFullText) {
         ContentResolver cr = context.getContentResolver();
 
         if (!url.startsWith(Constants.HTTP_SCHEME) && !url.startsWith(Constants.HTTPS_SCHEME)) {
@@ -139,6 +139,7 @@ public class FeedDataContentProvider extends ContentProvider {
         if (cursor.moveToFirst()) {
             cursor.close();
             Toast.makeText(context, R.string.error_feed_url_exists, Toast.LENGTH_SHORT).show();
+            return false;
         } else {
             cursor.close();
             ContentValues values = new ContentValues();
@@ -151,6 +152,7 @@ public class FeedDataContentProvider extends ContentProvider {
             }
             values.put(FeedColumns.RETRIEVE_FULLTEXT, retrieveFullText ? 1 : null);
             cr.insert(FeedColumns.CONTENT_URI, values);
+            return true;
         }
     }
 
