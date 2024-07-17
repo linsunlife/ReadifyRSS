@@ -129,7 +129,7 @@
     <string name="settings_refresh_enabled">开启自动刷新</string>
     <string name="settings_refresh_enabled_description">开启自动刷新</string>
     <string name="settings_refresh_interval">刷新间隔</string>
-    <string name="settings_category_content_presentation">内容介绍</string>
+    <string name="settings_category_content_presentation">内容展示</string>
     <string name="settings_light_theme">高亮主题</string>
     <string name="settings_light_theme_description">使用『高亮主题』</string>
     <string name="settings_keep_time">消息保存时间</string>
