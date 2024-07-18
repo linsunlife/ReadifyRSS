@@ -225,6 +225,10 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 break;
             default:
                 long feedOrGroupId = mDrawerAdapter.getItemId(position);
+                if (feedOrGroupId < 0) {
+                    selectDrawerItem(0);
+                    return;
+                }
                 if (mDrawerAdapter.isItemAGroup(position)) {
                     newUri = EntryColumns.ENTRIES_FOR_GROUP_CONTENT_URI(feedOrGroupId);
                     showFeedInfo = true;
