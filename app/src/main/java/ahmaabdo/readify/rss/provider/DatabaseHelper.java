@@ -45,6 +45,8 @@
 
 package ahmaabdo.readify.rss.provider;
 
+import ahmaabdo.readify.rss.Constants;
+import ahmaabdo.readify.rss.utils.FileUtils;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -61,14 +63,13 @@ import ahmaabdo.readify.rss.provider.FeedData.TaskColumns;
 class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
-    private static final String DATABASE_NAME = "FeedEx.db";
     private static final int DATABASE_VERSION = 13;
 
     private static final String ALTER_TABLE = "ALTER TABLE ";
     private static final String ADD = " ADD ";
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Constants.DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
@@ -109,7 +110,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
             executeCatchedSQL(database, createTable(TaskColumns.TABLE_NAME, TaskColumns.COLUMNS));
             // Remove old FeedEx directory (now useless)
             try {
-                deleteFileOrDir(new File(Environment.getExternalStorageDirectory() + "/FeedEx/"));
+                FileUtils.deleteFileOrDir(new File(Environment.getExternalStorageDirectory() + "/FeedEx/"));
             } catch (Exception ignored) {
                 Log.e(TAG, "Exception", ignored);
             }
@@ -151,13 +152,5 @@ class DatabaseHelper extends SQLiteOpenHelper {
         } catch (Exception ignored) {
             Log.e(TAG, "Exception", ignored);
         }
-    }
-
-    private void deleteFileOrDir(File fileOrDirectory) {
-        if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
-                deleteFileOrDir(child);
-
-        fileOrDirectory.delete();
     }
 }

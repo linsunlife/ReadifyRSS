@@ -20,10 +20,7 @@
 
 package ahmaabdo.readify.rss.utils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.channels.FileChannel;
 
 public class FileUtils {
@@ -36,5 +33,23 @@ public class FileUtils {
         inChannel.transferTo(0, inChannel.size(), outChannel);
         inStream.close();
         outStream.close();
+    }
+
+    public static void deleteFileOrDir(File fileOrDirectory) {
+        if (fileOrDirectory == null || !fileOrDirectory.exists())
+            return;
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteFileOrDir(child);
+
+        fileOrDirectory.delete();
+    }
+
+    public static void write(InputStream inputStream, OutputStream outputStream) throws IOException {
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, length);
+        }
     }
 }

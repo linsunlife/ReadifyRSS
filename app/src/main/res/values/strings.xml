@@ -37,6 +37,8 @@
     <string name="no_result">No result</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="action_finished">Finished</string>
+    <string name="action_failed">Failed: %s</string>
 
     <plurals name="number_of_new_entries">
         <item quantity="one">One New Entry</item>
@@ -173,6 +175,12 @@
     <string name="settings_proxy_host">Host</string>
     <string name="settings_proxy_port">Port</string>
     <string name="settings_proxy_type">Type</string>
+    <string name="settings_backup_restore">Backup and restore</string>
+    <string name="settings_backup_path">Default backup path</string>
+    <string name="settings_backup">Backup</string>
+    <string name="settings_restore">Restore</string>
+    <string name="question_restore">This will overwrite all data and can not be undone. Are you sure you want to proceed?</string>
+    <string name="message_invalid_backup_file">The backup file is invalid!</string>
 
     <string-array name="settings_intervals">
         <item>1 minute</item>

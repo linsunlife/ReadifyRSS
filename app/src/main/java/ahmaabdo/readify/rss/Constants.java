@@ -32,6 +32,8 @@ public final class Constants {
 
     public static final String INTENT_FROM_WIDGET = "fromWidget";
 
+    public static final String DATABASE_NAME = "FeedEx.db";
+
     public static final String FEED_ID = "feedid";
     public static final String GROUP_ID = "groupid";
     public static final String EntriesListDisplayDate = "entries_list_display_date";

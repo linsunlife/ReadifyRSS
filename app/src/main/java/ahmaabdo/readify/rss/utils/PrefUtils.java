@@ -27,6 +27,8 @@ import android.util.Log;
 
 import ahmaabdo.readify.rss.MainApplication;
 
+import java.util.Map;
+
 public class PrefUtils {
     private static final String TAG = "PrefUtils";
 
@@ -54,7 +56,13 @@ public class PrefUtils {
     public static final String SHOW_READ = "show_read";
     public static final String DRAWER_POSITION = "drawer_position";
     public static final String BACKUP_PATH = "backup_path";
+    public static final String BACKUP = "backup";
+    public static final String RESTORE = "restore";
     public static final String ABOUT = "about";
+
+    public static Map<String, ?> getAll() {
+        return PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext()).getAll();
+    }
 
     public static boolean getBoolean(String key, boolean defValue) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext());

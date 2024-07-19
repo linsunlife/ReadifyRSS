@@ -177,6 +177,31 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/settings_backup_restore">
+
+        <PreferenceScreen
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:key="backup_path"
+                android:title="@string/settings_backup_path" />
+
+        <PreferenceScreen
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:key="backup"
+                android:title="@string/settings_backup" />
+
+        <PreferenceScreen
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:key="restore"
+                android:title="@string/settings_restore" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="About">
