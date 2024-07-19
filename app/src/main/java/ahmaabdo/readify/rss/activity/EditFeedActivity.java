@@ -609,7 +609,7 @@ class GetFeedSearchResultsLoader extends BaseLoader<ArrayList<HashMap<String, St
             HttpURLConnection conn = NetworkUtils.setupConnection("http://cloud.feedly.com/v3/search/feeds?count=20&locale=" + getContext().getResources().getConfiguration().locale.getLanguage() + "&query=" + mSearchText);
             try {
                 InputStream inputStream = conn.getInputStream();
-                String jsonStr = new String(FileUtils.getBytes(inputStream));
+                String jsonStr = FileUtils.getString(inputStream);
                 inputStream.close();
 
                 // Parse results

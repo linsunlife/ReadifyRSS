@@ -56,8 +56,12 @@ public class FileUtils {
     public static byte[] getBytes(InputStream inputStream) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         FileUtils.write(inputStream, outputStream);
-        byte[] result = outputStream.toByteArray();
-        outputStream.close();
-        return result;
+        return outputStream.toByteArray();
+    }
+
+    public static String getString(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        FileUtils.write(inputStream, outputStream);
+        return outputStream.toString();
     }
 }
