@@ -51,6 +51,7 @@ public class FileUtils {
         while ((length = inputStream.read(buffer)) > 0) {
             outputStream.write(buffer, 0, length);
         }
+        outputStream.flush();
     }
 
     public static byte[] getBytes(InputStream inputStream) throws IOException {

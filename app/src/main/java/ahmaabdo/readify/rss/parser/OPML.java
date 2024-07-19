@@ -202,6 +202,7 @@ public class OPML {
         builder.append(CLOSING);
         cursor.close();
         output.write(builder.toString().getBytes());
+        output.flush();
     }
 
     private static class OPMLParser extends DefaultHandler {

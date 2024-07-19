@@ -205,6 +205,7 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                     JSONObject jsonObject = new JSONObject(prefs);
                     FileWriter fileWriter = new FileWriter(new File(cacheDir, SETTINGS_FILE_NAME));
                     fileWriter.write(jsonObject.toString(4));
+                    fileWriter.flush();
                     fileWriter.close();
 
                     // Create the final backup file path
