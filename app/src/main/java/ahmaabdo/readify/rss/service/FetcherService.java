@@ -45,6 +45,7 @@
 
 package ahmaabdo.readify.rss.service;
 
+import ahmaabdo.readify.rss.utils.*;
 import android.app.IntentService;
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
@@ -91,10 +92,6 @@ import ahmaabdo.readify.rss.provider.FeedData;
 import ahmaabdo.readify.rss.provider.FeedData.EntryColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.provider.FeedData.TaskColumns;
-import ahmaabdo.readify.rss.utils.ArticleTextExtractor;
-import ahmaabdo.readify.rss.utils.HtmlUtils;
-import ahmaabdo.readify.rss.utils.NetworkUtils;
-import ahmaabdo.readify.rss.utils.PrefUtils;
 
 public class FetcherService extends IntentService {
 
@@ -618,18 +615,11 @@ public class FetcherService extends IntentService {
                     case FETCHMODE_REENCODE: {
                         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                         InputStream inputStream = connection.getInputStream();
-
-                        byte[] byteBuffer = new byte[4096];
-
-                        int n;
-                        while ((n = inputStream.read(byteBuffer)) > 0) {
-                            outputStream.write(byteBuffer, 0, n);
-                        }
+                        FileUtils.write(inputStream, outputStream);
+                        inputStream.close();
 
                         String xmlText = outputStream.toString();
-
                         int start = xmlText != null ? xmlText.indexOf(ENCODING) : -1;
-
                         if (start > -1) {
                             Xml.parse(
                                     new StringReader(new String(outputStream.toByteArray(),
