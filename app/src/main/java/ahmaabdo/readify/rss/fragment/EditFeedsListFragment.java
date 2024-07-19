@@ -97,7 +97,6 @@ public class EditFeedsListFragment extends ListFragment {
         View rootView = inflater.inflate(R.layout.fragment_edit_feed_list, container, false);
 
         mListView = rootView.findViewById(android.R.id.list);
-        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
