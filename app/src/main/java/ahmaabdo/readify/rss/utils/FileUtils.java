@@ -52,4 +52,12 @@ public class FileUtils {
             outputStream.write(buffer, 0, length);
         }
     }
+
+    public static byte[] getBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        FileUtils.write(inputStream, outputStream);
+        byte[] result = outputStream.toByteArray();
+        outputStream.close();
+        return result;
+    }
 }

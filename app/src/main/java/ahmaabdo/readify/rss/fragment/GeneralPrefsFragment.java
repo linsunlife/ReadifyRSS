@@ -277,9 +277,8 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                             outputStream.close();
                         } else if (SETTINGS_FILE_NAME.equals(entryName)) { // Restore the app settings
                             findSettingsEntry = true;
-                            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                            FileUtils.write(zipInputStream, byteArrayOutputStream);
-                            JSONObject jsonObject = new JSONObject(byteArrayOutputStream.toString());
+                            byte[] bytes = FileUtils.getBytes(zipInputStream);
+                            JSONObject jsonObject = new JSONObject(new String(bytes));
                             Iterator<String> keys = jsonObject.keys();
                             while (keys.hasNext()) {
                                 String key = keys.next();

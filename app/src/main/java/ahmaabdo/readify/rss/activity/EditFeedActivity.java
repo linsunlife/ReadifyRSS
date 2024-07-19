@@ -45,6 +45,7 @@
 
 package ahmaabdo.readify.rss.activity;
 
+import ahmaabdo.readify.rss.utils.FileUtils;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
@@ -82,6 +83,7 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
@@ -606,7 +608,9 @@ class GetFeedSearchResultsLoader extends BaseLoader<ArrayList<HashMap<String, St
         try {
             HttpURLConnection conn = NetworkUtils.setupConnection("http://cloud.feedly.com/v3/search/feeds?count=20&locale=" + getContext().getResources().getConfiguration().locale.getLanguage() + "&query=" + mSearchText);
             try {
-                String jsonStr = new String(NetworkUtils.getBytes(conn.getInputStream()));
+                InputStream inputStream = conn.getInputStream();
+                String jsonStr = new String(FileUtils.getBytes(inputStream));
+                inputStream.close();
 
                 // Parse results
                 final ArrayList<HashMap<String, String>> results = new ArrayList<>();

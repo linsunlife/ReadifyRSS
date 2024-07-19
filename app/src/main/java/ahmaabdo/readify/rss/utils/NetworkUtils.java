@@ -22,7 +22,6 @@ package ahmaabdo.readify.rss.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -31,7 +30,6 @@ import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -47,7 +45,6 @@ import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.URL;
-import java.util.HashSet;
 import java.util.List;
 
 import ahmaabdo.readify.rss.Constants;
@@ -170,23 +167,6 @@ public class NetworkUtils {
         return baseUrl;
     }
 
-    public static byte[] getBytes(InputStream inputStream) throws IOException {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-        byte[] buffer = new byte[4096];
-
-        int n;
-        while ((n = inputStream.read(buffer)) > 0) {
-            output.write(buffer, 0, n);
-        }
-
-        byte[] result = output.toByteArray();
-
-        output.close();
-        inputStream.close();
-        return result;
-    }
-
     public static void retrieveFavicon(Context context, URL url, String id) {
         boolean success = false;
         HttpURLConnection iconURLConnection = null;
@@ -194,7 +174,9 @@ public class NetworkUtils {
         try {
             iconURLConnection = setupConnection(new URL(url.getProtocol() + PROTOCOL_SEPARATOR + url.getHost() + FILE_FAVICON));
 
-            byte[] iconBytes = getBytes(iconURLConnection.getInputStream());
+            InputStream inputStream = iconURLConnection.getInputStream();
+            byte[] iconBytes = FileUtils.getBytes(inputStream);
+            inputStream.close();
             if (iconBytes != null && iconBytes.length > 0) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(iconBytes, 0, iconBytes.length);
                 if (bitmap != null) {
