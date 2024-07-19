@@ -101,13 +101,7 @@ public class NetworkUtils {
 
                 FileOutputStream fileOutput = new FileOutputStream(tempImgPath);
                 InputStream inputStream = imgURLConnection.getInputStream();
-
-                byte[] buffer = new byte[2048];
-                int bufferLength;
-                while ((bufferLength = inputStream.read(buffer)) > 0) {
-                    fileOutput.write(buffer, 0, bufferLength);
-                }
-                fileOutput.flush();
+                FileUtils.write(inputStream, fileOutput);
                 fileOutput.close();
                 inputStream.close();
 
