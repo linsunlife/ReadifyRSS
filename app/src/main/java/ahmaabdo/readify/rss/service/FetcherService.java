@@ -622,8 +622,7 @@ public class FetcherService extends IntentService {
                         int start = xmlText != null ? xmlText.indexOf(ENCODING) : -1;
                         if (start > -1) {
                             Xml.parse(
-                                    new StringReader(new String(outputStream.toByteArray(),
-                                            xmlText.substring(start + 10, xmlText.indexOf('"', start + 11)))), handler
+                                    new StringReader(outputStream.toString(xmlText.substring(start + 10, xmlText.indexOf('"', start + 11)))), handler
                             );
                         } else {
                             // use content type
@@ -633,7 +632,7 @@ public class FetcherService extends IntentService {
                                     int index2 = contentType.indexOf(';', index);
 
                                     try {
-                                        StringReader reader = new StringReader(new String(outputStream.toByteArray(), index2 > -1 ? contentType.substring(
+                                        StringReader reader = new StringReader(outputStream.toString(index2 > -1 ? contentType.substring(
                                                 index + 8, index2) : contentType.substring(index + 8)));
                                         Xml.parse(reader, handler);
                                     } catch (Exception ignored) {
