@@ -51,6 +51,7 @@ import ahmaabdo.readify.rss.activity.AboutApp;
 import ahmaabdo.readify.rss.service.RefreshService;
 import ahmaabdo.readify.rss.utils.FileUtils;
 import ahmaabdo.readify.rss.utils.PrefUtils;
+import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -63,7 +64,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
-import android.widget.Toast;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -228,20 +228,10 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                     // Clear the temporary files under the cache directory
                     FileUtils.deleteFileOrDir(cacheDir);
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, R.string.action_finished, Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    ToastUtils.showLong(R.string.action_finished);
                 } catch (final Exception e) {
                     Log.e(TAG, "Failed to backup data", e);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, String.format(getString(R.string.action_failed), e.getMessage()), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
                 }
             }
         }).start();
@@ -305,20 +295,10 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                     if (!findDbEntry || !findSettingsEntry)
                         throw new IllegalStateException(getString(R.string.message_invalid_backup_file));
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, R.string.action_finished, Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    ToastUtils.showLong(R.string.action_finished);
                 } catch (final Exception e) {
                     Log.e(TAG, "Failed to restore data", e);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(context, String.format(getString(R.string.action_failed), e.getMessage()), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
                 }
             }
         }).start();
