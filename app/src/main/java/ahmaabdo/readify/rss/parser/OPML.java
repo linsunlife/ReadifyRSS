@@ -112,6 +112,7 @@ public class OPML {
                         backupFile = backupFolder.createFile("*/*", fileName);
                         OutputStream outputStream = MainApplication.getContext().getContentResolver().openOutputStream(backupFile.getUri());
                         exportTo(outputStream);
+                        outputStream.close();
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to export OPML", e);
                     }
