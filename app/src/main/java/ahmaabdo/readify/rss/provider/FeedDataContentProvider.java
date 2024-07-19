@@ -46,6 +46,7 @@
 package ahmaabdo.readify.rss.provider;
 
 import ahmaabdo.readify.rss.parser.OPML;
+import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -58,7 +59,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.util.Date;
 
@@ -138,7 +138,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
         if (cursor.moveToFirst()) {
             cursor.close();
-            Toast.makeText(context, R.string.error_feed_url_exists, Toast.LENGTH_SHORT).show();
+            ToastUtils.showShort(R.string.error_feed_url_exists);
             return false;
         } else {
             cursor.close();
@@ -168,7 +168,7 @@ public class FeedDataContentProvider extends ContentProvider {
 
         if (cursor.moveToFirst()) {
             cursor.close();
-            Toast.makeText(context, R.string.error_feed_url_exists, Toast.LENGTH_SHORT).show();
+            ToastUtils.showShort(R.string.error_feed_url_exists);
         } else {
             cursor.close();
             ContentValues values = new ContentValues();

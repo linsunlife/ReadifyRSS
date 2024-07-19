@@ -47,6 +47,7 @@ package ahmaabdo.readify.rss.fragment;
 
 import ahmaabdo.readify.rss.activity.EditFeedActivity;
 import ahmaabdo.readify.rss.utils.PrefUtils;
+import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -57,7 +58,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -69,7 +69,6 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.activity.AddGoogleNewsActivity;
@@ -330,36 +329,20 @@ public class EditFeedsListFragment extends ListFragment {
                         try {
                             OPML.importFrom(contentResolver.openInputStream(uri));
                         } catch (Exception e) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), R.string.error_feed_import, Toast.LENGTH_LONG).show();
-                                }
-                            });
+                            ToastUtils.showLong(R.string.error_feed_import);
                         }
                     }
                 }).start();
             } else if (requestCode == REQUEST_CODE_EXPORT_OPML) {
                 new Thread(new Runnable() {
+                    @SuppressLint("StringFormatInvalid")
                     @Override
                     public void run() {
                         try {
                             OPML.exportTo(contentResolver.openOutputStream(uri));
-                            getActivity().runOnUiThread(new Runnable() {
-                                @SuppressLint("StringFormatInvalid")
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), String.format(getString(R.string.message_exported_to), uri.getPath()),
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            });
+                            ToastUtils.showLong(String.format(getString(R.string.message_exported_to), uri.getPath()));
                         } catch (Exception e) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), R.string.error_feed_export, Toast.LENGTH_LONG).show();
-                                }
-                            });
+                            ToastUtils.showLong(R.string.error_feed_export);
                         }
                     }
                 }).start();

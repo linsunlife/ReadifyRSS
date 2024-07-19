@@ -56,12 +56,10 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.Handler;
 import android.os.SystemClock;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Xml;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -117,12 +115,9 @@ public class FetcherService extends IntentService {
             "[.]*<link[^>]* ((rel=alternate|rel=\"alternate\")[^>]* href=\"[^\"]*\"|href=\"[^\"]*\"[^>]* (rel=alternate|rel=\"alternate\"))[^>]*>",
             Pattern.CASE_INSENSITIVE);
 
-    private final Handler mHandler;
-
     public FetcherService() {
         super(FetcherService.class.getSimpleName());
         HttpURLConnection.setFollowRedirects(true);
-        mHandler = new Handler();
     }
 
     public static boolean hasMobilizationTask(long entryId) {
@@ -174,12 +169,7 @@ public class FetcherService extends IntentService {
         if (networkInfo == null || networkInfo.getState() != NetworkInfo.State.CONNECTED) {
             if (ACTION_REFRESH_FEEDS.equals(intent.getAction()) && !isFromAutoRefresh) {
                 // Display a toast in that case
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(FetcherService.this, R.string.network_error, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                ToastUtils.showShort(R.string.network_error);
             }
             return;
         }

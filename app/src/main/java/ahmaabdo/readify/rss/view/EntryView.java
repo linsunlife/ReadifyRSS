@@ -45,6 +45,7 @@
 
 package ahmaabdo.readify.rss.view;
 
+import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -59,7 +60,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
@@ -273,8 +273,8 @@ public class EntryView extends WebView {
         setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Context context = getContext();
                 try {
+                    Context context = getContext();
                     if (url.startsWith(Constants.FILE_SCHEME)) {
                         File file = new File(url.replace(Constants.FILE_SCHEME, ""));
                         File extTmpFile = new File(context.getExternalCacheDir(), "tmp_img.jpg");
@@ -287,9 +287,7 @@ public class EntryView extends WebView {
                         context.startActivity(intent);
                     }
                 } catch (ActivityNotFoundException e) {
-                    Toast.makeText(context, R.string.cant_open_link, Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    ToastUtils.showShort(R.string.cant_open_link);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

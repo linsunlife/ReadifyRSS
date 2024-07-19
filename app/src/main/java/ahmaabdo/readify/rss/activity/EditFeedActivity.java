@@ -46,6 +46,7 @@
 package ahmaabdo.readify.rss.activity;
 
 import ahmaabdo.readify.rss.utils.FileUtils;
+import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
@@ -78,7 +79,6 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -335,7 +335,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                     cursor.close();
                 } else {
                     cursor.close();
-                    Toast.makeText(EditFeedActivity.this, R.string.error, Toast.LENGTH_SHORT).show();
+                    ToastUtils.showShort(R.string.error);
                     finish();
                 }
             }
@@ -360,7 +360,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                         FeedColumns.URL + Constants.DB_ARG, new String[]{url}, null);
 
                 if (cursor != null && cursor.moveToFirst() && !getIntent().getData().getLastPathSegment().equals(cursor.getString(0))) {
-                    Toast.makeText(EditFeedActivity.this, R.string.error_feed_url_exists, Toast.LENGTH_LONG).show();
+                    ToastUtils.showLong(R.string.error_feed_url_exists);
                 } else {
                     ContentValues values = new ContentValues();
 
@@ -545,7 +545,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean added = FeedDataContentProvider.addFeed(EditFeedActivity.this, data.get(which).get(FEED_SEARCH_URL), name.isEmpty() ? data.get(which).get(FEED_SEARCH_TITLE) : name, mRetrieveFulltextCb.isChecked());
                                 if (added)
-                                    Toast.makeText(EditFeedActivity.this, R.string.add_feed_result, Toast.LENGTH_SHORT).show();
+                                    ToastUtils.showShort(R.string.add_feed_result);
                             }
                         });
                         builder.show();

@@ -20,6 +20,7 @@
 
 package ahmaabdo.readify.rss.fragment;
 
+import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
@@ -54,7 +55,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator;
 
@@ -150,12 +150,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
                             FetcherService.addEntriesToMobilize(new long[]{mEntriesIds[mCurrentPagerPos]});
                             activity.startService(new Intent(activity, FetcherService.class).setAction(FetcherService.ACTION_MOBILIZE_FEEDS));
                         } else {
-                            activity.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(activity, R.string.network_error, Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            ToastUtils.showShort(R.string.network_error);
                             Log.d(TAG, "onOptionsItemSelected: cannot load article. no internet connection.");
                         }
                     } else {
@@ -331,7 +326,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
                     ClipData clip = ClipData.newPlainText("Copied Text", link);
                     clipboard.setPrimaryClip(clip);
 
-                    Toast.makeText(activity, R.string.copied_clipboard, Toast.LENGTH_SHORT).show();
+                    ToastUtils.showShort(R.string.copied_clipboard);
                     break;
                 }
                 case R.id.menu_mark_as_unread: {
@@ -459,7 +454,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
             try {
                 startActivityForResult(new Intent(Intent.ACTION_VIEW, uri), 0); // fallbackmode - let the browser handle this
             } catch (Throwable t) {
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_LONG).show();
+                ToastUtils.showLong(t.getMessage());
             }
         }
     }
@@ -501,7 +496,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
                             DownloadManager dm = (DownloadManager) MainApplication.getContext().getSystemService(Context.DOWNLOAD_SERVICE);
                             dm.enqueue(r);
                         } catch (Exception e) {
-                            Toast.makeText(getActivity(), R.string.error, Toast.LENGTH_LONG).show();
+                            ToastUtils.showLong(R.string.error);
                         }
                     }
                 }).show();
