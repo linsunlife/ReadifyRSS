@@ -54,6 +54,7 @@ import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -183,6 +184,11 @@ public class GeneralPrefsFragment extends PreferenceFragment {
     }
 
     private void backup() {
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         new Thread(new Runnable() { // To not block the UI
             @Override
             public void run() {
@@ -232,6 +238,8 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                 } catch (final Exception e) {
                     Log.e(TAG, "Failed to backup data", e);
                     ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
+                } finally {
+                    progressDialog.cancel();
                 }
             }
         }).start();
@@ -245,6 +253,11 @@ public class GeneralPrefsFragment extends PreferenceFragment {
     }
 
     private void restore(final Uri uri) {
+        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
         new Thread(new Runnable() { // To not block the UI
             @Override
             public void run() {
@@ -299,6 +312,8 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                 } catch (final Exception e) {
                     Log.e(TAG, "Failed to restore data", e);
                     ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
+                } finally {
+                    progressDialog.cancel();
                 }
             }
         }).start();
