@@ -56,6 +56,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -116,8 +117,7 @@ public class EditFeedsListFragment extends ListFragment {
         });
         mListView.setOnItemLongClickListener(new OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final long feedId = mListView.getItemIdAtPosition(position);
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 new AlertDialog.Builder(getActivity())
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setMessage(R.string.question_delete_feed)
@@ -127,8 +127,24 @@ public class EditFeedsListFragment extends ListFragment {
                                 new Thread() {
                                     @Override
                                     public void run() {
-                                        ContentResolver cr = getActivity().getContentResolver();
-                                        cr.delete(FeedColumns.CONTENT_URI(feedId), null, null);
+                                        Cursor cursor = null;
+                                        try {
+                                            long feedId = mListView.getItemIdAtPosition(position);
+                                            ContentResolver cr = getActivity().getContentResolver();
+                                            cursor = cr.query(FeedColumns.CONTENT_URI(feedId), new String[]{FeedColumns.IS_GROUP}, null, null, null);
+                                            if (cursor.moveToFirst()) {
+                                                boolean isGroup = cursor.getInt(0) == 1;
+                                                Uri uri = isGroup ? FeedColumns.GROUPS_CONTENT_URI(feedId) : FeedColumns.CONTENT_URI(feedId);
+                                                if (cr.delete(uri, null, null) > 0)
+                                                    return;
+                                            }
+                                            ToastUtils.showShort(R.string.error);
+                                        } catch (Exception e) {
+                                            ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
+                                        } finally {
+                                            if (cursor != null)
+                                                cursor.close();
+                                        }
                                     }
                                 }.start();
                             }
