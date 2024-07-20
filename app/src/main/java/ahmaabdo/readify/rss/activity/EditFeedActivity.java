@@ -106,7 +106,6 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
     static final String FEED_SEARCH_URL = "feedId";
     static final String FEED_SEARCH_DESC = "description";
     private static final String STATE_CURRENT_TAB = "STATE_CURRENT_TAB";
-    private static final String[] FEED_PROJECTION = new String[]{FeedColumns.NAME, FeedColumns.URL, FeedColumns.RETRIEVE_FULLTEXT, FeedColumns.COOKIE_NAME, FeedColumns.COOKIE_VALUE, FeedColumns.HTTP_AUTH_LOGIN, FeedColumns.HTTP_AUTH_PASSWORD, FeedColumns.KEEP_TIME};
     private final ActionMode.Callback mFilterActionModeCallback = new ActionMode.Callback() {
 
         // Called when the action mode is created; startActionMode() was called
@@ -223,7 +222,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         }
     };
     private TabHost mTabHost;
-    private TextView mNameTextView;
+    private TextView mNameTextView, mUrlTextView;
     private EditText mNameEditText, mUrlEditText;
     private EditText mCookieNameEditText, mCookieValueEditText;
     private EditText mLoginHTTPAuthEditText, mPasswordHTTPAuthEditText;
@@ -231,6 +230,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
     private CheckBox mRetrieveFulltextCb;
     private ListView mFiltersListView;
     private FiltersCursorAdapter mFiltersCursorAdapter;
+    private boolean mIsGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,6 +251,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         mNameEditText = (EditText) findViewById(R.id.feed_title);
         mNameTextView = (TextView) findViewById(R.id.name_textview);
         mUrlEditText = (EditText) findViewById(R.id.feed_url);
+        mUrlTextView = (TextView) findViewById(R.id.url_textview);
         mCookieNameEditText = (EditText) findViewById(R.id.feed_cookiename);
         mCookieValueEditText = (EditText) findViewById(R.id.feed_cookievalue);
         mLoginHTTPAuthEditText = (EditText) findViewById(R.id.feed_loginHttpAuth);
@@ -299,46 +300,63 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
             mKeepTime.setSelection(selectedValues.length - 1);
             mRetrieveFulltextCb.setChecked(false);
         } else if (intent.getAction().equals(Intent.ACTION_EDIT)) {
-            setTitle(R.string.manage_feed_title);
+            if (savedInstanceState != null)
+                return;
+
+            Cursor cursor = getContentResolver().query(intent.getData(),
+                    new String[]{FeedColumns.IS_GROUP, FeedColumns.NAME, FeedColumns.URL,
+                            FeedColumns.RETRIEVE_FULLTEXT, FeedColumns.COOKIE_NAME,
+                            FeedColumns.COOKIE_VALUE, FeedColumns.HTTP_AUTH_LOGIN,
+                            FeedColumns.HTTP_AUTH_PASSWORD, FeedColumns.KEEP_TIME},
+                    null, null, null);
+            if (!cursor.moveToFirst()) {
+                cursor.close();
+                ToastUtils.showShort(R.string.error);
+                finish();
+                return;
+            }
 
             buttonLayout.setVisibility(View.GONE);
+            mIsGroup = cursor.getInt(0) == 1;
 
-            mFiltersCursorAdapter = new FiltersCursorAdapter(this, Constants.EMPTY_CURSOR);
-            mFiltersListView.setAdapter(mFiltersCursorAdapter);
-            mFiltersListView.setOnItemLongClickListener(new OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    startSupportActionMode(mFilterActionModeCallback);
-                    mFiltersCursorAdapter.setSelectedFilter(position);
-                    mFiltersListView.invalidateViews();
-                    return true;
-                }
-            });
-
-            getLoaderManager().initLoader(0, null, this);
-
-            if (savedInstanceState == null) {
-                Cursor cursor = getContentResolver().query(intent.getData(), FEED_PROJECTION, null, null, null);
-
-                if (cursor.moveToNext()) {
-                    mNameEditText.setText(cursor.getString(0));
-                    mUrlEditText.setText(cursor.getString(1));
-                    mRetrieveFulltextCb.setChecked(cursor.getInt(2) == 1);
-                    mCookieNameEditText.setText(cursor.getString(3));
-                    mCookieValueEditText.setText(cursor.getString(4));
-                    mLoginHTTPAuthEditText.setText(cursor.getString(5));
-                    mPasswordHTTPAuthEditText.setText(cursor.getString(6));
-                    Integer intDate = cursor.getInt(7);
-                    String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
-                    int index = Arrays.asList(selectedValues).indexOf(String.valueOf(intDate));
-                    mKeepTime.setSelection(index >= 0 ? index : selectedValues.length - 1);
-                    cursor.close();
-                } else {
-                    cursor.close();
-                    ToastUtils.showShort(R.string.error);
-                    finish();
-                }
+            if (mIsGroup) {
+                setTitle(R.string.manage_group_title);
+                tabWidget.setVisibility(View.GONE);
+                mUrlEditText.setVisibility(View.INVISIBLE);
+                mUrlTextView.setVisibility(View.INVISIBLE);
+                mRetrieveFulltextCb.setVisibility(View.INVISIBLE);
+                mNameEditText.setText(cursor.getString(1));
             }
+            else {
+                setTitle(R.string.manage_feed_title);
+
+                mFiltersCursorAdapter = new FiltersCursorAdapter(this, Constants.EMPTY_CURSOR);
+                mFiltersListView.setAdapter(mFiltersCursorAdapter);
+                mFiltersListView.setOnItemLongClickListener(new OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                        startSupportActionMode(mFilterActionModeCallback);
+                        mFiltersCursorAdapter.setSelectedFilter(position);
+                        mFiltersListView.invalidateViews();
+                        return true;
+                    }
+                });
+
+                getLoaderManager().initLoader(0, null, this);
+
+                mNameEditText.setText(cursor.getString(1));
+                mUrlEditText.setText(cursor.getString(2));
+                mRetrieveFulltextCb.setChecked(cursor.getInt(3) == 1);
+                mCookieNameEditText.setText(cursor.getString(4));
+                mCookieValueEditText.setText(cursor.getString(5));
+                mLoginHTTPAuthEditText.setText(cursor.getString(6));
+                mPasswordHTTPAuthEditText.setText(cursor.getString(7));
+                Integer intDate = cursor.getInt(8);
+                String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
+                int index = Arrays.asList(selectedValues).indexOf(String.valueOf(intDate));
+                mKeepTime.setSelection(index >= 0 ? index : selectedValues.length - 1);
+            }
+            cursor.close();
         }
     }
 
@@ -350,12 +368,19 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         if (getIntent().getAction().equals(Intent.ACTION_EDIT)) {
-            String url = mUrlEditText.getText().toString();
             ContentResolver cr = getContentResolver();
-
             Cursor cursor = null;
             try {
+                if (mIsGroup) {
+                    ContentValues values = new ContentValues();
+                    values.put(FeedColumns.NAME, mNameEditText.getText().toString().trim());
+                    cr.update(getIntent().getData(), values, null, null);
+                    return;
+                }
+
+                String url = mUrlEditText.getText().toString();
                 cursor = getContentResolver().query(FeedColumns.CONTENT_URI, FeedColumns.PROJECTION_ID,
                         FeedColumns.URL + Constants.DB_ARG, new String[]{url}, null);
 
@@ -388,15 +413,14 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
                     cr.update(getIntent().getData(), values, null, null);
                 }
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
             } finally {
                 if (cursor != null) {
                     cursor.close();
                 }
             }
         }
-
-        super.onDestroy();
     }
 
     @Override

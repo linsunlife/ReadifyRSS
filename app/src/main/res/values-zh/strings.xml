@@ -46,6 +46,7 @@
     <string name="no_filters">没有规则</string>
     <string name="context_menu_delete">删除</string>
     <string name="manage_feed_title">管理订阅</string>
+    <string name="manage_group_title">管理分组</string>
     <string name="new_feed_title">新的订阅</string>
     <string name="context_menu_edit">编辑</string>
     <string name="popup_menu_read_above">以上标记为已读</string>
