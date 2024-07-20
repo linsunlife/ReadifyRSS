@@ -191,13 +191,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:key="backup"
-                android:title="@string/settings_backup" />
+                android:title="@string/settings_backup"
+                android:summary="@string/settings_backup_description" />
 
         <PreferenceScreen
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:key="restore"
-                android:title="@string/settings_restore" />
+                android:title="@string/settings_restore"
+                android:summary="@string/settings_restore_description" />
 
     </PreferenceCategory>
 

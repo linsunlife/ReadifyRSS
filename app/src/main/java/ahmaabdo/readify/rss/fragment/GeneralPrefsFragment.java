@@ -161,17 +161,9 @@ public class GeneralPrefsFragment extends PreferenceFragment {
         findPreference(PrefUtils.RESTORE).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                new AlertDialog.Builder(getActivity())
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setMessage(R.string.question_restore)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                                intent.setType("application/zip");
-                                startActivityForResult(intent, REQUEST_CODE_RESTORE);
-                            }
-                        }).setNegativeButton(android.R.string.no, null).show();
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.setType("application/zip");
+                startActivityForResult(intent, REQUEST_CODE_RESTORE);
                 return true;
             }
         });

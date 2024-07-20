@@ -158,8 +158,9 @@
     <string name="settings_backup_restore">备份与恢复</string>
     <string name="settings_backup_path">默认备份路径</string>
     <string name="settings_backup">备份</string>
+    <string name="settings_backup_description">备份整个数据库和应用设置</string>
     <string name="settings_restore">恢复</string>
-    <string name="question_restore">这将覆盖所有数据，并且无法撤销。你确定要继续吗？</string>
+    <string name="settings_restore_description">从备份文件恢复，将覆盖所有数据，并且无法撤消</string>
     <string name="message_invalid_backup_file">备份文件不符合要求！</string>
 
     <string-array name="settings_intervals">

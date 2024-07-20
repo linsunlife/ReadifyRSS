@@ -178,8 +178,9 @@
     <string name="settings_backup_restore">Backup and restore</string>
     <string name="settings_backup_path">Default backup path</string>
     <string name="settings_backup">Backup</string>
+    <string name="settings_backup_description">Backup the entire database and app settings</string>
     <string name="settings_restore">Restore</string>
-    <string name="question_restore">This will overwrite all data and can not be undone. Are you sure you want to proceed?</string>
+    <string name="settings_restore_description">Restoring from a backup file will overwrite all data and can not be undone</string>
     <string name="message_invalid_backup_file">The backup file is invalid!</string>
 
     <string-array name="settings_intervals">
