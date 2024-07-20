@@ -466,25 +466,17 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                                 new Thread() {
                                     @Override
                                     public void run() {
-                                        Cursor cursor = null;
                                         try {
                                             String feedId = getIntent().getData().getLastPathSegment();
                                             ContentResolver cr = getContentResolver();
-                                            cursor = cr.query(FeedColumns.CONTENT_URI(feedId), new String[]{FeedColumns.IS_GROUP}, null, null, null);
-                                            if (cursor.moveToFirst()) {
-                                                boolean isGroup = cursor.getInt(0) == 1;
-                                                Uri uri = isGroup ? FeedColumns.GROUPS_CONTENT_URI(feedId) : FeedColumns.CONTENT_URI(feedId);
-                                                if (cr.delete(uri, null, null) > 0) {
-                                                    finish();
-                                                    return;
-                                                }
+                                            Uri uri = mIsGroup ? FeedColumns.GROUPS_CONTENT_URI(feedId) : FeedColumns.CONTENT_URI(feedId);
+                                            if (cr.delete(uri, null, null) > 0) {
+                                                finish();
+                                                return;
                                             }
                                             ToastUtils.showShort(R.string.error);
                                         } catch (Exception e) {
                                             ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
-                                        } finally {
-                                            if (cursor != null)
-                                                cursor.close();
                                         }
                                     }
                                 }.start();
