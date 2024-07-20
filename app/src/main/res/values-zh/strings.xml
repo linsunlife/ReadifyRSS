@@ -115,7 +115,7 @@
     <string name="menu_copy_clipboard">复制链接</string>
     <string name="menu_mark_as_unread">保持未读</string>
     <string name="copied_clipboard">链接复制成功</string>
-    <string name="get_full_text">接收全文</string>
+    <string name="get_full_text">获取全文</string>
     <string name="see_enclosure">显示附件</string>
     <string name="cant_open_link">没有应用可以打开这个链接</string>
     <string name="open_enclosure">打开附件</string>
