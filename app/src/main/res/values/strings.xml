@@ -181,6 +181,7 @@
     <string name="settings_restore">Restore</string>
     <string name="settings_restore_description">Restoring from a backup file will overwrite all data and can not be undone</string>
     <string name="message_invalid_backup_file">The backup file is invalid!</string>
+    <string name="question_restart">Do you want to restart the app to apply the changes?</string>
 
     <string-array name="settings_intervals">
         <item>1 minute</item>

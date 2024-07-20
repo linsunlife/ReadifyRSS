@@ -300,7 +300,24 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                     if (!findDbEntry || !findSettingsEntry)
                         throw new IllegalStateException(getString(R.string.message_invalid_backup_file));
 
-                    ToastUtils.showLong(R.string.action_finished);
+                    // Restart the app
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(getActivity())
+                                    .setTitle(R.string.action_finished)
+                                    .setMessage(R.string.question_restart)
+                                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = getContext().getPackageManager().getLaunchIntentForPackage(getContext().getPackageName());
+                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(intent);
+                                            System.exit(0);
+                                        }
+                                    }).setNegativeButton(android.R.string.no, null).show();
+                        }
+                    });
                 } catch (final Exception e) {
                     Log.e(TAG, "Failed to restore data", e);
                     ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
