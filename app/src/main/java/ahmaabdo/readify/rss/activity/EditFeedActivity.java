@@ -468,9 +468,8 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                                     public void run() {
                                         try {
                                             String feedId = getIntent().getData().getLastPathSegment();
-                                            ContentResolver cr = getContentResolver();
                                             Uri uri = mIsGroup ? FeedColumns.GROUPS_CONTENT_URI(feedId) : FeedColumns.CONTENT_URI(feedId);
-                                            if (cr.delete(uri, null, null) > 0) {
+                                            if (getContentResolver().delete(uri, null, null) > 0) {
                                                 finish();
                                                 return;
                                             }
