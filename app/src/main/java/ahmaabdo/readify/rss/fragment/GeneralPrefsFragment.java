@@ -345,6 +345,7 @@ public class GeneralPrefsFragment extends PreferenceFragment {
     }
 
     private void saveBackupPath(Uri uri) {
+        findPreference(PrefUtils.BACKUP_PATH).setSummary(uri.toString());
         PrefUtils.putString(PrefUtils.BACKUP_PATH, uri.toString());
         getContext().getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
     }
