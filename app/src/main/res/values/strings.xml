@@ -64,7 +64,6 @@
     <string name="question_backup_path_permission_title">File permission</string>
     <string name="question_backup_path_permission">As per Android\'s file permission requirements, please specify the backup path and grant permission.</string>
     <string name="storage_request_explanation">To be able to import or export the feeds from or to a file, you must allow the application to access to the storage memory.</string>
-    <string name="add_feed_result">Added successfully.</string>
     <string name="error_feed_error">The feed website is unreachable.</string>
     <string name="error_feed_process">The feed can not be processed.</string>
     <string name="error_feed_url_exists">The address already exists.</string>

@@ -561,7 +561,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                             public void onClick(DialogInterface dialog, int which) {
                                 boolean added = FeedDataContentProvider.addFeed(EditFeedActivity.this, data.get(which).get(FEED_SEARCH_URL), name.isEmpty() ? data.get(which).get(FEED_SEARCH_TITLE) : name, mRetrieveFulltextCb.isChecked());
                                 if (added)
-                                    ToastUtils.showShort(R.string.add_feed_result);
+                                    ToastUtils.showShort(R.string.action_finished);
                             }
                         });
                         builder.show();

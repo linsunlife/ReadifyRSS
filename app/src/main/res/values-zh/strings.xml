@@ -58,7 +58,6 @@
     <string name="menu_export">导出OPML</string>
     <string name="question_backup_path_permission_title">文件权限</string>
     <string name="question_backup_path_permission">根据 Android 的文件权限要求，请选择备份路径，并授予权限。</string>
-    <string name="add_feed_result">添加成功。</string>
     <string name="error_feed_error">该订阅地址无法访问。</string>
     <string name="error_feed_process">该订阅处理失败。</string>
     <string name="error_feed_url_exists">该订阅地址已存在。</string>
