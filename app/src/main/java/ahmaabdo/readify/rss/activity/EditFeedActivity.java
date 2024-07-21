@@ -409,7 +409,6 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                     final TypedArray selectedValues = getResources().obtainTypedArray(R.array.settings_keep_time_values);
                     values.put(FeedColumns.KEEP_TIME, selectedValues.getInt(mKeepTime.getSelectedItemPosition(), 0));
                     values.put(FeedColumns.FETCH_MODE, 0);
-                    values.putNull(FeedColumns.ERROR);
 
                     cr.update(getIntent().getData(), values, null, null);
                 }
