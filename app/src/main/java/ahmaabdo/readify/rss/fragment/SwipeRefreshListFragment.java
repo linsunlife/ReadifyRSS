@@ -21,6 +21,7 @@ package ahmaabdo.readify.rss.fragment;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,7 @@ import android.widget.ListView;
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.view.SwipeRefreshLayout;
 
-public abstract class SwipeRefreshListFragment extends ListFragment implements SwipeRefreshLayout.OnRefreshListener {
+public abstract class SwipeRefreshListFragment extends ListFragment implements OnRefreshListener {
 
     private SwipeRefreshLayout mRefreshLayout;
     private ListView mListView;

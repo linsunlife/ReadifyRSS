@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -455,14 +456,6 @@ public class SwipeRefreshLayout extends ViewGroup {
     private void updatePositionTimeout() {
         removeCallbacks(mCancel);
         postDelayed(mCancel, RETURN_TO_ORIGINAL_POSITION_TIMEOUT);
-    }
-
-    /**
-     * Classes that wish to be notified when the swipe gesture correctly
-     * triggers a refresh should implement this interface.
-     */
-    public interface OnRefreshListener {
-        public void onRefresh();
     }
 
     /**
