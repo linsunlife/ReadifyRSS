@@ -760,10 +760,15 @@ public class FeedDataContentProvider extends ContentProvider {
             // Notify everything else (except EntryColumns.CONTENT_URI to not update the
             // entry WebView when clicking on "favorite" button)
             cr.notifyChange(FeedColumns.GROUPED_FEEDS_CONTENT_URI, null);
-            cr.notifyChange(EntryColumns.ALL_ENTRIES_CONTENT_URI, null);
-            cr.notifyChange(EntryColumns.FAVORITES_CONTENT_URI, null);
-            cr.notifyChange(FeedColumns.CONTENT_URI, null);
-            cr.notifyChange(FeedColumns.GROUPS_CONTENT_URI, null);
+            String path = uri.getPath();
+            if (!path.startsWith(EntryColumns.ALL_ENTRIES_CONTENT_URI.getPath()))
+                cr.notifyChange(EntryColumns.ALL_ENTRIES_CONTENT_URI, null);
+            if (!path.startsWith(EntryColumns.FAVORITES_CONTENT_URI.getPath()))
+                cr.notifyChange(EntryColumns.FAVORITES_CONTENT_URI, null);
+            if (!path.startsWith(FeedColumns.CONTENT_URI.getPath()))
+                cr.notifyChange(FeedColumns.CONTENT_URI, null);
+            if (!path.startsWith(FeedColumns.GROUPS_CONTENT_URI.getPath()))
+                cr.notifyChange(FeedColumns.GROUPS_CONTENT_URI, null);
         }
     }
 }
