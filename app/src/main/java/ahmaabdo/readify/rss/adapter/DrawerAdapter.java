@@ -46,6 +46,7 @@ import ahmaabdo.readify.rss.MainApplication;
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.provider.FeedData;
 import ahmaabdo.readify.rss.provider.FeedData.EntryColumns;
+import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.StringUtils;
 import ahmaabdo.readify.rss.utils.UiUtils;
@@ -260,43 +261,53 @@ public class DrawerAdapter extends BaseAdapter {
         mAllNumber = mFavoritesNumber = 0;
         entriesNumbers = new HashMap<>();
         boolean showRead = PrefUtils.getBoolean(PrefUtils.SHOW_READ, true);
+        ContentResolver contentResolver = mContext.getContentResolver();
 
         // Gets the numbers of entries (should be in a thread, but it's way easier like this and it shouldn't be so slow)
-        String allNumber = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME +
-                (showRead ? ")" : " WHERE " + EntryColumns.IS_READ + " IS NULL)");
-        Cursor cursor1 = mContext.getContentResolver().query(EntryColumns.CONTENT_URI, new String[]{allNumber, FeedData.FAVORITES_NUMBER}, null, null, null);
+        // all entries
+        Cursor cursor1 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
         if (cursor1 != null) {
-            if (cursor1.moveToFirst()) {
+            if (cursor1.moveToFirst())
                 mAllNumber = cursor1.getInt(0);
-                mFavoritesNumber = cursor1.getInt(1);
-            }
             cursor1.close();
         }
 
-        String entriesNumber = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME + " WHERE " +
-                EntryColumns.FEED_ID + '=' + FeedData.FeedColumns.TABLE_NAME + '.' + FeedData.FeedColumns._ID +
-                (showRead ? ")" : " AND " + EntryColumns.IS_READ + " IS NULL)");
-        Cursor cursor2 = mContext.getContentResolver().query(FeedData.FeedColumns.GROUPED_FEEDS_CONTENT_URI,
-                new String[]{FeedData.FeedColumns._ID, entriesNumber, FeedData.FeedColumns.IS_GROUP, FeedData.FeedColumns.GROUP_ID},
-                null, null, null);
+        // favorite entries
+        Cursor cursor2 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE, null, null);
         if (cursor2 != null) {
-            while (cursor2.moveToNext()) {
-                long id = cursor2.getLong(0);
-                int number = cursor2.getInt(1);
-                int isGroup = cursor2.getInt(2);
-                long groupId = cursor2.getLong(3);
-                if (isGroup != 1) {
-                    entriesNumbers.put(id, number);
-                    if (groupId != 0) {
-                        Integer value = entriesNumbers.get(groupId);
-                        if (value == null) {
-                            value = 0;
-                        }
-                        entriesNumbers.put(groupId, value + number);
-                    }
-                }
-            }
+            if (cursor2.moveToFirst())
+                mFavoritesNumber = cursor2.getInt(0);
             cursor2.close();
+        }
+
+        // entries in feeds
+        Cursor cursor3 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{EntryColumns.FEED_ID, Constants.DB_COUNT},
+                (showRead ? "1=1" : EntryColumns.WHERE_UNREAD) + ") GROUP BY (" + EntryColumns.FEED_ID, null, null);
+        if (cursor3 != null) {
+            while (cursor3.moveToNext()) {
+                long feedId = cursor3.getLong(0);
+                int number = cursor3.getInt(1);
+                entriesNumbers.put(feedId, number);
+            }
+            cursor3.close();
+        }
+
+        // entries in groups
+        Cursor cursor4 = contentResolver.query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.GROUP_ID},
+                FeedColumns.GROUP_ID + Constants.DB_IS_NOT_NULL, null, null);
+        if (cursor4 != null) {
+            while (cursor4.moveToNext()) {
+                long feedId = cursor4.getLong(0);
+                long groupId = cursor4.getLong(1);
+                Integer number = entriesNumbers.get(feedId);
+                Integer sum = entriesNumbers.get(groupId);
+                if (sum == null) sum = 0;
+                if (number != null) sum += number;
+                entriesNumbers.put(groupId, sum);
+            }
+            cursor4.close();
         }
     }
 
