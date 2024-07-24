@@ -91,6 +91,8 @@ public class DrawerAdapter extends BaseAdapter {
     }
 
     public void setCursor(Cursor feedCursor) {
+        if (mFeedsCursor != null)
+            mFeedsCursor.close();
         mFeedsCursor = feedCursor;
         updateNumbers();
         notifyDataSetChanged();
