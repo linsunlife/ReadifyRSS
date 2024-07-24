@@ -27,6 +27,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +85,12 @@ public class DrawerAdapter extends BaseAdapter {
     public DrawerAdapter(Context context, Cursor feedCursor) {
         mContext = context;
         mFeedsCursor = feedCursor;
-        updateNumbers();
+        new Thread(){
+            @Override
+            public void run() {
+                updateNumbers();
+            }
+        }.start();
     }
 
     public void setSelectedItem(int selectedItem) {
@@ -94,8 +101,18 @@ public class DrawerAdapter extends BaseAdapter {
         if (mFeedsCursor != null)
             mFeedsCursor.close();
         mFeedsCursor = feedCursor;
-        updateNumbers();
-        notifyDataSetChanged();
+        new Thread(){
+            @Override
+            public void run() {
+                updateNumbers();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }.start();
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -267,7 +284,7 @@ public class DrawerAdapter extends BaseAdapter {
         if (mFeedsCursor == null)
             return;
 
-        // Gets the numbers of entries (should be in a thread, but it's way easier like this and it shouldn't be so slow)
+        // Gets the numbers of entries
         // all entries
         Cursor cursor1 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
                 showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
