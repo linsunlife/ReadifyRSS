@@ -92,8 +92,7 @@ public class DrawerAdapter extends BaseAdapter {
 
     public void setCursor(Cursor feedCursor) {
         mFeedsCursor = feedCursor;
-        if (feedCursor != null)
-            updateNumbers();
+        updateNumbers();
         notifyDataSetChanged();
     }
 
@@ -262,6 +261,9 @@ public class DrawerAdapter extends BaseAdapter {
         entriesNumbers = new HashMap<>();
         boolean showRead = PrefUtils.getBoolean(PrefUtils.SHOW_READ, true);
         ContentResolver contentResolver = mContext.getContentResolver();
+
+        if (mFeedsCursor == null)
+            return;
 
         // Gets the numbers of entries (should be in a thread, but it's way easier like this and it shouldn't be so slow)
         // all entries
