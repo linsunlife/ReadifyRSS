@@ -88,7 +88,7 @@ public class DrawerAdapter extends BaseAdapter {
         new Thread(){
             @Override
             public void run() {
-                updateNumbers();
+                getEntriesNumbers();
             }
         }.start();
     }
@@ -104,7 +104,7 @@ public class DrawerAdapter extends BaseAdapter {
         new Thread(){
             @Override
             public void run() {
-                updateNumbers();
+                getEntriesNumbers();
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
@@ -275,7 +275,7 @@ public class DrawerAdapter extends BaseAdapter {
         return mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2) && mFeedsCursor.getInt(POS_IS_GROUP_EXPANDED) == 1;
     }
 
-    private void updateNumbers() {
+    private void getEntriesNumbers() {
         mAllNumber = mFavoritesNumber = 0;
         entriesNumbers = new HashMap<>();
         boolean showRead = PrefUtils.getBoolean(PrefUtils.SHOW_READ, true);
