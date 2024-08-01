@@ -193,11 +193,6 @@ public class FetcherService extends IntentService {
                 PrefUtils.putLong(PrefUtils.LAST_SCHEDULED_REFRESH, SystemClock.elapsedRealtime());
             }
 
-            long keepTime = Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4")) * 86400000l;
-            long keepDateBorderTime = keepTime > 0 ? System.currentTimeMillis() - keepTime : 0;
-
-            deleteOldEntries(keepDateBorderTime);
-
             String feedId = intent.getStringExtra(Constants.FEED_ID);
             String groupId = intent.getStringExtra(Constants.GROUP_ID);
             if (feedId != null) {
@@ -209,6 +204,10 @@ public class FetcherService extends IntentService {
 
             mobilizeAllEntries();
             downloadAllImages();
+
+            long keepTime = Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4")) * 86400000l;
+            long keepDateBorderTime = keepTime > 0 ? System.currentTimeMillis() - keepTime : 0;
+            deleteOldEntries(keepDateBorderTime);
 
             PrefUtils.putBoolean(PrefUtils.IS_REFRESHING, false);
         }
