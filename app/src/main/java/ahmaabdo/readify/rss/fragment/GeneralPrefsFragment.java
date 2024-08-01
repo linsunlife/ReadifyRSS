@@ -208,7 +208,8 @@ public class GeneralPrefsFragment extends PreferenceFragment {
     }
 
     private void backup() {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        final Context context = getContext();
+        final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -216,7 +217,6 @@ public class GeneralPrefsFragment extends PreferenceFragment {
         new Thread(new Runnable() { // To not block the UI
             @Override
             public void run() {
-                final Context context = getContext();
                 try {
                     // Temporarily store backups in the cache directory
                     File cacheDir = new File(context.getCacheDir(), "backup");
@@ -277,7 +277,8 @@ public class GeneralPrefsFragment extends PreferenceFragment {
     }
 
     private void restore(final Uri uri) {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
+        final Context context = getContext();
+        final ProgressDialog progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(getString(R.string.loading));
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -285,7 +286,6 @@ public class GeneralPrefsFragment extends PreferenceFragment {
         new Thread(new Runnable() { // To not block the UI
             @Override
             public void run() {
-                final Context context = getContext();
                 try {
                     // Unzip the backup file
                     InputStream inputStream = context.getContentResolver().openInputStream(uri);
