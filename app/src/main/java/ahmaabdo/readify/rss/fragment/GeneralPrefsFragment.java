@@ -65,11 +65,13 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
+import com.bumptech.glide.Glide;
 import org.json.JSONObject;
 
 import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -164,6 +166,36 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                 Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent.setType("application/zip");
                 startActivityForResult(intent, REQUEST_CODE_RESTORE);
+                return true;
+            }
+        });
+
+        findPreference(PrefUtils.CLEAR_IMAGE_CACHE).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                final Context context = getContext();
+                final ProgressDialog progressDialog = new ProgressDialog(context);
+                progressDialog.setMessage(getString(R.string.loading));
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            long keepTime = Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4")) * 86400000l;
+                            long keepDateBorderTime = keepTime > 0 ? System.currentTimeMillis() - keepTime : 0;
+                            clearOldImageCache(Glide.getPhotoCacheDir(context), "^[a-fA-F0-9]{64}\\.[0-9]$", keepDateBorderTime);
+                            clearOldImageCache(new File(context.getCacheDir(), "WebView/Default/HTTP Cache/Cache_Data"), "^[a-fA-F0-9]{16}_[0-9]$", keepDateBorderTime);
+                            ToastUtils.showLong(R.string.action_finished);
+                        } catch (final Exception e) {
+                            Log.e(TAG, "Failed to clear image cache", e);
+                            ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
+                        } finally {
+                            progressDialog.cancel();
+                        }
+                    }
+                }).start();
                 return true;
             }
         });
@@ -348,6 +380,23 @@ public class GeneralPrefsFragment extends PreferenceFragment {
         findPreference(PrefUtils.BACKUP_PATH).setSummary(uri.toString());
         PrefUtils.putString(PrefUtils.BACKUP_PATH, uri.toString());
         getContext().getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+    }
+
+    private void clearOldImageCache(File imageCacheDir, String regex, final long keepDateBorderTime) {
+        if (imageCacheDir.exists()) {
+            final Pattern pattern = Pattern.compile(regex);
+            File[] files = imageCacheDir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return pattern.matcher(name).matches() && new File(dir, name).lastModified() < keepDateBorderTime;
+                }
+            });
+            if (files != null) {
+                for (File file : files) {
+                    file.delete();
+                }
+            }
+        }
     }
 
 }

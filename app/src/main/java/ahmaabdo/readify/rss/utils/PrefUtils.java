@@ -58,6 +58,7 @@ public class PrefUtils {
     public static final String BACKUP_PATH = "backup_path";
     public static final String BACKUP = "backup";
     public static final String RESTORE = "restore";
+    public static final String CLEAR_IMAGE_CACHE = "clear_image_cache";
     public static final String ABOUT = "about";
 
     public static Map<String, ?> getAll() {

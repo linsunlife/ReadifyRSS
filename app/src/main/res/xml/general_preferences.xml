@@ -204,6 +204,20 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/settings_cache">
+
+        <PreferenceScreen
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:key="clear_image_cache"
+                android:title="@string/settings_clear_image_cache"
+                android:summary="@string/settings_clear_image_cache_description" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="About">
