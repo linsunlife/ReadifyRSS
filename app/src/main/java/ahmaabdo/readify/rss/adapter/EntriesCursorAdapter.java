@@ -309,15 +309,17 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
     }
 
     private void toggleReadState(final List<Long> ids, final boolean isRead) {
-        new Thread() {
-            @Override
-            public void run() {
-                ContentResolver cr = MainApplication.getContext().getContentResolver();
-                String where = BaseColumns._ID + " IN (" + TextUtils.join(",", ids) + ')';
-                ContentValues values = isRead ? FeedData.getReadContentValues() : FeedData.getUnreadContentValues();
-                cr.update(mUri, values, where, null);
-            }
-        }.start();
+        if (!ids.isEmpty()) {
+            new Thread() {
+                @Override
+                public void run() {
+                    ContentResolver cr = MainApplication.getContext().getContentResolver();
+                    String where = BaseColumns._ID + " IN (" + TextUtils.join(",", ids) + ')';
+                    ContentValues values = isRead ? FeedData.getReadContentValues() : FeedData.getUnreadContentValues();
+                    cr.update(mUri, values, where, null);
+                }
+            }.start();
+        }
     }
 
     public void toggleReadState(final long id, View view) {
