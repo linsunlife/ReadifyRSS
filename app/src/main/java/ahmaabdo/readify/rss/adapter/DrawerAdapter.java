@@ -94,7 +94,10 @@ public class DrawerAdapter extends BaseAdapter {
     }
 
     public void setSelectedItem(int selectedItem) {
-        mSelectedItem = selectedItem;
+        if (mSelectedItem != selectedItem) {
+            mSelectedItem = selectedItem;
+            notifyDataSetChanged();
+        }
     }
 
     public void setCursor(Cursor feedCursor) {
