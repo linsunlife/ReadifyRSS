@@ -139,6 +139,7 @@ public class DrawerAdapter extends BaseAdapter {
 
             // default init
             holder.iconView.setImageDrawable(null);
+            holder.iconView.clearColorFilter();
             holder.titleTxt.setText("");
             holder.titleTxt.setAllCaps(false);
             holder.stateTxt.setVisibility(View.GONE);
