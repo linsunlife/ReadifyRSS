@@ -171,7 +171,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
     @Override
     public View getView(final int position, final View convertView, final ViewGroup parent) {
         final View view = super.getView(position, convertView, parent);
-        final long id = EntriesCursorAdapter.this.getItemId(position);
+        final long id = getItemId(position);
 
         // 单击
         view.setOnClickListener(new View.OnClickListener() {
@@ -200,13 +200,13 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                         switch (item.getItemId()) {
                             case R.id.read_above:
                                 for (int i = 0; i < position; i++) {
-                                    ids.add(EntriesCursorAdapter.this.getItemId(i));
+                                    ids.add(getItemId(i));
                                 }
                                 readEntries(ids);
                                 return true;
                             case R.id.read_below:
-                                for (int i = position + 1; i < EntriesCursorAdapter.this.getCount(); i++) {
-                                    ids.add(EntriesCursorAdapter.this.getItemId(i));
+                                for (int i = position + 1; i < getCount(); i++) {
+                                    ids.add(getItemId(i));
                                 }
                                 readEntries(ids);
                                 return true;
