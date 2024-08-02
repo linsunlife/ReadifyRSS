@@ -79,18 +79,14 @@ public class DrawerAdapter extends BaseAdapter {
     private int mSelectedItem;
     private final Context mContext;
     private Cursor mFeedsCursor;
-    private int mAllNumber, mFavoritesNumber;
-    private HashMap<Long, Integer> entriesNumbers;
+    private int mAllNumber = 0;
+    private int mFavoritesNumber = 0;
+    private HashMap<Long, Integer> entriesNumbers = new HashMap<>();
 
     public DrawerAdapter(Context context, Cursor feedCursor) {
         mContext = context;
         mFeedsCursor = feedCursor;
-        new Thread(){
-            @Override
-            public void run() {
-                getEntriesNumbers();
-            }
-        }.start();
+        getEntriesNumbers();
     }
 
     public void setSelectedItem(int selectedItem) {
@@ -104,18 +100,7 @@ public class DrawerAdapter extends BaseAdapter {
         if (mFeedsCursor != null)
             mFeedsCursor.close();
         mFeedsCursor = feedCursor;
-        new Thread(){
-            @Override
-            public void run() {
-                getEntriesNumbers();
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyDataSetChanged();
-                    }
-                });
-            }
-        }.start();
+        getEntriesNumbers();
     }
 
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -282,58 +267,71 @@ public class DrawerAdapter extends BaseAdapter {
     private void getEntriesNumbers() {
         mAllNumber = mFavoritesNumber = 0;
         entriesNumbers = new HashMap<>();
-        boolean showRead = PrefUtils.getBoolean(PrefUtils.SHOW_READ, true);
-        ContentResolver contentResolver = mContext.getContentResolver();
 
         if (mFeedsCursor == null)
             return;
 
-        // Gets the numbers of entries
-        // all entries
-        Cursor cursor1 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
-                showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
-        if (cursor1 != null) {
-            if (cursor1.moveToFirst())
-                mAllNumber = cursor1.getInt(0);
-            cursor1.close();
-        }
+        new Thread(){
+            @Override
+            public void run() {
+                boolean showRead = PrefUtils.getBoolean(PrefUtils.SHOW_READ, true);
+                ContentResolver contentResolver = mContext.getContentResolver();
 
-        // favorite entries
-        Cursor cursor2 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
-                EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE, null, null);
-        if (cursor2 != null) {
-            if (cursor2.moveToFirst())
-                mFavoritesNumber = cursor2.getInt(0);
-            cursor2.close();
-        }
+                // Gets the numbers of entries
+                // all entries
+                Cursor cursor1 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                        showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
+                if (cursor1 != null) {
+                    if (cursor1.moveToFirst())
+                        mAllNumber = cursor1.getInt(0);
+                    cursor1.close();
+                }
 
-        // entries in feeds
-        Cursor cursor3 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{EntryColumns.FEED_ID, Constants.DB_COUNT},
-                (showRead ? "1=1" : EntryColumns.WHERE_UNREAD) + ") GROUP BY (" + EntryColumns.FEED_ID, null, null);
-        if (cursor3 != null) {
-            while (cursor3.moveToNext()) {
-                long feedId = cursor3.getLong(0);
-                int number = cursor3.getInt(1);
-                entriesNumbers.put(feedId, number);
+                // favorite entries
+                Cursor cursor2 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                        EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE, null, null);
+                if (cursor2 != null) {
+                    if (cursor2.moveToFirst())
+                        mFavoritesNumber = cursor2.getInt(0);
+                    cursor2.close();
+                }
+
+                // entries in feeds
+                Cursor cursor3 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{EntryColumns.FEED_ID, Constants.DB_COUNT},
+                        (showRead ? "1=1" : EntryColumns.WHERE_UNREAD) + ") GROUP BY (" + EntryColumns.FEED_ID, null, null);
+                if (cursor3 != null) {
+                    while (cursor3.moveToNext()) {
+                        long feedId = cursor3.getLong(0);
+                        int number = cursor3.getInt(1);
+                        entriesNumbers.put(feedId, number);
+                    }
+                    cursor3.close();
+                }
+
+                // entries in groups
+                Cursor cursor4 = contentResolver.query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.GROUP_ID},
+                        FeedColumns.GROUP_ID + Constants.DB_IS_NOT_NULL, null, null);
+                if (cursor4 != null) {
+                    while (cursor4.moveToNext()) {
+                        long feedId = cursor4.getLong(0);
+                        long groupId = cursor4.getLong(1);
+                        Integer number = entriesNumbers.get(feedId);
+                        Integer sum = entriesNumbers.get(groupId);
+                        if (sum == null) sum = 0;
+                        if (number != null) sum += number;
+                        entriesNumbers.put(groupId, sum);
+                    }
+                    cursor4.close();
+                }
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        notifyDataSetChanged();
+                    }
+                });
             }
-            cursor3.close();
-        }
-
-        // entries in groups
-        Cursor cursor4 = contentResolver.query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.GROUP_ID},
-                FeedColumns.GROUP_ID + Constants.DB_IS_NOT_NULL, null, null);
-        if (cursor4 != null) {
-            while (cursor4.moveToNext()) {
-                long feedId = cursor4.getLong(0);
-                long groupId = cursor4.getLong(1);
-                Integer number = entriesNumbers.get(feedId);
-                Integer sum = entriesNumbers.get(groupId);
-                if (sum == null) sum = 0;
-                if (number != null) sum += number;
-                entriesNumbers.put(groupId, sum);
-            }
-            cursor4.close();
-        }
+        }.start();
     }
 
     private static class ViewHolder {
