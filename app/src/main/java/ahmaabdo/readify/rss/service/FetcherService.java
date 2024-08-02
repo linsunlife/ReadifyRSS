@@ -204,11 +204,6 @@ public class FetcherService extends IntentService {
 
             mobilizeAllEntries();
             downloadAllImages();
-
-            long keepTime = Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4")) * 86400000l;
-            long keepDateBorderTime = keepTime > 0 ? System.currentTimeMillis() - keepTime : 0;
-            deleteOldEntries(keepDateBorderTime);
-
             PrefUtils.putBoolean(PrefUtils.IS_REFRESHING, false);
         }
     }
@@ -374,24 +369,28 @@ public class FetcherService extends IntentService {
         }
     }
 
-    private void deleteOldEntries(long keepDateBorderTime) {
+    private void deleteOldEntries(String feedId) {
+        long keepTime = Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4")) * 86400000l;
+        long keepDateBorderTime = keepTime > 0 ? System.currentTimeMillis() - keepTime : 0;
         ContentResolver contentResolver = MainApplication.getContext().getContentResolver();
-        Cursor cursor = contentResolver.query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.KEEP_TIME}, null, null, null);
-        while (cursor.moveToNext()) {
-            long feedid = cursor.getLong(0);
-            long keepTimeLocal = cursor.getLong(1) * 86400000l;
-            long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
-            if (keepDateBorderTimeLocal > 0) {
-                String where = EntryColumns.DATE + '<' + keepDateBorderTimeLocal + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + "=" + String.valueOf(feedid);
-                deleteEntryImagesCache(where);
-                contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
+        if (feedId != null) {
+            Cursor cursor = contentResolver.query(FeedColumns.CONTENT_URI(feedId), new String[]{FeedColumns.KEEP_TIME}, null, null, null);
+            while (cursor.moveToNext()) {
+                long keepTimeLocal = cursor.getLong(0) * 86400000l;
+                long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
+                if (keepDateBorderTimeLocal > 0) {
+                    String where = EntryColumns.DATE + '<' + keepDateBorderTimeLocal + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + "=" + feedId;
+                    deleteEntryImagesCache(where);
+                    contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
+                }
             }
+            cursor.close();
         }
-        cursor.close();
-
-        String where = EntryColumns.DATE + '<' + keepDateBorderTime + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + Constants.DB_IS_NULL;
-        deleteEntryImagesCache(where);
-        contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
+        else {
+            String where = EntryColumns.DATE + '<' + keepDateBorderTime + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + Constants.DB_IS_NULL;
+            deleteEntryImagesCache(where);
+            contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
+        }
     }
 
     private void deleteEntryImagesCache(String where) {
@@ -447,6 +446,9 @@ public class FetcherService extends IntentService {
         }
 
         executor.shutdownNow(); // To purge all threads
+
+        if (groupId == null)
+            deleteOldEntries(null);
 
         return globalResult;
     }
@@ -679,6 +681,8 @@ public class FetcherService extends IntentService {
         }
 
         cursor.close();
+
+        deleteOldEntries(feedId);
 
         return handler != null ? handler.getNewCount() : 0;
     }
