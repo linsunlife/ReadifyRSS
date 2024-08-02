@@ -369,27 +369,15 @@ public class FetcherService extends IntentService {
         }
     }
 
-    private void deleteOldEntries(String feedId) {
-        long keepTime = Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4")) * 86400000l;
-        long keepDateBorderTime = keepTime > 0 ? System.currentTimeMillis() - keepTime : 0;
-        ContentResolver contentResolver = MainApplication.getContext().getContentResolver();
-        if (feedId != null) {
-            Cursor cursor = contentResolver.query(FeedColumns.CONTENT_URI(feedId), new String[]{FeedColumns.KEEP_TIME}, null, null, null);
-            while (cursor.moveToNext()) {
-                long keepTimeLocal = cursor.getLong(0) * 86400000l;
-                long keepDateBorderTimeLocal = keepTimeLocal > 0 ? System.currentTimeMillis() - keepTimeLocal : keepDateBorderTime;
-                if (keepDateBorderTimeLocal > 0) {
-                    String where = EntryColumns.DATE + '<' + keepDateBorderTimeLocal + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + "=" + feedId;
-                    deleteEntryImagesCache(where);
-                    contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
-                }
-            }
-            cursor.close();
-        }
-        else {
-            String where = EntryColumns.DATE + '<' + keepDateBorderTime + Constants.DB_AND + EntryColumns.WHERE_READ + Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE + Constants.DB_AND + EntryColumns.FEED_ID + Constants.DB_IS_NULL;
+    private void deleteOldEntries(String feedId, long keepTime) {
+        long keepDateBorderTime = keepTime > 0 ? System.currentTimeMillis() - keepTime * 86400000 : 0;
+        if (keepDateBorderTime > 0) {
+            String where = EntryColumns.DATE + '<' + keepDateBorderTime +
+                    Constants.DB_AND + EntryColumns.WHERE_READ +
+                    Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE +
+                    Constants.DB_AND + EntryColumns.FEED_ID + (feedId == null ? Constants.DB_IS_NULL : "=" + feedId);
             deleteEntryImagesCache(where);
-            contentResolver.delete(EntryColumns.CONTENT_URI, where, null);
+            MainApplication.getContext().getContentResolver().delete(EntryColumns.CONTENT_URI, where, null);
         }
     }
 
@@ -448,7 +436,7 @@ public class FetcherService extends IntentService {
         executor.shutdownNow(); // To purge all threads
 
         if (groupId == null)
-            deleteOldEntries(null);
+            deleteOldEntries(null, Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4")));
 
         return globalResult;
     }
@@ -459,6 +447,7 @@ public class FetcherService extends IntentService {
         ContentResolver cr = getContentResolver();
         Cursor cursor = cr.query(FeedColumns.CONTENT_URI(feedId), null, null, null, null);
 
+        long keepTime = 0;
         if (cursor.moveToFirst()) {
             int urlPosition = cursor.getColumnIndex(FeedColumns.URL);
             int idPosition = cursor.getColumnIndex(FeedColumns._ID);
@@ -474,6 +463,7 @@ public class FetcherService extends IntentService {
             final String httpAuthPassValue = cursor.getString(httpAuthPasswordPosition);
 
             String id = cursor.getString(idPosition);
+            keepTime = cursor.getLong(keepTimePosition);
 
             HttpURLConnection connection = null;
 
@@ -682,7 +672,9 @@ public class FetcherService extends IntentService {
 
         cursor.close();
 
-        deleteOldEntries(feedId);
+        if (keepTime <= 0)
+            keepTime = Long.parseLong(PrefUtils.getString(PrefUtils.KEEP_TIME, "4"));
+        deleteOldEntries(feedId, keepTime);
 
         return handler != null ? handler.getNewCount() : 0;
     }
