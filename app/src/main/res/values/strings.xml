@@ -55,7 +55,9 @@
     <string name="new_feed_title">New feed</string>
     <string name="context_menu_edit">Edit</string>
     <string name="popup_menu_read_above">Mark above as read</string>
+    <string name="popup_menu_unread_above">Mark above as unread</string>
     <string name="popup_menu_read_below">Mark below as read</string>
+    <string name="popup_menu_unread_below">Mark below as unread</string>
     <string name="popup_menu_toggle_read_state">Toggle read state</string>
     <string name="popup_menu_toggle_favorite_state">Toggle favorite state</string>
     <string name="menu_add_group">Add group</string>

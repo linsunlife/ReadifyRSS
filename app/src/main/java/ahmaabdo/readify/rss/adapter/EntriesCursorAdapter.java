@@ -199,16 +199,18 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                         List<Long> ids = new ArrayList<>();
                         switch (item.getItemId()) {
                             case R.id.read_above:
+                            case R.id.unread_above:
                                 for (int i = 0; i < position; i++) {
                                     ids.add(getItemId(i));
                                 }
-                                readEntries(ids);
+                                toggleReadState(ids, item.getItemId() == R.id.read_above);
                                 return true;
                             case R.id.read_below:
+                            case R.id.unread_below:
                                 for (int i = position + 1; i < getCount(); i++) {
                                     ids.add(getItemId(i));
                                 }
-                                readEntries(ids);
+                                toggleReadState(ids, item.getItemId() == R.id.read_below);
                                 return true;
                             case R.id.toggle_read_state:
                                 toggleReadState(id, v);
@@ -306,13 +308,14 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         return view;
     }
 
-    private void readEntries(final List<Long> ids) {
+    private void toggleReadState(final List<Long> ids, final boolean isRead) {
         new Thread() {
             @Override
             public void run() {
                 ContentResolver cr = MainApplication.getContext().getContentResolver();
                 String where = BaseColumns._ID + " IN (" + TextUtils.join(",", ids) + ')';
-                cr.update(mUri, FeedData.getReadContentValues(), where, null);
+                ContentValues values = isRead ? FeedData.getReadContentValues() : FeedData.getUnreadContentValues();
+                cr.update(mUri, values, where, null);
             }
         }.start();
     }
