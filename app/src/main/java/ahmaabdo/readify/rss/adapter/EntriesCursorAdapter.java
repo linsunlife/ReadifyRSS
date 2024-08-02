@@ -233,6 +233,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             private float startX = 0;
             private float startY = 0;
             private final float touchSlop = ViewConfiguration.get(view.getContext()).getScaledTouchSlop();
+            private final int MIN_SWIPE_DISTANCE = 200;
             private boolean isPressed = false;
             private final Handler handler = new Handler(Looper.getMainLooper());
             private final Runnable longPressRunnable = new Runnable() {
@@ -284,10 +285,10 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                         if (translationX != 0)
                             v.animate().translationX(0).setDuration(200).start();
                         // 根据滑动距离判断左滑还是右滑，并执行相应操作
-                        if (translationX > touchSlop) {
+                        if (translationX > MIN_SWIPE_DISTANCE) {
                             // 右滑操作
                             toggleFavoriteState(id, v);
-                        } else if (translationX < -touchSlop) {
+                        } else if (translationX < -MIN_SWIPE_DISTANCE) {
                             // 左滑操作
                             toggleReadState(id, v);
                         } else if (isPressed) {
