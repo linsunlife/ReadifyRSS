@@ -342,10 +342,7 @@ public class GeneralPrefsFragment extends PreferenceFragment {
                                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
-                                            Intent intent = getContext().getPackageManager().getLaunchIntentForPackage(getContext().getPackageName());
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            startActivity(intent);
-                                            System.exit(0);
+                                            android.os.Process.killProcess(android.os.Process.myPid());
                                         }
                                     }).setNegativeButton(android.R.string.no, null).show();
                         }
