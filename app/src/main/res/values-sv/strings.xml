@@ -156,12 +156,16 @@
     <string-array name="settings_keep_times_per_feed">
         <item>1 dag</item>
         <item>2 dagar</item>
-        <item>4 dagar</item>
+        <item>3 dagar</item>
         <item>1 vecka</item>
         <item>2 veckor</item>
         <item>1 månad</item>
         <item>2 månader</item>
         <item>3 månader</item>
+        <item>6 månader</item>
+        <item>1 år</item>
+        <item>2 år</item>
+        <item>3 år</item>
         <item>Förinställt värde</item>
     </string-array>
     <string-array name="settings_intervals">
@@ -178,12 +182,16 @@
     <string-array name="settings_keep_times">
         <item>1 dag</item>
         <item>2 dagar</item>
-        <item>4 dagar</item>
+        <item>3 dagar</item>
         <item>1 vecka</item>
         <item>2 veckor</item>
         <item>1 månad</item>
         <item>2 månader</item>
         <item>3 månader</item>
+        <item>6 månader</item>
+        <item>1 år</item>
+        <item>2 år</item>
+        <item>3 år</item>
         <item>För alltid</item>
     </string-array>
     <string-array name="settings_font_sizes">

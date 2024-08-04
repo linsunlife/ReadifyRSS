@@ -161,23 +161,31 @@
     <string-array name="settings_keep_times">
         <item>1 день</item>
         <item>2 дня</item>
-        <item>4 дня</item>
+        <item>3 дня</item>
         <item>1 неделя</item>
         <item>2 недели</item>
         <item>1 месяц</item>
         <item>2 месяца</item>
         <item>3 месяца</item>
+        <item>6 месяца</item>
+        <item>1 год</item>
+        <item>2 года</item>
+        <item>3 года</item>
         <item>Не удалять</item>
     </string-array>
     <string-array name="settings_keep_times_per_feed">
         <item>1 день</item>
         <item>2 дня</item>
-        <item>4 дня</item>
+        <item>3 дня</item>
         <item>1 неделя</item>
         <item>2 недели</item>
         <item>1 месяц</item>
         <item>2 месяца</item>
         <item>3 месяца</item>
+        <item>6 месяца</item>
+        <item>1 год</item>
+        <item>2 года</item>
+        <item>3 года</item>
         <item>По умолчанию</item>
     </string-array>
     <string-array name="settings_font_sizes">

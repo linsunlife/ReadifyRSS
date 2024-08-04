@@ -177,23 +177,31 @@
     <string-array name="settings_keep_times">
         <item>1 giorno</item>
         <item>2 giorni</item>
-        <item>4 giorni</item>
+        <item>3 giorni</item>
         <item>1 settimana</item>
         <item>2 settimane</item>
         <item>1 mese</item>
         <item>2 mesi</item>
         <item>3 mesi</item>
+        <item>6 mesi</item>
+        <item>1 anno</item>
+        <item>2 anni</item>
+        <item>3 anni</item>
         <item>Per sempre</item>
     </string-array>
     <string-array name="settings_keep_times_per_feed">
         <item>1 giorno</item>
         <item>2 giorni</item>
-        <item>4 giorni</item>
+        <item>3 giorni</item>
         <item>1 settimana</item>
         <item>2 settimane</item>
         <item>1 mese</item>
         <item>2 mesi</item>
         <item>3 mesi</item>
+        <item>6 mesi</item>
+        <item>1 anno</item>
+        <item>2 anni</item>
+        <item>3 anni</item>
         <item>Default</item>
     </string-array>
     <string-array name="settings_font_sizes">

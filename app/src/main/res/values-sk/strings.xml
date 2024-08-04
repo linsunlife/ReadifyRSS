@@ -164,12 +164,16 @@
     <string-array name="settings_keep_times">
         <item>1 deň</item>
         <item>2 dni</item>
-        <item>4 dni</item>
+        <item>3 dni</item>
         <item>1 týžden</item>
         <item>2 týždne</item>
         <item>1 mesiac</item>
         <item>2 mesiace</item>
         <item>3 mesiace</item>
+        <item>6 mesiace</item>
+        <item>1 rok</item>
+        <item>2 roky</item>
+        <item>3 roky</item>
         <item>Navždy</item>
     </string-array>
 

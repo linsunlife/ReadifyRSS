@@ -157,12 +157,16 @@
     <string-array name="settings_keep_times_per_feed">
         <item>1 päivä</item>
         <item>2 päivää</item>
-        <item>4 päivää</item>
+        <item>3 päivää</item>
         <item>1 viikko</item>
         <item>2 viikkoa</item>
         <item>1 kuukausi</item>
         <item>2 kuukautta</item>
         <item>3 kuukautta</item>
+        <item>6 kuukautta</item>
+        <item>1 vuosi</item>
+        <item>2 vuotta</item>
+        <item>3 vuotta</item>
         <item>Oletus</item>
      </string-array>
     <string-array name="settings_intervals">
@@ -179,12 +183,16 @@
     <string-array name="settings_keep_times">
         <item>1 päivä</item>
         <item>2 päivää</item>
-        <item>4 päivää</item>
+        <item>3 päivää</item>
         <item>1 viikko</item>
         <item>2 viikkoa</item>
         <item>1 kuukausi</item>
         <item>2 kuukautta</item>
         <item>3 kuukautta</item>
+        <item>6 kuukautta</item>
+        <item>1 vuosi</item>
+        <item>2 vuotta</item>
+        <item>3 vuotta</item>
         <item>Ikuisesti</item>
     </string-array>
     <string-array name="settings_font_sizes">

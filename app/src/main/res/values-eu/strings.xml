@@ -174,12 +174,16 @@
     <string-array name="settings_keep_times">
         <item>Egun 1</item>
         <item>2 egun</item>
-        <item>4 egun</item>
+        <item>3 egun</item>
         <item>Aste 1</item>
         <item>2 aste</item>
         <item>Hilabete 1</item>
         <item>2 hilabete</item>
         <item>3 hilabete</item>
+        <item>6 hilabete</item>
+        <item>Urte 1</item>
+        <item>2 urte</item>
+        <item>3 urte</item>
         <item>Betirako</item>
     </string-array>
     <string-array name="settings_font_sizes">

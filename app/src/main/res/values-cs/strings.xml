@@ -169,12 +169,16 @@
     <string-array name="settings_keep_times">
         <item>1 den</item>
         <item>2 dny</item>
-        <item>4 dny</item>
+        <item>3 dny</item>
         <item>1 týden</item>
         <item>2 týdny</item>
         <item>1 měsíc</item>
         <item>2 měsíce</item>
         <item>3 měsíce</item>
+        <item>6 měsíce</item>
+        <item>1 rok</item>
+        <item>2 roky</item>
+        <item>3 roky</item>
         <item>Navždy</item>
     </string-array>
     <string-array name="settings_font_sizes">
