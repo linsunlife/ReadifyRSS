@@ -60,6 +60,8 @@ import android.widget.*;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
 import ahmaabdo.readify.rss.Constants;
@@ -80,7 +82,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     private final Uri mUri;
     private final boolean mShowFeedInfo;
-    private int mIdPos, mTitlePos, mMainImgPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos;
+    private int mIdPos, mTitlePos, mMainImgPos, mLinkPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos;
     private long mEntriesListDisplayDate;
 
     public EntriesCursorAdapter(Context context, Uri uri, Cursor cursor, boolean showFeedInfo, long entriesListDisplayDate) {
@@ -120,14 +122,16 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         long entryID = cursor.getLong(mIdPos);
         String mainImgUrl = cursor.getString(mMainImgPos);
         mainImgUrl = TextUtils.isEmpty(mainImgUrl) ? null : NetworkUtils.getDownloadedOrDistantImageUrl(entryID, mainImgUrl);
+        String link = cursor.getString(mLinkPos);
 
         if (mainImgUrl != null && PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
             holder.mainImgView.setVisibility(View.VISIBLE);
             int radius = 16; // 圆角半径，单位为像素
             int margin = 0; // 可选参数，设置圆角与 ImageView 边缘的距离
             TextDrawable textDrawable = TextDrawable.builder().buildRoundRect("!", Color.GRAY, radius);
+            GlideUrl glideUrl = new GlideUrl(mainImgUrl, new LazyHeaders.Builder().addHeader("Referer", link).build());
             Glide.with(context)
-                    .load(mainImgUrl)
+                    .load(glideUrl)
                     .bitmapTransform(new CenterCrop(context), new RoundedCornersTransformation(context, radius, margin))
                     .error(textDrawable)
                     .into(holder.mainImgView);
@@ -397,6 +401,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             mIdPos = cursor.getColumnIndex(EntryColumns._ID);
             mTitlePos = cursor.getColumnIndex(EntryColumns.TITLE);
             mMainImgPos = cursor.getColumnIndex(EntryColumns.IMAGE_URL);
+            mLinkPos = cursor.getColumnIndex(EntryColumns.LINK);
             mDatePos = cursor.getColumnIndex(EntryColumns.DATE);
             mAuthorPos = cursor.getColumnIndex(EntryColumns.AUTHOR);
             mIsReadPos = cursor.getColumnIndex(EntryColumns.IS_READ);
