@@ -193,6 +193,18 @@ public class EntryView extends WebView {
                     .append("injectedJSObject.onClickEnclosure();").append(BUTTON_END);
         }
 
+        content.append("<script>\n" +
+                "var images = document.getElementsByTagName('img');" +
+                "for (var i = 0; i < images.length; i++) {" +
+                "    images[i].onerror = function() {" +
+                "        this.src = 'file:///android_asset/default.png';" + // 设置默认图片路径
+                "        this.style.width = 'auto';" +
+                "        this.style.display = 'block';" +
+                "        this.style.margin = 'auto';" +
+                "    };" +
+                "}" +
+                "</script>");
+
         content.append(BUTTON_SECTION_END).append(BODY_END);
 
         return content.toString();
