@@ -97,30 +97,6 @@ public class OPML {
         Xml.parse(new InputStreamReader(input), mParser);
     }
 
-    public static void exportTo(final String fileName) {
-        final String backupPath = PrefUtils.getString(PrefUtils.BACKUP_PATH, null);
-        if (backupPath != null) {
-            new Thread(new Runnable() { // To not block the UI
-                @Override
-                public void run() {
-                    try {
-                        DocumentFile backupFolder = DocumentFile.fromTreeUri(MainApplication.getContext(), Uri.parse(backupPath));
-                        DocumentFile backupFile = backupFolder.findFile(fileName);
-                        if (backupFile != null && backupFile.exists()) {
-                            backupFile.delete();
-                        }
-                        backupFile = backupFolder.createFile("*/*", fileName);
-                        OutputStream outputStream = MainApplication.getContext().getContentResolver().openOutputStream(backupFile.getUri());
-                        exportTo(outputStream);
-                        outputStream.close();
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to export OPML", e);
-                    }
-                }
-            }).start();
-        }
-    }
-
     public static void exportTo(OutputStream output) throws IOException {
         Cursor cursor = MainApplication.getContext().getContentResolver()
                 .query(FeedColumns.GROUPS_CONTENT_URI, FEEDS_PROJECTION, null, null, null);

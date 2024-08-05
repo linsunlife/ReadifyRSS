@@ -564,15 +564,9 @@ public class FeedDataContentProvider extends ContentProvider {
         }
 
         int count = database.update(table, values, where.toString(), selectionArgs);
-
-        if (FeedColumns.TABLE_NAME.equals(table)
-                && (values.containsKey(FeedColumns.NAME) || values.containsKey(FeedColumns.URL) || values.containsKey(FeedColumns.PRIORITY))) {
-            OPML.exportTo("Readify_auto_backup.opml");
-        }
         if (count > 0) {
             notifyChangeOnAllUris(matchCode, uri);
         }
-
         return count;
     }
 
@@ -741,12 +735,7 @@ public class FeedDataContentProvider extends ContentProvider {
         }
 
         int count = database.delete(table, where.toString(), selectionArgs);
-
         if (count > 0) {
-            if (FeedColumns.TABLE_NAME.equals(table)) {
-                OPML.exportTo("Readify_auto_backup.opml");
-            }
-
             notifyChangeOnAllUris(matchCode, uri);
         }
         return count;
