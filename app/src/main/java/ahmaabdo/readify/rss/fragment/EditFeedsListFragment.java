@@ -46,7 +46,6 @@
 package ahmaabdo.readify.rss.fragment;
 
 import ahmaabdo.readify.rss.activity.EditFeedActivity;
-import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -82,7 +81,6 @@ public class EditFeedsListFragment extends ListFragment {
 
     private static final int REQUEST_CODE_IMPORT_OPML = 1;
     private static final int REQUEST_CODE_EXPORT_OPML = 2;
-    private static final int REQUEST_CODE_BACKUP_PATH = 3;
 
     private DragNDropExpandableListView mListView;
 
@@ -284,35 +282,16 @@ public class EditFeedsListFragment extends ListFragment {
                         }).setNegativeButton(android.R.string.cancel, null).show();
                 return true;
             }
-            case R.id.menu_backup_path:
-                selectBackupPath();
-                return true;
             case R.id.menu_export:
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.putExtra(Intent.EXTRA_TITLE, "Readify_" + System.currentTimeMillis() + ".opml"); // 设置默认文件名
+                intent.setType("*/*");
+                startActivityForResult(intent, REQUEST_CODE_EXPORT_OPML);
+                return true;
             case R.id.menu_import: {
-                if (getBackupPath() == null) {
-                    new AlertDialog.Builder(getActivity())
-                            .setTitle(R.string.question_backup_path_permission_title)
-                            .setMessage(R.string.question_backup_path_permission)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    selectBackupPath();
-                                }
-                            }).setNegativeButton(android.R.string.no, null).show();
-                    return true;
-                }
-                int requestCode;
-                Intent intent;
-                if (item.getItemId() == R.id.menu_export) {
-                    requestCode = REQUEST_CODE_EXPORT_OPML;
-                    intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                    intent.putExtra(Intent.EXTRA_TITLE, "Readify_" + System.currentTimeMillis() + ".opml"); // 设置默认文件名
-                } else {
-                    requestCode = REQUEST_CODE_IMPORT_OPML;
-                    intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                }
-                intent.setType("*/*"); // 设置 OPML 文件类型
-                startActivityForResult(intent, requestCode);
+                Intent intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent1.setType("*/*");
+                startActivityForResult(intent1, REQUEST_CODE_IMPORT_OPML);
                 return true;
             }
         }
@@ -350,23 +329,8 @@ public class EditFeedsListFragment extends ListFragment {
                         }
                     }
                 }).start();
-            } else if (requestCode == REQUEST_CODE_BACKUP_PATH) {
-                saveBackupPath(uri);
-                contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             }
         }
     }
 
-    private Uri getBackupPath() {
-        String uriString = PrefUtils.getString(PrefUtils.BACKUP_PATH, null);
-        return uriString != null ? Uri.parse(uriString) : null;
-    }
-
-    private void saveBackupPath(Uri uri) {
-        PrefUtils.putString(PrefUtils.BACKUP_PATH, uri.toString());
-    }
-
-    private void selectBackupPath() {
-        startActivityForResult(new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE), REQUEST_CODE_BACKUP_PATH);
-    }
 }

@@ -16,10 +16,6 @@
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction" />
     <item
-        android:id="@+id/menu_backup_path"
-        android:icon="@drawable/ic_folder"
-        android:title="@string/menu_backup_path" />
-    <item
         android:id="@+id/menu_import"
         android:icon="@drawable/action_import"
         android:title="@string/menu_import" />
