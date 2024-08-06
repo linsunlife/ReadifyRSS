@@ -61,9 +61,6 @@
     <string name="error_feed_error">该订阅地址无法访问。</string>
     <string name="error_feed_process">该订阅处理失败。</string>
     <string name="error_feed_url_exists">该订阅地址已存在。</string>
-    <string name="error_feed_import">您选择的文件无法导入。</string>
-    <string name="error_feed_export">导出失败，请确认SD卡可以写入。</string>
-    <string name="error_external_storage_not_available">外置存储（如SD卡）不可用。</string>
     <string name="feed_url">网址</string>
     <string name="optional">（可选）</string>
     <string name="tab_feed_title">订阅</string>

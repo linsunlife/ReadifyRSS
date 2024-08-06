@@ -52,9 +52,6 @@
     <string name="error_feed_error">Сайт ленты недоступен.</string>
     <string name="error_feed_process">Лента не может быть добавлена.</string>
     <string name="error_feed_url_exists">Такой адрес уже есть.</string>
-    <string name="error_feed_import">Не удалось импортировать выбранный файл.</string>
-    <string name="error_feed_export">Экспорт не удался. Удостоверьтесь, что подключена карта памяти с возможностью записи.</string>
-    <string name="error_external_storage_not_available">Внешнее хранилище (например карта памяти) недоступно.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(не обязательно)</string>
     <string name="tab_feed_title">Ленту</string>

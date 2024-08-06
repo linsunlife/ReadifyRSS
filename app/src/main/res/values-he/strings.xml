@@ -25,9 +25,6 @@
     <string name="error_feed_error">אתר רשת הערוץ אינו נגיש.</string>
     <string name="error_feed_process">אי אפשר לעבד את הערוץ.</string>
     <string name="error_feed_url_exists">הכתובת כבר קיימת.</string>
-    <string name="error_feed_import">אי אפשר ליבא את הקובץ הנבחר.</string>
-    <string name="error_feed_export">היצוא נכשל. ודא כי מצוי ברשותך כרטיס-SD כתיב מעוגן.</string>
-    <string name="error_external_storage_not_available">האחסון החיצוני (למשל כרטיס-SD) אינו זמין.</string>
     <string name="feed_url">כתובת URL</string>
     <string name="optional">(רשות)</string>
     <string name="feed_cookie">עוגיית אימות</string>

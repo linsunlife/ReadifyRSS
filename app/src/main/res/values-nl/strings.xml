@@ -29,9 +29,6 @@
     <string name="error_feed_error">De feedwebsite is niet beschikbaar.</string>
     <string name="error_feed_process">Het verwerken van de feed is mislukt.</string>
     <string name="error_feed_url_exists">Dit adres bestaat al.</string>
-    <string name="error_feed_import">Het importeren van het geselecteerde bestand is mislukt.</string>
-    <string name="error_feed_export">Het exporteren is mislukt. Zorg ervoor dat u een beschrijfbare SD-kaart hebt aangekoppeld.</string>
-    <string name="error_external_storage_not_available">De externe opslag (bijv. SD-kaart) is niet beschikbaar.</string>
     <string name="feed_no_summary">&lt; Geen samenvatting beschikbaar. &gt;</string>
     <string name="feed_url">URL</string>
     <string name="optional">(optioneel)</string>

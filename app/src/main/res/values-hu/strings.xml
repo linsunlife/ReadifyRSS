@@ -37,9 +37,6 @@
     <string name="error_feed_error">A hírforrás weboldala nem érhető el.</string>
     <string name="error_feed_process">A hírforrást nem lehet feldolgozni.</string>
     <string name="error_feed_url_exists">A cím már létezik.</string>
-    <string name="error_feed_import">A kijelölt fájlt nem sikerült importálni.</string>
-    <string name="error_feed_export">Az exportálás nem sikerült. Győződj meg arról, hogy van-e írható SD-kártya felcsatolva.</string>
-    <string name="error_external_storage_not_available">A külső tároló (például SD-kártya) nem érhető el.</string>
     <string name="feed_no_summary">\u003c Nem érhető el összegzés. \u003e</string>
     <string name="feed_url">URL vagy oldal neve</string>
     <string name="optional">(nem kötelező)</string>

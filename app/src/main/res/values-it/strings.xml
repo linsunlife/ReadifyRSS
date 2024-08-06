@@ -52,13 +52,6 @@
     <string name="error_feed_error">L\'indirizzo del feed non può essere raggiunto.</string>
     <string name="error_feed_process">Il feed non può essere elaborato.</string>
     <string name="error_feed_url_exists">L\'indirizzo è già presente.</string>
-    <string name="error_feed_import">Il file selezionato non può essere importato.</string>
-    <string name="error_feed_export">L\'esportazione è fallita. Controllare di avere una scheda SD
-        scrivibile e correttamente montata.
-    </string>
-    <string name="error_external_storage_not_available">L\'archivio esterno (per esempio la scheda SD)
-        non è disponibile.
-    </string>
     <string name="feed_url">Indirizzo URL</string>
     <string name="optional">(opzionale)</string>
     <string name="feed_cookie">Cookie di autenticazione</string>

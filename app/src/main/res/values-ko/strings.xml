@@ -53,9 +53,6 @@
     <string name="error_feed_error">피드 주소에 접근할 수 없습니다.</string>
     <string name="error_feed_process">피드를 처리할 수 없습니다.</string>
     <string name="error_feed_url_exists">그 주소는 이미 있습니다.</string>
-    <string name="error_feed_import">선택한 파일을 가져올 수 없습니다.</string>
-    <string name="error_feed_export">내보내기가 실패했습니다. 쓰기 가능한 SD 카드 저장소가 마운트되어 있는지 확인하십시오.</string>
-    <string name="error_external_storage_not_available">외부 저장소(예를 들면 SD 카드)가 없습니다.</string>
     <string name="feed_url">URL 주소</string>
     <string name="optional">(선택 사항)</string>
     <string name="tab_feed_title">피드</string>

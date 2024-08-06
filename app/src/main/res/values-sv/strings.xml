@@ -51,9 +51,6 @@
     <string name="error_feed_error">Feed:ens URL kunde inte öppnas.</string>
     <string name="error_feed_process">Feed:en kunde inte processeras.</string>
     <string name="error_feed_url_exists">URL:en existerar redan.</string>
-    <string name="error_feed_import">Den valda filen kunde inte importeras.</string>
-    <string name="error_feed_export">Exporten har misslyckats. Försäkra dig om att du har ett skrivbart SD-kort monterat.</string>
-    <string name="error_external_storage_not_available">Det externa lagringsmediet (d.v.s. SD-kort) finns ej tillgängligt.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(valfritt)</string>
     <string name="feed_cookie">Autentiseringskaka</string>

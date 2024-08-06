@@ -54,13 +54,6 @@
     <string name="error_feed_error">Jario helbidera ezin izan da sartu.</string>
     <string name="error_feed_process">Jarioa ezin da prozesatu.</string>
     <string name="error_feed_url_exists">Helbidea existitzen da dagoeneko.</string>
-    <string name="error_feed_import">Hautatutako fitxategia ezin izan da inportatu.</string>
-	<string name="error_feed_export">Esportazioak huts egin du. Egiaztatu idatz daitekeen SD-txartel bat
-        muntatuta duzula.
-    </string>
-	<string name="error_external_storage_not_available">Kanpoko biltegia (adib. SD-txartela) ez dago
-        eskuragarri.
-    </string>
     <string name="feed_url">URL helbidea</string>
     <string name="optional">(hautazkoa)</string>
     <string name="tab_feed_title">Jarioa</string>

@@ -67,9 +67,6 @@
     <string name="error_feed_error">The feed website is unreachable.</string>
     <string name="error_feed_process">The feed can not be processed.</string>
     <string name="error_feed_url_exists">The address already exists.</string>
-    <string name="error_feed_import">The selected file could not be imported.</string>
-    <string name="error_feed_export">The export has failed. Make sure you have a writable SD-card mounted.</string>
-    <string name="error_external_storage_not_available">The external storage (e.g. SD-card) is not available.</string>
     <string name="feed_no_summary">\u003c No summary available. \u003e</string>
     <string name="feed_url">URL or Site name</string>
     <string name="optional">(optional)</string>

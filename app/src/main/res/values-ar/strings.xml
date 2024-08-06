@@ -28,9 +28,6 @@
     <string name="error_feed_error">لا يمكن الوصول للموقع الالكتروني للخلاصة.</string>
     <string name="error_feed_process">لا يمكن معالجة الخلاصة.</string>
     <string name="error_feed_url_exists">العنوان موجود مسبقا.</string>
-    <string name="error_feed_import">لا يمكن جلب الملف المحدد.</string>
-    <string name="error_feed_export">عملية التصدير فشلت، تأكد من امتلاكك لبطاقة تخزين مركبة و قابلة للكتابة.</string>
-    <string name="error_external_storage_not_available">الذاكرة الخارجية (مثال: بطاقة SD) غير متوفرة.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(اختيارية)</string>
     <string name="feed_cookie">Cookie المصادقة</string>

@@ -28,9 +28,6 @@
     <string name="error_feed_error">フィードのウェブサイトは到達できません.</string>
     <string name="error_feed_process">フィードを処理できません.</string>
     <string name="error_feed_url_exists">アドレスは既に存在します.</string>
-    <string name="error_feed_import">選択したファイルをインポートできませんでした.</string>
-    <string name="error_feed_export">エクスポートに失敗しました。書き込み可能な SD カードがマウントされていることを確認してください.</string>
-    <string name="error_external_storage_not_available">外部記憶装置 (SD カードなど) が利用できません.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(省略可能)</string>
     <string name="feed_cookie">認証 Cookie</string>

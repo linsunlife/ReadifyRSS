@@ -54,9 +54,6 @@
     <string name="error_feed_error">Le site Web du flux est inaccessible.</string>
     <string name="error_feed_process">Le flux ne peut pas être traité.</string>
     <string name="error_feed_url_exists">L’adresse existe déjà.</string>
-    <string name="error_feed_import">Le fichier sélectionné n’a pas pu être importé.</string>
-    <string name="error_feed_export">L’exportation a échoué. Assurez-vous d’avoir une carte SD montée avec les droits en écriture.</string>
-    <string name="error_external_storage_not_available">Le périphérique de stockage externe (p. ex. carte SD) n’est pas disponible.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(optionnel)</string>
     <string name="tab_feed_title">Flux</string>

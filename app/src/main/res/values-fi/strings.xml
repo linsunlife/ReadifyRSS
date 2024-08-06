@@ -52,9 +52,6 @@
     <string name="error_feed_error">Syötteen verkko-osoitteeseen ei saatu yhteyttä.</string>
     <string name="error_feed_process">Syötettä ei voitu käsitellä.</string>
     <string name="error_feed_url_exists">Osoite on jo olemassa.</string>
-    <string name="error_feed_import">Valittua tiedostoa ei voitu tuoda.</string>
-    <string name="error_feed_export">Vienti epäonnistui. Varmista, että SD-kortille voidaan kirjoittaa.</string>
-    <string name="error_external_storage_not_available">Ulkoinen tallenusväline (esim. SD-kortti) ei ole saatavilla.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(ei välttämätön)</string>
     <string name="feed_cookie">Todennuseväste</string>

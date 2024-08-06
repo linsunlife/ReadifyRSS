@@ -28,9 +28,6 @@
     <string name="error_feed_error">Umpan situs tidak dapat dijangkau.</string>
     <string name="error_feed_process">Umpan tidak dapat diproses.</string>
     <string name="error_feed_url_exists">Alamat sudah ada.</string>
-    <string name="error_feed_import">Berkas yang dipilih tidak dapat diimpor.</string>
-    <string name="error_feed_export">Ekspor gagal. Pastikan kamu mempunyai SD-card terpasang yang dapat ditulis.</string>
-    <string name="error_external_storage_not_available">Penyimpanan eksternal (contoh SD-card) tidak tersedia.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(pilihan)</string>
     <string name="feed_cookie">Otentikasi Cookie</string>

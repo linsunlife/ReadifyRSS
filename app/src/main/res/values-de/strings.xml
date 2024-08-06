@@ -53,9 +53,6 @@
     <string name="error_feed_error">Zugriff auf Feed-Adresse nicht möglich.</string>
     <string name="error_feed_process">Der Feed kann nicht bearbeitet werden.</string>
     <string name="error_feed_url_exists">Diese Adresse existiert schon.</string>
-    <string name="error_feed_import">Die ausgewählte Datei konnte nicht importiert werden.</string>
-    <string name="error_feed_export">Der Export ist fehlgeschlagen. Stelle sicher, dass du eine beschreibbare SD-Karte verfügbar ist.</string>
-    <string name="error_external_storage_not_available">Der externe Speicher (z.B. SD-Karte) ist nicht verfügbar.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(optional)</string>
     <string name="feed_cookie">Authentisierungs-Cookie</string>

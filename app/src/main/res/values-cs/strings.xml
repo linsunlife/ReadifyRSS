@@ -55,9 +55,6 @@
     <string name="error_feed_error">Adresa zdroje nemohla být otevřena.</string>
     <string name="error_feed_process">Zdroj nelze zpracovat.</string>
     <string name="error_feed_url_exists">Adresa již existuje.</string>
-    <string name="error_feed_import">Vybraný soubor nemohl být importován.</string>
-    <string name="error_feed_export">Export selhal. Ujistěte se, že se na připojenou SD kartu dá zapisovat.</string>
-    <string name="error_external_storage_not_available">Externí úložný prostor (např. SD karta) není dostupný.</string>
     <string name="feed_url">URL</string>
     <string name="optional">(nepovinné)</string>
     <string name="tab_feed_title">Zdroj</string>
