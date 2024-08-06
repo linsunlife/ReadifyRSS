@@ -77,6 +77,9 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.view.DragNDropExpandableListView;
 import ahmaabdo.readify.rss.view.DragNDropListener;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 public class EditFeedsListFragment extends ListFragment {
 
     private static final int REQUEST_CODE_IMPORT_OPML = 1;
@@ -282,18 +285,18 @@ public class EditFeedsListFragment extends ListFragment {
                         }).setNegativeButton(android.R.string.cancel, null).show();
                 return true;
             }
-            case R.id.menu_export:
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                intent.putExtra(Intent.EXTRA_TITLE, "Readify_" + System.currentTimeMillis() + ".opml"); // 设置默认文件名
-                intent.setType("*/*");
-                startActivityForResult(intent, REQUEST_CODE_EXPORT_OPML);
-                return true;
             case R.id.menu_import: {
                 Intent intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 intent1.setType("*/*");
                 startActivityForResult(intent1, REQUEST_CODE_IMPORT_OPML);
                 return true;
             }
+            case R.id.menu_export:
+                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+                intent.putExtra(Intent.EXTRA_TITLE, "Readify_" + System.currentTimeMillis() + ".opml"); // 设置默认文件名
+                intent.setType("*/*");
+                startActivityForResult(intent, REQUEST_CODE_EXPORT_OPML);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -310,9 +313,12 @@ public class EditFeedsListFragment extends ListFragment {
                     @Override
                     public void run() {
                         try {
-                            OPML.importFrom(contentResolver.openInputStream(uri));
+                            InputStream inputStream = contentResolver.openInputStream(uri);
+                            OPML.importFrom(inputStream);
+                            inputStream.close();
+                            ToastUtils.showLong(R.string.action_finished);
                         } catch (Exception e) {
-                            ToastUtils.showLong(R.string.error_feed_import);
+                            ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
                         }
                     }
                 }).start();
@@ -322,10 +328,12 @@ public class EditFeedsListFragment extends ListFragment {
                     @Override
                     public void run() {
                         try {
-                            OPML.exportTo(contentResolver.openOutputStream(uri));
+                            OutputStream outputStream = contentResolver.openOutputStream(uri);
+                            OPML.exportTo(outputStream);
+                            outputStream.close();
                             ToastUtils.showLong(String.format(getString(R.string.message_exported_to), uri.getPath()));
                         } catch (Exception e) {
-                            ToastUtils.showLong(R.string.error_feed_export);
+                            ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
                         }
                     }
                 }).start();
