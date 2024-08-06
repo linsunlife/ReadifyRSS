@@ -226,6 +226,9 @@ public class OPML {
                         if (!cursor.moveToFirst()) {
                             mGroupId = cr.insert(FeedColumns.GROUPS_CONTENT_URI, values).getLastPathSegment();
                         }
+                        else {
+                            mGroupId = cursor.getString(cursor.getColumnIndex(FeedColumns._ID));
+                        }
                         cursor.close();
                     }
 
