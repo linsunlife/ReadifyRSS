@@ -84,6 +84,26 @@
                                 android:inputType="textUri"
                                 android:maxLines="1" />
 
+                            <TextView
+                                    android:id="@+id/group_textview"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginTop="20dp"
+                                    android:text="@string/feed_group"
+                                    android:textAppearance="?android:attr/textAppearanceMedium"
+                                    android:textStyle="bold"
+                                    android:visibility="gone" />
+
+                            <Spinner
+                                    android:id="@+id/settings_groups"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginTop="20dp"
+                                    android:visibility="gone" />
 
                             <CheckBox
                                 android:id="@+id/retrieve_fulltext"

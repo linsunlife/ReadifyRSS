@@ -69,6 +69,8 @@
     <string name="error_feed_url_exists">The address already exists.</string>
     <string name="feed_no_summary">\u003c No summary available. \u003e</string>
     <string name="feed_url">URL or Site name</string>
+    <string name="feed_group">Group</string>
+    <string name="feed_group_none">None</string>
     <string name="optional">(optional)</string>
     <string name="feed_cookie">Authentication Cookie</string>
     <string name="cookiename">Name</string>

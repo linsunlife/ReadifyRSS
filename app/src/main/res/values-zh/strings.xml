@@ -62,6 +62,8 @@
     <string name="error_feed_process">该订阅处理失败。</string>
     <string name="error_feed_url_exists">该订阅地址已存在。</string>
     <string name="feed_url">网址</string>
+    <string name="feed_group">分组</string>
+    <string name="feed_group_none">无</string>
     <string name="optional">（可选）</string>
     <string name="tab_feed_title">订阅</string>
     <string name="tab_filters_title">过滤器</string>

@@ -87,9 +87,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 import ahmaabdo.readify.rss.Constants;
 import ahmaabdo.readify.rss.R;
@@ -222,15 +220,17 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         }
     };
     private TabHost mTabHost;
-    private TextView mNameTextView, mUrlTextView;
+    private TextView mNameTextView, mUrlTextView, mGroupTextView;
     private EditText mNameEditText, mUrlEditText;
     private EditText mCookieNameEditText, mCookieValueEditText;
     private EditText mLoginHTTPAuthEditText, mPasswordHTTPAuthEditText;
-    private Spinner mKeepTime;
+    private Spinner mGroupSpinner, mKeepTime;
     private CheckBox mRetrieveFulltextCb;
     private ListView mFiltersListView;
     private FiltersCursorAdapter mFiltersCursorAdapter;
     private boolean mIsGroup;
+    private Long mGroupId;
+    private List<Long> mGroupIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,6 +252,8 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         mNameTextView = (TextView) findViewById(R.id.name_textview);
         mUrlEditText = (EditText) findViewById(R.id.feed_url);
         mUrlTextView = (TextView) findViewById(R.id.url_textview);
+        mGroupSpinner = (Spinner) findViewById(R.id.settings_groups);
+        mGroupTextView = (TextView) findViewById(R.id.group_textview);
         mCookieNameEditText = (EditText) findViewById(R.id.feed_cookiename);
         mCookieValueEditText = (EditText) findViewById(R.id.feed_cookievalue);
         mLoginHTTPAuthEditText = (EditText) findViewById(R.id.feed_loginHttpAuth);
@@ -304,7 +306,8 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                 return;
 
             Cursor cursor = getContentResolver().query(intent.getData(),
-                    new String[]{FeedColumns.IS_GROUP, FeedColumns.NAME, FeedColumns.URL,
+                    new String[]{FeedColumns.IS_GROUP, FeedColumns.NAME,
+                            FeedColumns.URL, FeedColumns.GROUP_ID,
                             FeedColumns.RETRIEVE_FULLTEXT, FeedColumns.COOKIE_NAME,
                             FeedColumns.COOKIE_VALUE, FeedColumns.HTTP_AUTH_LOGIN,
                             FeedColumns.HTTP_AUTH_PASSWORD, FeedColumns.KEEP_TIME},
@@ -346,12 +349,47 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
                 mNameEditText.setText(cursor.getString(1));
                 mUrlEditText.setText(cursor.getString(2));
-                mRetrieveFulltextCb.setChecked(cursor.getInt(3) == 1);
-                mCookieNameEditText.setText(cursor.getString(4));
-                mCookieValueEditText.setText(cursor.getString(5));
-                mLoginHTTPAuthEditText.setText(cursor.getString(6));
-                mPasswordHTTPAuthEditText.setText(cursor.getString(7));
-                Integer intDate = cursor.getInt(8);
+
+                mGroupSpinner.setVisibility(View.VISIBLE);
+                mGroupTextView.setVisibility(View.VISIBLE);
+
+                mGroupId = cursor.getLong(3);
+                mGroupIds = new ArrayList<>();
+                mGroupIds.add(null);
+
+                String GROUP_NAME = "name";
+                List<Map<String, String>> data = new ArrayList<>();
+                Map<String, String> map = new HashMap<>();
+                map.put(GROUP_NAME, getString(R.string.feed_group_none));
+                data.add(map);
+
+                Cursor cursor2 = getContentResolver().query(FeedColumns.GROUPS_CONTENT_URI,
+                        new String[]{FeedColumns._ID, FeedColumns.NAME},
+                        FeedColumns.IS_GROUP + Constants.DB_IS_TRUE,
+                        null, null);
+                while (cursor2.moveToNext()) {
+                    mGroupIds.add(cursor2.getLong(0));
+                    map = new HashMap<>();
+                    map.put(GROUP_NAME, cursor2.getString(1));
+                    data.add(map);
+                }
+                cursor2.close();
+
+                // create the grid item mapping
+                String[] from = new String[]{GROUP_NAME};
+                int[] to = new int[]{android.R.id.text1};
+                // fill in the grid_item layout
+                SimpleAdapter adapter = new SimpleAdapter(EditFeedActivity.this, data,
+                        android.R.layout.simple_spinner_dropdown_item, from, to);
+                mGroupSpinner.setAdapter(adapter);
+                mGroupSpinner.setSelection(Math.max(mGroupIds.indexOf(mGroupId), 0));
+
+                mRetrieveFulltextCb.setChecked(cursor.getInt(4) == 1);
+                mCookieNameEditText.setText(cursor.getString(5));
+                mCookieValueEditText.setText(cursor.getString(6));
+                mLoginHTTPAuthEditText.setText(cursor.getString(7));
+                mPasswordHTTPAuthEditText.setText(cursor.getString(8));
+                Integer intDate = cursor.getInt(9);
                 String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
                 int index = Arrays.asList(selectedValues).indexOf(String.valueOf(intDate));
                 mKeepTime.setSelection(index >= 0 ? index : selectedValues.length - 1);
@@ -393,6 +431,11 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                         url = Constants.HTTP_SCHEME + url;
                     }
                     values.put(FeedColumns.URL, url);
+
+                    Long newGroupId = mGroupIds.get(mGroupSpinner.getSelectedItemPosition());
+                    values.put(FeedColumns.GROUP_ID, newGroupId);
+                    if (!Objects.equals(mGroupId, newGroupId))
+                        values.put(FeedColumns.PRIORITY, 1);
 
                     String name = mNameEditText.getText().toString();
                     String cookieName = mCookieNameEditText.getText().toString();
