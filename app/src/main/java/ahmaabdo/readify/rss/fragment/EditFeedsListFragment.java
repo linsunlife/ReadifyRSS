@@ -328,7 +328,7 @@ public class EditFeedsListFragment extends ListFragment {
                     @Override
                     public void run() {
                         try {
-                            OutputStream outputStream = contentResolver.openOutputStream(uri);
+                            OutputStream outputStream = contentResolver.openOutputStream(uri, "rwt");
                             OPML.exportTo(outputStream);
                             outputStream.close();
                             ToastUtils.showLong(String.format(getString(R.string.message_exported_to), uri.getPath()));
