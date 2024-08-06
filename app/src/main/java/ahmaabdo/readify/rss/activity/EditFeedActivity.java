@@ -220,7 +220,6 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         }
     };
     private TabHost mTabHost;
-    private TextView mNameTextView, mUrlTextView, mGroupTextView;
     private EditText mNameEditText, mUrlEditText;
     private EditText mCookieNameEditText, mCookieValueEditText;
     private EditText mLoginHTTPAuthEditText, mPasswordHTTPAuthEditText;
@@ -249,11 +248,11 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
         mTabHost = (TabHost) findViewById(R.id.tabHost);
         mNameEditText = (EditText) findViewById(R.id.feed_title);
-        mNameTextView = (TextView) findViewById(R.id.name_textview);
+        TextView mNameTextView = (TextView) findViewById(R.id.name_textview);
         mUrlEditText = (EditText) findViewById(R.id.feed_url);
-        mUrlTextView = (TextView) findViewById(R.id.url_textview);
+        TextView mUrlTextView = (TextView) findViewById(R.id.url_textview);
         mGroupSpinner = (Spinner) findViewById(R.id.settings_groups);
-        mGroupTextView = (TextView) findViewById(R.id.group_textview);
+        TextView mGroupTextView = (TextView) findViewById(R.id.group_textview);
         mCookieNameEditText = (EditText) findViewById(R.id.feed_cookiename);
         mCookieValueEditText = (EditText) findViewById(R.id.feed_cookievalue);
         mLoginHTTPAuthEditText = (EditText) findViewById(R.id.feed_loginHttpAuth);
