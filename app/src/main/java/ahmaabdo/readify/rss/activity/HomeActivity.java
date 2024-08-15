@@ -220,6 +220,10 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 showFeedInfo = true;
                 break;
             case 1:
+                newUri = EntryColumns.RECENT_ENTRIES_CONTENT_URI;
+                showFeedInfo = true;
+                break;
+            case 2:
                 newUri = EntryColumns.FAVORITES_CONTENT_URI;
                 showFeedInfo = true;
                 break;

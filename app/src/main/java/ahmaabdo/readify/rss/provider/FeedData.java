@@ -247,8 +247,7 @@ public class FeedData {
 
 
         public static final Uri ALL_ENTRIES_CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/all_entries");
-
-
+        public static final Uri RECENT_ENTRIES_CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/recent_entries");
         public static final Uri FAVORITES_CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/favorites");
 
         public static boolean isSearchUri(Uri uri) {

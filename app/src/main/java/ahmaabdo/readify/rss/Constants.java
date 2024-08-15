@@ -84,4 +84,7 @@ public final class Constants {
     public static final String FETCH_PICTURE_MODE_ALWAYS_PRELOAD = "ALWAYS_PRELOAD";
 
     public static final MatrixCursor EMPTY_CURSOR = new MatrixCursor(new String[]{BaseColumns._ID});
+
+    // 3 days
+    public static final long RECENT_ENTRIES_TIME = 3 * 24 * 60 * 60 * 1000;
 }

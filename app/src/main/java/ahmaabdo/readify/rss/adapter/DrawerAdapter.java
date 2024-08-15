@@ -80,6 +80,7 @@ public class DrawerAdapter extends BaseAdapter {
     private final Context mContext;
     private Cursor mFeedsCursor;
     private int mAllNumber = 0;
+    private int mRecentNumber = 0;
     private int mFavoritesNumber = 0;
     private HashMap<Long, Integer> entriesNumbers = new HashMap<>();
 
@@ -136,20 +137,31 @@ public class DrawerAdapter extends BaseAdapter {
             holder.separator.setVisibility(View.GONE);
 
             Integer entriesNumber = null;
-            if (position == 0 || position == 1) {
-                entriesNumber = position == 0 ? mAllNumber : mFavoritesNumber;
-                holder.titleTxt.setText(position == 0 ? R.string.all : R.string.favorites);
-                holder.iconView.setImageResource(position == 0 ? R.drawable.ic_statusbar_rss : R.drawable.ic_star);
+            if (position == 0 || position == 1 || position == 2) {
+                if (position == 0) {
+                    entriesNumber = mAllNumber;
+                    holder.titleTxt.setText(R.string.all);
+                    holder.iconView.setImageResource(R.drawable.ic_statusbar_rss);
+                }
+                else if (position == 1) {
+                    entriesNumber = mRecentNumber;
+                    holder.titleTxt.setText(R.string.recent);
+                    holder.iconView.setImageResource(R.drawable.ic_reorder);
+                }
+                else {
+                    entriesNumber = mFavoritesNumber;
+                    holder.titleTxt.setText(R.string.favorites);
+                    holder.iconView.setImageResource(R.drawable.ic_star);
+                    holder.separator.setVisibility(View.VISIBLE);
+                }
+
                 if (position == mSelectedItem) {
                     holder.iconView.setColorFilter(ContextCompat.getColor(mContext, PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_primary_color : R.color.dark_accent_color));
                 } else {
                     holder.iconView.setColorFilter(ContextCompat.getColor(mContext, PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, true) ? R.color.light_base_text : R.color.dark_base_text));
                 }
-
-                if (position == 1)
-                    holder.separator.setVisibility(View.VISIBLE);
             }
-            if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2)) {
+            if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 3)) {
                 final long id = mFeedsCursor.getLong(POS_ID);
                 entriesNumber = entriesNumbers.get(id);
                 holder.titleTxt.setText((mFeedsCursor.isNull(POS_NAME) ? mFeedsCursor.getString(POS_URL) : mFeedsCursor.getString(POS_NAME)));
@@ -232,7 +244,7 @@ public class DrawerAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2)) {
+        if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 3)) {
             return mFeedsCursor.getLong(POS_ID);
         }
 
@@ -240,7 +252,7 @@ public class DrawerAdapter extends BaseAdapter {
     }
 
     public byte[] getItemIcon(int position) {
-        if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2)) {
+        if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 3)) {
             return mFeedsCursor.getBlob(POS_ICON);
         }
 
@@ -248,7 +260,7 @@ public class DrawerAdapter extends BaseAdapter {
     }
 
     public String getItemName(int position) {
-        if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2)) {
+        if (mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 3)) {
             return mFeedsCursor.isNull(POS_NAME) ? mFeedsCursor.getString(POS_URL) : mFeedsCursor.getString(POS_NAME);
         }
 
@@ -256,16 +268,16 @@ public class DrawerAdapter extends BaseAdapter {
     }
 
     public boolean isItemAGroup(int position) {
-        return mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2) && mFeedsCursor.getInt(POS_IS_GROUP) == 1;
+        return mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 3) && mFeedsCursor.getInt(POS_IS_GROUP) == 1;
 
     }
 
     private boolean isGroupExpanded(int position) {
-        return mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 2) && mFeedsCursor.getInt(POS_IS_GROUP_EXPANDED) == 1;
+        return mFeedsCursor != null && mFeedsCursor.moveToPosition(position - 3) && mFeedsCursor.getInt(POS_IS_GROUP_EXPANDED) == 1;
     }
 
     private void getEntriesNumbers() {
-        mAllNumber = mFavoritesNumber = 0;
+        mAllNumber = mRecentNumber = mFavoritesNumber = 0;
         entriesNumbers = new HashMap<>();
 
         if (mFeedsCursor == null)
@@ -279,49 +291,59 @@ public class DrawerAdapter extends BaseAdapter {
 
                 // Gets the numbers of entries
                 // all entries
-                Cursor cursor1 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                Cursor cursor = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
                         showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
-                if (cursor1 != null) {
-                    if (cursor1.moveToFirst())
-                        mAllNumber = cursor1.getInt(0);
-                    cursor1.close();
+                if (cursor != null) {
+                    if (cursor.moveToFirst())
+                        mAllNumber = cursor.getInt(0);
+                    cursor.close();
+                }
+                // recent entries
+                String where = EntryColumns.DATE + '>' + (System.currentTimeMillis() - Constants.RECENT_ENTRIES_TIME);
+                where += showRead ? "" : Constants.DB_AND + EntryColumns.WHERE_UNREAD;
+                cursor = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                        where, null, null);
+                if (cursor != null) {
+                    if (cursor.moveToFirst())
+                        mRecentNumber = cursor.getInt(0);
+                    cursor.close();
                 }
 
                 // favorite entries
-                Cursor cursor2 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                cursor = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
                         EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE, null, null);
-                if (cursor2 != null) {
-                    if (cursor2.moveToFirst())
-                        mFavoritesNumber = cursor2.getInt(0);
-                    cursor2.close();
+                if (cursor != null) {
+                    if (cursor.moveToFirst())
+                        mFavoritesNumber = cursor.getInt(0);
+                    cursor.close();
                 }
 
                 // entries in feeds
-                Cursor cursor3 = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{EntryColumns.FEED_ID, Constants.DB_COUNT},
+                cursor = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{EntryColumns.FEED_ID, Constants.DB_COUNT},
                         (showRead ? "1=1" : EntryColumns.WHERE_UNREAD) + ") GROUP BY (" + EntryColumns.FEED_ID, null, null);
-                if (cursor3 != null) {
-                    while (cursor3.moveToNext()) {
-                        long feedId = cursor3.getLong(0);
-                        int number = cursor3.getInt(1);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        long feedId = cursor.getLong(0);
+                        int number = cursor.getInt(1);
                         entriesNumbers.put(feedId, number);
                     }
-                    cursor3.close();
+                    cursor.close();
                 }
 
                 // entries in groups
-                Cursor cursor4 = contentResolver.query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.GROUP_ID},
+                cursor = contentResolver.query(FeedColumns.CONTENT_URI, new String[]{FeedColumns._ID, FeedColumns.GROUP_ID},
                         FeedColumns.GROUP_ID + Constants.DB_IS_NOT_NULL, null, null);
-                if (cursor4 != null) {
-                    while (cursor4.moveToNext()) {
-                        long feedId = cursor4.getLong(0);
-                        long groupId = cursor4.getLong(1);
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        long feedId = cursor.getLong(0);
+                        long groupId = cursor.getLong(1);
                         Integer number = entriesNumbers.get(feedId);
                         Integer sum = entriesNumbers.get(groupId);
                         if (sum == null) sum = 0;
                         if (number != null) sum += number;
                         entriesNumbers.put(groupId, sum);
                     }
-                    cursor4.close();
+                    cursor.close();
                 }
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {

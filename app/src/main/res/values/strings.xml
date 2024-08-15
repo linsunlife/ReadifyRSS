@@ -120,7 +120,8 @@
     <string name="google_news_custom_topic">Enter custom topic</string>
 
     <!-- ENTRIES -->
-    <string name="all">Entries</string>
+    <string name="all">All</string>
+    <string name="recent">Recent</string>
     <string name="no_entries">No entries</string>
     <string name="favorites">Starred</string>
     <string name="context_menu_show_read">Show read entries</string>

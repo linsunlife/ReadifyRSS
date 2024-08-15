@@ -102,7 +102,8 @@
     <string name="google_news_health">健康</string>
 
     <!-- ENTRIES -->
-    <string name="all">全部订阅</string>
+    <string name="all">全部</string>
+    <string name="recent">最近</string>
     <string name="no_entries">没有消息</string>
     <string name="favorites">收藏</string>
     <string name="context_menu_show_read">显示已读消息</string>
