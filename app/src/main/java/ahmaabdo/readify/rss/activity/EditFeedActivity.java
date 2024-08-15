@@ -224,7 +224,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
     private EditText mCookieNameEditText, mCookieValueEditText;
     private EditText mLoginHTTPAuthEditText, mPasswordHTTPAuthEditText;
     private Spinner mGroupSpinner, mKeepTime;
-    private CheckBox mRetrieveFulltextCb, mSetBaseUrlCheckBox, mSetRefererCheckBox;
+    private CheckBox mRetrieveFulltextCheckBox, mSetBaseUrlCheckBox, mSetRefererCheckBox;
     private ListView mFiltersListView;
     private FiltersCursorAdapter mFiltersCursorAdapter;
     private boolean mIsGroup;
@@ -258,7 +258,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         mLoginHTTPAuthEditText = (EditText) findViewById(R.id.feed_loginHttpAuth);
         mPasswordHTTPAuthEditText = (EditText) findViewById(R.id.feed_passwordHttpAuth);
         mKeepTime = (Spinner) findViewById(R.id.settings_keep_times);
-        mRetrieveFulltextCb = (CheckBox) findViewById(R.id.retrieve_fulltext);
+        mRetrieveFulltextCheckBox = (CheckBox) findViewById(R.id.retrieve_fulltext);
         mSetBaseUrlCheckBox = (CheckBox) findViewById(R.id.set_base_url);
         mSetRefererCheckBox = (CheckBox) findViewById(R.id.set_referer);
         mFiltersListView = (ListView) findViewById(android.R.id.list);
@@ -293,7 +293,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
             String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
             mKeepTime.setSelection(selectedValues.length - 1);
-            mRetrieveFulltextCb.setChecked(false);
+            mRetrieveFulltextCheckBox.setChecked(false);
         } else if (intent.getAction().equals(Intent.ACTION_VIEW)) {
             setTitle(R.string.new_feed_title);
 
@@ -301,7 +301,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
             mUrlEditText.setText(intent.getDataString());
             String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
             mKeepTime.setSelection(selectedValues.length - 1);
-            mRetrieveFulltextCb.setChecked(false);
+            mRetrieveFulltextCheckBox.setChecked(false);
         } else if (intent.getAction().equals(Intent.ACTION_EDIT)) {
             if (savedInstanceState != null)
                 return;
@@ -329,7 +329,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                 tabWidget.setVisibility(View.GONE);
                 mUrlEditText.setVisibility(View.INVISIBLE);
                 mUrlTextView.setVisibility(View.INVISIBLE);
-                mRetrieveFulltextCb.setVisibility(View.INVISIBLE);
+                mRetrieveFulltextCheckBox.setVisibility(View.INVISIBLE);
                 mNameEditText.setText(cursor.getString(1));
             }
             else {
@@ -386,7 +386,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                 mGroupSpinner.setAdapter(adapter);
                 mGroupSpinner.setSelection(Math.max(mGroupIds.indexOf(mGroupId), 0));
 
-                mRetrieveFulltextCb.setChecked(cursor.getInt(4) == 1);
+                mRetrieveFulltextCheckBox.setChecked(cursor.getInt(4) == 1);
                 mCookieNameEditText.setText(cursor.getString(5));
                 mCookieValueEditText.setText(cursor.getString(6));
                 mLoginHTTPAuthEditText.setText(cursor.getString(7));
@@ -450,7 +450,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                     String passwordHTTPAuth = mPasswordHTTPAuthEditText.getText().toString();
 
                     values.put(FeedColumns.NAME, name.trim().length() > 0 ? name : null);
-                    values.put(FeedColumns.RETRIEVE_FULLTEXT, mRetrieveFulltextCb.isChecked() ? 1 : null);
+                    values.put(FeedColumns.RETRIEVE_FULLTEXT, mRetrieveFulltextCheckBox.isChecked() ? 1 : null);
                     values.put(FeedColumns.COOKIE_NAME, cookieName.trim().length() > 0 ? cookieName : "");
                     values.put(FeedColumns.COOKIE_VALUE, cookieValue.trim().length() > 0 ? cookieValue : "");
                     values.put(FeedColumns.HTTP_AUTH_LOGIN, loginHTTPAuth.trim().length() > 0 ? loginHTTPAuth : "");
@@ -624,7 +624,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                         builder.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                boolean added = FeedDataContentProvider.addFeed(EditFeedActivity.this, data.get(which).get(FEED_SEARCH_URL), name.isEmpty() ? data.get(which).get(FEED_SEARCH_TITLE) : name, mRetrieveFulltextCb.isChecked());
+                                boolean added = FeedDataContentProvider.addFeed(EditFeedActivity.this, data.get(which).get(FEED_SEARCH_URL), name.isEmpty() ? data.get(which).get(FEED_SEARCH_TITLE) : name, mRetrieveFulltextCheckBox.isChecked());
                                 if (added)
                                     ToastUtils.showShort(R.string.action_finished);
                             }
@@ -638,7 +638,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                 }
             });
         } else {
-            FeedDataContentProvider.addFeed(EditFeedActivity.this, urlOrSearch, name, mRetrieveFulltextCb.isChecked());
+            FeedDataContentProvider.addFeed(EditFeedActivity.this, urlOrSearch, name, mRetrieveFulltextCheckBox.isChecked());
 
             setResult(RESULT_OK);
             finish();
