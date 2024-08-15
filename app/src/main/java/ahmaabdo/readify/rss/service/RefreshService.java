@@ -114,7 +114,13 @@ public class RefreshService extends Service {
         long initialRefreshTime = elapsedRealTime + 10000;
 
         if (created) {
-            long lastRefresh = PrefUtils.getLong(PrefUtils.LAST_SCHEDULED_REFRESH, 0);
+            long lastRefresh;
+            try {
+                lastRefresh = PrefUtils.getLong(PrefUtils.LAST_SCHEDULED_REFRESH, 0);
+            }
+            catch (ClassCastException e) {
+                lastRefresh = PrefUtils.getInt(PrefUtils.LAST_SCHEDULED_REFRESH, 0);
+            }
 
             // If the system rebooted, we need to reset the last value
             if (elapsedRealTime < lastRefresh) {

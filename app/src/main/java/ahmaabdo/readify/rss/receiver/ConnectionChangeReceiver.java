@@ -52,7 +52,13 @@ public class ConnectionChangeReceiver extends BroadcastReceiver {
                     Log.e(TAG, "Exception", ignored);
                 }
 
-                long lastRefresh = PrefUtils.getLong(PrefUtils.LAST_SCHEDULED_REFRESH, 0);
+                long lastRefresh;
+                try {
+                    lastRefresh = PrefUtils.getLong(PrefUtils.LAST_SCHEDULED_REFRESH, 0);
+                }
+                catch (ClassCastException e) {
+                    lastRefresh = PrefUtils.getInt(PrefUtils.LAST_SCHEDULED_REFRESH, 0);
+                }
                 long elapsedRealTime = SystemClock.elapsedRealtime();
 
                 // If the system rebooted, we need to reset the last value
