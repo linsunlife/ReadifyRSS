@@ -291,7 +291,7 @@ public class DrawerAdapter extends BaseAdapter {
 
                 // Gets the numbers of entries
                 // all entries
-                Cursor cursor = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
+                Cursor cursor = contentResolver.query(EntryColumns.ALL_ENTRIES_CONTENT_URI, new String[]{Constants.DB_COUNT},
                         showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
                 if (cursor != null) {
                     if (cursor.moveToFirst())
@@ -299,10 +299,8 @@ public class DrawerAdapter extends BaseAdapter {
                     cursor.close();
                 }
                 // recent entries
-                String where = EntryColumns.DATE + '>' + (System.currentTimeMillis() - Constants.RECENT_ENTRIES_TIME);
-                where += showRead ? "" : Constants.DB_AND + EntryColumns.WHERE_UNREAD;
-                cursor = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
-                        where, null, null);
+                cursor = contentResolver.query(EntryColumns.RECENT_ENTRIES_CONTENT_URI, new String[]{Constants.DB_COUNT},
+                        showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
                 if (cursor != null) {
                     if (cursor.moveToFirst())
                         mRecentNumber = cursor.getInt(0);
@@ -310,8 +308,8 @@ public class DrawerAdapter extends BaseAdapter {
                 }
 
                 // favorite entries
-                cursor = contentResolver.query(EntryColumns.CONTENT_URI, new String[]{Constants.DB_COUNT},
-                        EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE, null, null);
+                cursor = contentResolver.query(EntryColumns.FAVORITES_CONTENT_URI, new String[]{Constants.DB_COUNT},
+                        null, null, null);
                 if (cursor != null) {
                     if (cursor.moveToFirst())
                         mFavoritesNumber = cursor.getInt(0);
