@@ -141,7 +141,7 @@ public class EntryView extends WebView {
         mEntryViewMgr = manager;
     }
 
-    public void setHtml(long entryId, String title, String link, String contentText, String enclosure, String author, long timestamp, boolean preferFullText) {
+    public void setHtml(long entryId, String title, String link, String contentText, String enclosure, String author, long timestamp, boolean preferFullText, boolean setBaseUrl) {
         if (PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
             contentText = HtmlUtils.replaceImageURLs(contentText, entryId);
             if (getSettings().getBlockNetworkImage()) {
@@ -163,7 +163,7 @@ public class EntryView extends WebView {
         // }
 
         // do not put 'null' to the base url...
-        loadDataWithBaseURL(link, generateHtmlContent(title, link, contentText, enclosure, author, timestamp, preferFullText), TEXT_HTML, Constants.UTF8, null);
+        loadDataWithBaseURL(setBaseUrl ? link : "", generateHtmlContent(title, link, contentText, enclosure, author, timestamp, preferFullText), TEXT_HTML, Constants.UTF8, null);
     }
 
     private String generateHtmlContent(String title, String link, String contentText, String enclosure, String author, long timestamp, boolean preferFullText) {

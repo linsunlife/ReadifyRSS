@@ -224,7 +224,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
     private EditText mCookieNameEditText, mCookieValueEditText;
     private EditText mLoginHTTPAuthEditText, mPasswordHTTPAuthEditText;
     private Spinner mGroupSpinner, mKeepTime;
-    private CheckBox mRetrieveFulltextCb;
+    private CheckBox mRetrieveFulltextCb, mSetBaseUrlCheckBox, mSetRefererCheckBox;
     private ListView mFiltersListView;
     private FiltersCursorAdapter mFiltersCursorAdapter;
     private boolean mIsGroup;
@@ -259,6 +259,8 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         mPasswordHTTPAuthEditText = (EditText) findViewById(R.id.feed_passwordHttpAuth);
         mKeepTime = (Spinner) findViewById(R.id.settings_keep_times);
         mRetrieveFulltextCb = (CheckBox) findViewById(R.id.retrieve_fulltext);
+        mSetBaseUrlCheckBox = (CheckBox) findViewById(R.id.set_base_url);
+        mSetRefererCheckBox = (CheckBox) findViewById(R.id.set_referer);
         mFiltersListView = (ListView) findViewById(android.R.id.list);
         View tabWidget = findViewById(android.R.id.tabs);
         View buttonLayout = findViewById(R.id.button_layout);
@@ -309,7 +311,8 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                             FeedColumns.URL, FeedColumns.GROUP_ID,
                             FeedColumns.RETRIEVE_FULLTEXT, FeedColumns.COOKIE_NAME,
                             FeedColumns.COOKIE_VALUE, FeedColumns.HTTP_AUTH_LOGIN,
-                            FeedColumns.HTTP_AUTH_PASSWORD, FeedColumns.KEEP_TIME},
+                            FeedColumns.HTTP_AUTH_PASSWORD, FeedColumns.KEEP_TIME,
+                            FeedColumns.SET_BASE_URL, FeedColumns.SET_REFERER},
                     null, null, null);
             if (!cursor.moveToFirst()) {
                 cursor.close();
@@ -388,10 +391,14 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                 mCookieValueEditText.setText(cursor.getString(6));
                 mLoginHTTPAuthEditText.setText(cursor.getString(7));
                 mPasswordHTTPAuthEditText.setText(cursor.getString(8));
+
                 Integer intDate = cursor.getInt(9);
                 String[] selectedValues = getResources().getStringArray(R.array.settings_keep_time_values);
                 int index = Arrays.asList(selectedValues).indexOf(String.valueOf(intDate));
                 mKeepTime.setSelection(index >= 0 ? index : selectedValues.length - 1);
+
+                mSetBaseUrlCheckBox.setChecked(cursor.getInt(10) == 1);
+                mSetRefererCheckBox.setChecked(cursor.getInt(11) == 1);
             }
             cursor.close();
         }
@@ -450,6 +457,8 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                     values.put(FeedColumns.HTTP_AUTH_PASSWORD, passwordHTTPAuth.trim().length() > 0 ? passwordHTTPAuth : "");
                     final TypedArray selectedValues = getResources().obtainTypedArray(R.array.settings_keep_time_values);
                     values.put(FeedColumns.KEEP_TIME, selectedValues.getInt(mKeepTime.getSelectedItemPosition(), 0));
+                    values.put(FeedColumns.SET_BASE_URL, mSetBaseUrlCheckBox.isChecked() ? 1 : null);
+                    values.put(FeedColumns.SET_REFERER, mSetRefererCheckBox.isChecked() ? 1 : null);
                     values.put(FeedColumns.FETCH_MODE, 0);
 
                     cr.update(getIntent().getData(), values, null, null);

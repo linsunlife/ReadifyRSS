@@ -82,7 +82,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     private final Uri mUri;
     private final boolean mShowFeedInfo;
-    private int mIdPos, mTitlePos, mMainImgPos, mLinkPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos;
+    private int mIdPos, mTitlePos, mMainImgPos, mLinkPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos, mSetRefererPos;
     private long mEntriesListDisplayDate;
 
     public EntriesCursorAdapter(Context context, Uri uri, Cursor cursor, boolean showFeedInfo, long entriesListDisplayDate) {
@@ -129,9 +129,10 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             int radius = 16; // 圆角半径，单位为像素
             int margin = 0; // 可选参数，设置圆角与 ImageView 边缘的距离
             TextDrawable textDrawable = TextDrawable.builder().buildRoundRect("!", Color.GRAY, radius);
+            boolean setReferer = cursor.getInt(mSetRefererPos) == 1;
             GlideUrl glideUrl = new GlideUrl(mainImgUrl, new LazyHeaders.Builder().addHeader("Referer", link).build());
             Glide.with(context)
-                    .load(glideUrl)
+                    .load(setReferer ? glideUrl : mainImgUrl)
                     .bitmapTransform(new CenterCrop(context), new RoundedCornersTransformation(context, radius, margin))
                     .error(textDrawable)
                     .into(holder.mainImgView);
@@ -407,6 +408,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             mIsReadPos = cursor.getColumnIndex(EntryColumns.IS_READ);
             mFavoritePos = cursor.getColumnIndex(EntryColumns.IS_FAVORITE);
             mFeedNamePos = cursor.getColumnIndex(FeedColumns.NAME);
+            mSetRefererPos = cursor.getColumnIndex(FeedColumns.SET_REFERER);
         }
     }
 

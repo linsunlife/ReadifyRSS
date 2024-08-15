@@ -80,7 +80,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
     private static final String STATE_ENTRIES_IDS = "STATE_ENTRIES_IDS";
     private static final String STATE_INITIAL_ENTRY_ID = "STATE_INITIAL_ENTRY_ID";
 
-    private int mTitlePos = -1, mDatePos, mMobilizedHtmlPos, mAbstractPos, mLinkPos, mIsFavoritePos, mIsReadPos, mEnclosurePos, mAuthorPos, mFeedNamePos, mFeedUrlPos, mFeedIconPos;
+    private int mTitlePos = -1, mDatePos, mMobilizedHtmlPos, mAbstractPos, mLinkPos, mIsFavoritePos, mIsReadPos, mEnclosurePos, mAuthorPos, mFeedNamePos, mFeedUrlPos, mFeedIconPos, mSetBaseUrlPos;
 
     private int mCurrentPagerPos = -1;
     private Uri mBaseUri;
@@ -546,6 +546,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
                 mFeedNamePos = cursor.getColumnIndex(FeedColumns.NAME);
                 mFeedUrlPos = cursor.getColumnIndex(FeedColumns.URL);
                 mFeedIconPos = cursor.getColumnIndex(FeedColumns.ICON);
+                mSetBaseUrlPos = cursor.getColumnIndex(FeedColumns.SET_BASE_URL);
             }
 
             int position = loader.getId();
@@ -637,8 +638,9 @@ public class EntryFragment extends SwipeRefreshFragment implements
                     String link = newCursor.getString(mLinkPos);
                     String title = newCursor.getString(mTitlePos);
                     String enclosure = newCursor.getString(mEnclosurePos);
+                    boolean setBaseUrl = newCursor.getInt(mSetBaseUrlPos) == 1;
 
-                    view.setHtml(mEntriesIds[pagerPos], title, link, contentText, enclosure, author, timestamp, mPreferFullText);
+                    view.setHtml(mEntriesIds[pagerPos], title, link, contentText, enclosure, author, timestamp, mPreferFullText, setBaseUrl);
                     view.setTag(newCursor);
 
                     if (pagerPos == mCurrentPagerPos) {
