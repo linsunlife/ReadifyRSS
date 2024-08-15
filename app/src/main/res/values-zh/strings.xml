@@ -231,7 +231,7 @@
     <string name="loginhttpAuth">登陆</string>
     <string name="passwordhttpAuth">密码</string>
     <string name="set_base_url">在 WebView 中显示消息时，设置页面的 baseUrl</string>
-    <string name="set_referer">获取消息封面时，设置 Referer</string>
+    <string name="set_referer">获取消息的封面图片时，设置 Referer</string>
     <string name="tab_advanced_title">高级</string>
     <string name="filter_help">关于过滤</string>
     <string name="menu_open_in_browser">用浏览器打开</string>
