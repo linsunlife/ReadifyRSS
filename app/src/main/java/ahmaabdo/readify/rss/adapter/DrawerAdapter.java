@@ -232,7 +232,7 @@ public class DrawerAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         if (mFeedsCursor != null) {
-            return mFeedsCursor.getCount() + 2;
+            return mFeedsCursor.getCount() + 3;
         }
         return 0;
     }
