@@ -21,14 +21,13 @@
 package ahmaabdo.readify.rss.fragment;
 
 import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.Loader;
-import android.content.SharedPreferences;
+import android.content.*;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.SearchView;
@@ -48,6 +47,7 @@ import android.widget.TextView;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import ahmaabdo.readify.rss.Constants;
@@ -88,6 +88,7 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
     private Uri mUri, mOriginalUri;
     private boolean mShowFeedInfo = false;
     private EntriesCursorAdapter mEntriesCursorAdapter;
+    private Cursor mJustMarkedAsReadEntries;
     private ListView mListView;
     private long mListDisplayDate = new Date().getTime();
     private final LoaderManager.LoaderCallbacks<Cursor> mEntriesLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -255,6 +256,9 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
 
     @Override
     public void onStop() {
+        if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
+            mJustMarkedAsReadEntries.close();
+        }
         PrefUtils.unregisterOnPrefChangeListener(mPrefListener);
         refreshUI();
         super.onStop();
@@ -426,6 +430,50 @@ public class EntriesListFragment extends SwipeRefreshListFragment implements Vie
         } else {
             hideSwipeProgress();
             mySwipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    public void readAll() {
+        final ContentResolver cr = getContext().getContentResolver();
+        Snackbar snackbar = Snackbar.make(getActivity().findViewById(R.id.coordinator_layout), R.string.marked_as_read, Snackbar.LENGTH_LONG)
+                .setActionTextColor(ContextCompat.getColor(getContext(), R.color.light_primary_color))
+                .setAction(R.string.undo, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
+                                    ArrayList<Integer> ids = new ArrayList<>();
+                                    while (mJustMarkedAsReadEntries.moveToNext()) {
+                                        ids.add(mJustMarkedAsReadEntries.getInt(0));
+                                    }
+                                    String where = BaseColumns._ID + " IN (" + TextUtils.join(",", ids) + ')';
+                                    cr.update(FeedData.EntryColumns.CONTENT_URI, FeedData.getUnreadContentValues(), where, null);
+
+                                    mJustMarkedAsReadEntries.close();
+                                }
+                            }
+                        }.start();
+                    }
+                });
+        snackbar.getView().setBackgroundResource(R.color.material_grey_900);
+        snackbar.show();
+
+        new Thread() {
+            @Override
+            public void run() {
+                if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
+                    mJustMarkedAsReadEntries.close();
+                }
+                String where = EntryColumns.WHERE_UNREAD;
+                mJustMarkedAsReadEntries = cr.query(mUri, new String[]{BaseColumns._ID}, where, null, null);
+                cr.update(mUri, FeedData.getReadContentValues(), where, null);
+            }
+        }.start();
+        // If we are on "all items" uri, we can remove the notification here
+        if (EntryColumns.CONTENT_URI.equals(mUri) && Constants.NOTIF_MGR != null) {
+            Constants.NOTIF_MGR.cancel(0);
         }
     }
 

@@ -29,15 +29,12 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -47,15 +44,12 @@ import ahmaabdo.readify.rss.Constants;
 import ahmaabdo.readify.rss.R;
 import ahmaabdo.readify.rss.adapter.DrawerAdapter;
 import ahmaabdo.readify.rss.fragment.EntriesListFragment;
-import ahmaabdo.readify.rss.provider.FeedData;
 import ahmaabdo.readify.rss.provider.FeedData.EntryColumns;
 import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.service.FetcherService;
 import ahmaabdo.readify.rss.service.RefreshService;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.UiUtils;
-
-import java.util.ArrayList;
 
 public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -79,7 +73,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mTitle;
     private BitmapDrawable mIcon;
-    private Cursor mJustMarkedAsReadEntries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,47 +96,7 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
         readAllFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ContentResolver cr = getContentResolver();
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.coordinator_layout), R.string.marked_as_read, Snackbar.LENGTH_LONG)
-                        .setActionTextColor(ContextCompat.getColor(getApplicationContext(), R.color.light_primary_color))
-                        .setAction(R.string.undo, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                new Thread() {
-                                    @Override
-                                    public void run() {
-                                        if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
-                                            ArrayList<Integer> ids = new ArrayList<>();
-                                            while (mJustMarkedAsReadEntries.moveToNext()) {
-                                                ids.add(mJustMarkedAsReadEntries.getInt(0));
-                                            }
-                                            String where = BaseColumns._ID + " IN (" + TextUtils.join(",", ids) + ')';
-                                            cr.update(FeedData.EntryColumns.CONTENT_URI, FeedData.getUnreadContentValues(), where, null);
-
-                                            mJustMarkedAsReadEntries.close();
-                                        }
-                                    }
-                                }.start();
-                            }
-                        });
-                snackbar.getView().setBackgroundResource(R.color.material_grey_900);
-                snackbar.show();
-
-                new Thread() {
-                    @Override
-                    public void run() {
-                        if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
-                            mJustMarkedAsReadEntries.close();
-                        }
-                        String where = EntryColumns.WHERE_UNREAD;
-                        mJustMarkedAsReadEntries = cr.query(newUri, new String[]{BaseColumns._ID}, where, null, null);
-                        cr.update(newUri, FeedData.getReadContentValues(), where, null);
-                    }
-                }.start();
-                // If we are on "all items" uri, we can remove the notification here
-                if (EntryColumns.CONTENT_URI.equals(newUri) && Constants.NOTIF_MGR != null) {
-                    Constants.NOTIF_MGR.cancel(0);
-                }
+                mEntriesFragment.readAll();
             }
         });
 
@@ -295,14 +248,6 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
     protected void onPause() {
         PrefUtils.unregisterOnPrefChangeListener(mShowReadListener);
         super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        if (mJustMarkedAsReadEntries != null && !mJustMarkedAsReadEntries.isClosed()) {
-            mJustMarkedAsReadEntries.close();
-        }
-        super.onStop();
     }
 
     @Override
