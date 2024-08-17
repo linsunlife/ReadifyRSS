@@ -355,7 +355,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                 mGroupSpinner.setVisibility(View.VISIBLE);
                 mGroupTextView.setVisibility(View.VISIBLE);
 
-                mGroupId = cursor.getLong(3);
+                mGroupId = cursor.isNull(3) ? null : cursor.getLong(3);
                 mGroupIds = new ArrayList<>();
                 mGroupIds.add(null);
 
