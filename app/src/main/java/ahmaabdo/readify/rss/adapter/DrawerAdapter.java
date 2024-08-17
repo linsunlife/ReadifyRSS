@@ -298,6 +298,7 @@ public class DrawerAdapter extends BaseAdapter {
                         mAllNumber = cursor.getInt(0);
                     cursor.close();
                 }
+
                 // recent entries
                 cursor = contentResolver.query(EntryColumns.RECENT_ENTRIES_CONTENT_URI, new String[]{Constants.DB_COUNT},
                         showRead ? null : EntryColumns.WHERE_UNREAD, null, null);
