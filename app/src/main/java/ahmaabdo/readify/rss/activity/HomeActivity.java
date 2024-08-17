@@ -340,6 +340,9 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 getSupportActionBar().setTitle(R.string.all);
                 break;
             case 1:
+                getSupportActionBar().setTitle(R.string.recent);
+                break;
+            case 2:
                 getSupportActionBar().setTitle(R.string.favorites);
                 break;
             default:
