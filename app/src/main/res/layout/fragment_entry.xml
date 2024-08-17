@@ -10,17 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="16dp"
         android:background="@color/dark_background">
-
-        <com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator
-            android:id="@+id/indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            app:dotColor="#666666"
-            app:dotRadius="3.5dp"
-            app:fadingDotCount="2"
-            app:selectedDotRadius="3.5dp" />
-
     </RelativeLayout>
 
     <android.support.v4.view.ViewPager

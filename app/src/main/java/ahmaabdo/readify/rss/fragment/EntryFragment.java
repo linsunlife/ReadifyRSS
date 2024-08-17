@@ -56,8 +56,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.rbrooks.indefinitepagerindicator.IndefinitePagerIndicator;
-
 import ahmaabdo.readify.rss.Constants;
 import ahmaabdo.readify.rss.MainApplication;
 import ahmaabdo.readify.rss.R;
@@ -89,7 +87,6 @@ public class EntryFragment extends SwipeRefreshFragment implements
 
     private boolean mFavorite, mPreferFullText = true;
     private ViewPager mEntryPager;
-    private IndefinitePagerIndicator mIndicator;
     private EntryPagerAdapter mEntryPagerAdapter;
     private FloatingActionButton floatingActionButton;
 
@@ -171,9 +168,6 @@ public class EntryFragment extends SwipeRefreshFragment implements
         mEntryPager = rootView.findViewById(R.id.pager);
         //mEntryPager.setPageTransformer(true, new DepthPageTransformer());
         mEntryPager.setAdapter(mEntryPagerAdapter);
-        //Init ViewPager dots
-        mIndicator = rootView.findViewById(R.id.indicator);
-        mIndicator.attachToViewPager(mEntryPager);
 
         if (savedInstanceState != null) {
             mBaseUri = savedInstanceState.getParcelable(STATE_BASE_URI);
