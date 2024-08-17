@@ -10,12 +10,12 @@
 
     <TextView
         android:id="@+id/toolbar_title"
-        android:layout_width="wrap_content"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:maxLines="1"
-        android:textColor="#A6A6A6"
+        android:textColor="@android:color/white"
         android:visibility="gone" />
 
 
