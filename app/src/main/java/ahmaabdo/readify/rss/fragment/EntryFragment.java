@@ -413,6 +413,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
             toolbarTitle.setText(feedTitle);
             toolbarTitle.setVisibility(View.VISIBLE);
             activity.setTitle(toolbarTitle.getText().toString());
+            activity.getSupportActionBar().setTitle((mCurrentPagerPos + 1) + " / " + mEntriesIds.length);
 
             mFavorite = entryCursor.getInt(mIsFavoritePos) == 1;
             activity.invalidateOptionsMenu();
