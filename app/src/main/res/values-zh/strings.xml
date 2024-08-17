@@ -157,7 +157,7 @@
     <string name="settings_backup_restore">备份与恢复</string>
     <string name="settings_backup_path">默认备份路径</string>
     <string name="settings_backup">备份</string>
-    <string name="settings_backup_description">备份整个数据库和应用设置</string>
+    <string name="settings_backup_description">备份所有数据，包括订阅、过滤器、消息、应用设置等</string>
     <string name="question_backup_path_permission_title">文件权限</string>
     <string name="question_backup_path_permission">根据 Android 的文件权限要求，请选择备份路径，并授予权限。</string>
     <string name="settings_restore">恢复</string>

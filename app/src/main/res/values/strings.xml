@@ -179,7 +179,7 @@
     <string name="settings_backup_restore">Backup and restore</string>
     <string name="settings_backup_path">Default backup path</string>
     <string name="settings_backup">Backup</string>
-    <string name="settings_backup_description">Backup the entire database and app settings</string>
+    <string name="settings_backup_description">Backup all data, including feeds, filters, entries and app settings</string>
     <string name="question_backup_path_permission_title">File permission</string>
     <string name="question_backup_path_permission">As per Android\'s file permission requirements, please specify the backup path and grant permission.</string>
     <string name="settings_restore">Restore</string>
