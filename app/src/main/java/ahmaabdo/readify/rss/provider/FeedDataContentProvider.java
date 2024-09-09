@@ -46,6 +46,7 @@
 package ahmaabdo.readify.rss.provider;
 
 import ahmaabdo.readify.rss.parser.OPML;
+import ahmaabdo.readify.rss.utils.NetworkUtils;
 import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -756,6 +757,17 @@ public class FeedDataContentProvider extends ContentProvider {
                 where.append(Constants.DB_AND);
             }
             where.append(selection);
+        }
+
+        if (table.equals(EntryColumns.TABLE_NAME)) {
+            // Delete image caches
+            Cursor entriesCusor = database.query(table, EntryColumns.PROJECTION_ID, where.toString(), selectionArgs,
+                    null, null, null);
+            while (entriesCusor.moveToNext()) {
+                int entryId = entriesCusor.getInt(0);
+                NetworkUtils.deleteEntryImagesCache(entryId);
+            }
+            entriesCusor.close();
         }
 
         int count = database.delete(table, where.toString(), selectionArgs);
