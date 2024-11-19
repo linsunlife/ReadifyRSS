@@ -290,6 +290,15 @@
                                     android:layout_marginTop="20dp"
                                     android:text="@string/set_referer" />
 
+                            <CheckBox
+                                    android:id="@+id/fit_center"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_marginTop="20dp"
+                                    android:text="@string/fit_center" />
+
                         </LinearLayout>
                     </ScrollView>
 

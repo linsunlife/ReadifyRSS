@@ -80,6 +80,7 @@
     <string name="passwordhttpAuth">Password</string>
     <string name="set_base_url">Set the page\'s base URL when rendering an entry in a WebView</string>
     <string name="set_referer">Set the Referer when retrieving entry covers</string>
+    <string name="fit_center">Set the scale type to FitCenter rather than CenterCrop when displaying entry covers</string>
     <string name="tab_feed_title">Feed</string>
     <string name="tab_filters_title">Filter</string>
     <string name="tab_advanced_title">Advanced</string>

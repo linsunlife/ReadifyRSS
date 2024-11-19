@@ -73,6 +73,7 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.utils.NetworkUtils;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.StringUtils;
+import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     private final Uri mUri;
     private final boolean mShowFeedInfo;
-    private int mIdPos, mTitlePos, mMainImgPos, mLinkPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos, mSetRefererPos;
+    private int mIdPos, mTitlePos, mMainImgPos, mLinkPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos, mSetRefererPos, mFitCenterPos;
     private long mEntriesListDisplayDate;
 
     public EntriesCursorAdapter(Context context, Uri uri, Cursor cursor, boolean showFeedInfo, long entriesListDisplayDate) {
@@ -126,6 +127,14 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
         if (mainImgUrl != null && PrefUtils.getBoolean(PrefUtils.DISPLAY_IMAGES, true)) {
             holder.mainImgView.setVisibility(View.VISIBLE);
+
+            boolean fitCenter = cursor.getInt(mFitCenterPos) == 1;
+            if (fitCenter) {
+                ViewGroup.LayoutParams layoutParams = holder.mainImgView.getLayoutParams();
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                holder.mainImgView.setLayoutParams(layoutParams);
+            }
+
             int radius = 16; // 圆角半径，单位为像素
             int margin = 0; // 可选参数，设置圆角与 ImageView 边缘的距离
             TextDrawable textDrawable = TextDrawable.builder().buildRoundRect("!", Color.GRAY, radius);
@@ -133,7 +142,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             GlideUrl glideUrl = new GlideUrl(mainImgUrl, new LazyHeaders.Builder().addHeader("Referer", link).build());
             Glide.with(context)
                     .load(setReferer ? glideUrl : mainImgUrl)
-                    .bitmapTransform(new CenterCrop(context), new RoundedCornersTransformation(context, radius, margin))
+                    .bitmapTransform(fitCenter ? new FitCenter(context) : new CenterCrop(context), new RoundedCornersTransformation(context, radius, margin))
                     .error(textDrawable)
                     .into(holder.mainImgView);
         } else {
@@ -409,6 +418,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             mFavoritePos = cursor.getColumnIndex(EntryColumns.IS_FAVORITE);
             mFeedNamePos = cursor.getColumnIndex(FeedColumns.NAME);
             mSetRefererPos = cursor.getColumnIndex(FeedColumns.SET_REFERER);
+            mFitCenterPos = cursor.getColumnIndex(FeedColumns.FIT_CENTER);
         }
     }
 

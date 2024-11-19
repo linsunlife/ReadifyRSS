@@ -224,7 +224,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
     private EditText mCookieNameEditText, mCookieValueEditText;
     private EditText mLoginHTTPAuthEditText, mPasswordHTTPAuthEditText;
     private Spinner mGroupSpinner, mKeepTime;
-    private CheckBox mRetrieveFulltextCheckBox, mSetBaseUrlCheckBox, mSetRefererCheckBox;
+    private CheckBox mRetrieveFulltextCheckBox, mSetBaseUrlCheckBox, mSetRefererCheckBox, mFitCenterCheckBox;
     private ListView mFiltersListView;
     private FiltersCursorAdapter mFiltersCursorAdapter;
     private boolean mIsGroup;
@@ -261,6 +261,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
         mRetrieveFulltextCheckBox = (CheckBox) findViewById(R.id.retrieve_fulltext);
         mSetBaseUrlCheckBox = (CheckBox) findViewById(R.id.set_base_url);
         mSetRefererCheckBox = (CheckBox) findViewById(R.id.set_referer);
+        mFitCenterCheckBox = (CheckBox) findViewById(R.id.fit_center);
         mFiltersListView = (ListView) findViewById(android.R.id.list);
         View tabWidget = findViewById(android.R.id.tabs);
         View buttonLayout = findViewById(R.id.button_layout);
@@ -312,7 +313,8 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                             FeedColumns.RETRIEVE_FULLTEXT, FeedColumns.COOKIE_NAME,
                             FeedColumns.COOKIE_VALUE, FeedColumns.HTTP_AUTH_LOGIN,
                             FeedColumns.HTTP_AUTH_PASSWORD, FeedColumns.KEEP_TIME,
-                            FeedColumns.SET_BASE_URL, FeedColumns.SET_REFERER},
+                            FeedColumns.SET_BASE_URL, FeedColumns.SET_REFERER,
+                            FeedColumns.FIT_CENTER},
                     null, null, null);
             if (!cursor.moveToFirst()) {
                 cursor.close();
@@ -399,6 +401,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
 
                 mSetBaseUrlCheckBox.setChecked(cursor.getInt(10) == 1);
                 mSetRefererCheckBox.setChecked(cursor.getInt(11) == 1);
+                mFitCenterCheckBox.setChecked(cursor.getInt(12) == 1);
             }
             cursor.close();
         }
@@ -459,6 +462,7 @@ public class EditFeedActivity extends BaseActivity implements LoaderManager.Load
                     values.put(FeedColumns.KEEP_TIME, selectedValues.getInt(mKeepTime.getSelectedItemPosition(), 0));
                     values.put(FeedColumns.SET_BASE_URL, mSetBaseUrlCheckBox.isChecked() ? 1 : null);
                     values.put(FeedColumns.SET_REFERER, mSetRefererCheckBox.isChecked() ? 1 : null);
+                    values.put(FeedColumns.FIT_CENTER, mFitCenterCheckBox.isChecked() ? 1 : null);
                     values.put(FeedColumns.FETCH_MODE, 0);
 
                     cr.update(getIntent().getData(), values, null, null);

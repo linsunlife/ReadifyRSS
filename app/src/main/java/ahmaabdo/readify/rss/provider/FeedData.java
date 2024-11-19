@@ -63,7 +63,7 @@ public class FeedData {
     public static final String FEEDS_TABLE_WITH_GROUP_PRIORITY = FeedColumns.TABLE_NAME + " LEFT JOIN (SELECT " + FeedColumns._ID + " AS joined_feed_id, " + FeedColumns.PRIORITY +
             " AS group_priority FROM " + FeedColumns.TABLE_NAME + ") AS f ON (" + FeedColumns.TABLE_NAME + '.' + FeedColumns.GROUP_ID + " = f.joined_feed_id)";
     public static final String ENTRIES_TABLE_WITH_FEED_INFO = EntryColumns.TABLE_NAME + " LEFT OUTER JOIN (SELECT " + FeedColumns._ID + " AS joined_feed_id, " + FeedColumns.NAME + ", " + FeedColumns.URL + ", " +
-            FeedColumns.ICON + ", " + FeedColumns.GROUP_ID + ", " + FeedColumns.SET_BASE_URL + ", " + FeedColumns.SET_REFERER + " FROM " + FeedColumns.TABLE_NAME + ") AS f ON (" + EntryColumns.TABLE_NAME + '.' + EntryColumns.FEED_ID + " = f.joined_feed_id)";
+            FeedColumns.ICON + ", " + FeedColumns.GROUP_ID + ", " + FeedColumns.SET_BASE_URL + ", " + FeedColumns.SET_REFERER + ", " + FeedColumns.FIT_CENTER + " FROM " + FeedColumns.TABLE_NAME + ") AS f ON (" + EntryColumns.TABLE_NAME + '.' + EntryColumns.FEED_ID + " = f.joined_feed_id)";
     public static final String ALL_UNREAD_NUMBER = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME + " WHERE " + EntryColumns.IS_READ + " IS NULL)";
     public static final String FAVORITES_NUMBER = "(SELECT " + Constants.DB_COUNT + " FROM " + EntryColumns.TABLE_NAME + " WHERE " + EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE + ')';
     static final String TYPE_PRIMARY_KEY = "INTEGER PRIMARY KEY AUTOINCREMENT";
@@ -115,6 +115,7 @@ public class FeedData {
         public static final String IS_GROUP_EXPANDED = "is_group_expanded";
         public static final String SET_BASE_URL = "set_base_url";
         public static final String SET_REFERER = "set_referer";
+        public static final String FIT_CENTER = "fit_center";
         public static final String[] PROJECTION_ID = new String[]{FeedColumns._ID};
         public static final String[] PROJECTION_GROUP_ID = new String[]{FeedColumns.GROUP_ID};
         public static final String[] PROJECTION_PRIORITY = new String[]{FeedColumns.PRIORITY};
@@ -131,7 +132,8 @@ public class FeedData {
                 {COOKIE_NAME, TYPE_TEXT},{COOKIE_VALUE, TYPE_TEXT}, {HTTP_AUTH_LOGIN, TYPE_TEXT}, {HTTP_AUTH_PASSWORD, TYPE_TEXT},
                 {KEEP_TIME, TYPE_DATE_TIME}, {IS_GROUP, TYPE_BOOLEAN}, {GROUP_ID, TYPE_EXTERNAL_ID}, {LAST_UPDATE, TYPE_DATE_TIME},
                 {REAL_LAST_UPDATE, TYPE_DATE_TIME}, {RETRIEVE_FULLTEXT, TYPE_BOOLEAN}, {ICON, "BLOB"}, {ERROR, TYPE_TEXT}, {PRIORITY, TYPE_INT},
-                {FETCH_MODE, TYPE_INT}, {IS_GROUP_EXPANDED, TYPE_BOOLEAN}, {SET_BASE_URL, TYPE_BOOLEAN}, {SET_REFERER, TYPE_BOOLEAN}};
+                {FETCH_MODE, TYPE_INT}, {IS_GROUP_EXPANDED, TYPE_BOOLEAN}, {SET_BASE_URL, TYPE_BOOLEAN}, {SET_REFERER, TYPE_BOOLEAN},
+                {FIT_CENTER, TYPE_BOOLEAN}};
 
         public static Uri GROUPS_CONTENT_URI(String groupId) {
             return Uri.parse(CONTENT_AUTHORITY + "/groups/" + groupId);
