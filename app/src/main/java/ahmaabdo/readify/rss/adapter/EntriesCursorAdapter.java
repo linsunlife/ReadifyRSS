@@ -214,14 +214,14 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                         switch (item.getItemId()) {
                             case R.id.read_above:
                             case R.id.unread_above:
-                                for (int i = 0; i < position; i++) {
+                                for (int i = 0; i <= position; i++) {
                                     ids.add(getItemId(i));
                                 }
                                 toggleReadState(ids, item.getItemId() == R.id.read_above);
                                 return true;
                             case R.id.read_below:
                             case R.id.unread_below:
-                                for (int i = position + 1; i < getCount(); i++) {
+                                for (int i = position; i < getCount(); i++) {
                                     ids.add(getItemId(i));
                                 }
                                 toggleReadState(ids, item.getItemId() == R.id.read_below);
