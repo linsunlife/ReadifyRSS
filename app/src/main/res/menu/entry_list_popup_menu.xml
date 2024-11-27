@@ -18,4 +18,8 @@
     <item
             android:id="@+id/toggle_favorite_state"
             android:title="@string/popup_menu_toggle_favorite_state" />
+    <item
+            android:id="@+id/save_cover"
+            android:title="@string/popup_menu_save_cover"
+            android:visible="false" />
 </menu>

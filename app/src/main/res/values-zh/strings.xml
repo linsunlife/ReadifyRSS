@@ -55,6 +55,7 @@
     <string name="popup_menu_unread_below">以下标记为未读</string>
     <string name="popup_menu_toggle_read_state">切换已读状态</string>
     <string name="popup_menu_toggle_favorite_state">切换收藏状态</string>
+    <string name="popup_menu_save_cover">保存封面图片</string>
     <string name="menu_add_group">添加分组</string>
     <string name="menu_import">导入OPML</string>
     <string name="menu_export">导出OPML</string>

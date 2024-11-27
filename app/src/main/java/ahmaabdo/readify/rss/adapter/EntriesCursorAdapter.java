@@ -46,10 +46,13 @@
 package ahmaabdo.readify.rss.adapter;
 
 import ahmaabdo.readify.rss.activity.EntryActivity;
+import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.content.*;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.BaseColumns;
@@ -74,9 +77,16 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.utils.NetworkUtils;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.StringUtils;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EntriesCursorAdapter extends ResourceCursorAdapter {
@@ -108,6 +118,8 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         }
 
         final ViewHolder holder = (ViewHolder) view.getTag(R.id.holder);
+        holder.coverBitmap = null;
+        holder.coverUrl = null;
 
         String titleText = cursor.getString(mTitlePos);
         holder.titleTextView.setText(titleText);
@@ -144,11 +156,20 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             Transformation[] transformations = !fitCenter
                     ? new Transformation[]{new CenterCrop(context), roundedCornersTransformation}
                     : new Transformation[]{roundedCornersTransformation};
+            final String finalMainImgUrl = mainImgUrl;
             Glide.with(context)
                     .load(setReferer ? glideUrl : mainImgUrl)
-                    .bitmapTransform(transformations)
+                    .asBitmap()
+                    .transform(transformations)
                     .error(textDrawable)
-                    .into(holder.mainImgView);
+                    .into(new ImageViewTarget<Bitmap>(holder.mainImgView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            holder.coverBitmap = resource;
+                            holder.coverUrl = finalMainImgUrl;
+                            holder.mainImgView.setImageBitmap(resource);
+                        }
+                    });
         } else {
             holder.mainImgView.setVisibility(View.GONE);
         }
@@ -209,8 +230,14 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             @Override
             public boolean onLongClick(final View v) {
                 PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-                popupMenu.getMenuInflater().inflate(R.menu.entry_list_popup_menu, popupMenu.getMenu());
+                Menu menu = popupMenu.getMenu();
+                popupMenu.getMenuInflater().inflate(R.menu.entry_list_popup_menu, menu);
                 popupMenu.setGravity(Gravity.END);
+
+                final ViewHolder holder = (ViewHolder) view.getTag(R.id.holder);
+                if (holder != null && holder.coverBitmap != null)
+                    menu.findItem(R.id.save_cover).setVisible(true);
+
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -235,6 +262,9 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                                 return true;
                             case R.id.toggle_favorite_state:
                                 toggleFavoriteState(id, v);
+                                return true;
+                            case R.id.save_cover:
+                                saveCoverImage(holder.coverBitmap, holder.coverUrl);
                                 return true;
                             default:
                                 return false;
@@ -385,6 +415,57 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         }
     }
 
+    public void saveCoverImage(final Bitmap bitmap, final String url) {
+        new Thread() {
+            @Override
+            public void run() {
+                Context context = MainApplication.getContext();
+                try {
+                    String contentType = getContentType(url);
+                    Bitmap.CompressFormat format = determineFormat(contentType);
+                    String suffix = format == Bitmap.CompressFormat.JPEG ? "jpg" : format.name().toLowerCase();
+                    String name = new Date().getTime() + "." + suffix;
+                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), name);
+                    FileOutputStream outputStream = new FileOutputStream(file);
+                    bitmap.compress(format, 100, outputStream);
+                    outputStream.flush();
+                    outputStream.close();
+
+                    // 发送广播通知系统图库更新
+                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+                    ToastUtils.showShort(R.string.action_finished);
+                } catch (IOException e) {
+                    ToastUtils.showLong(String.format(context.getString(R.string.action_failed), e.getMessage()));
+                }
+            }
+        }.start();
+    }
+
+    private String getContentType(String url) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+            connection.setRequestMethod("HEAD");
+            connection.connect();
+            return connection.getContentType();
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private Bitmap.CompressFormat determineFormat(String contentType) {
+        if (contentType == null)
+            return Bitmap.CompressFormat.JPEG;
+
+        contentType = contentType.toLowerCase();
+        if (contentType.contains("png"))
+            return Bitmap.CompressFormat.PNG;
+        else if (contentType.contains("gif"))
+            return Bitmap.CompressFormat.PNG; // GIF 处理比较复杂，这里简化为 PNG
+        else if (contentType.contains("webp"))
+            return Bitmap.CompressFormat.WEBP;
+        else
+            return Bitmap.CompressFormat.JPEG;
+    }
 
     @Override
     public void changeCursor(Cursor cursor) {
@@ -429,6 +510,8 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
     private static class ViewHolder {
         public TextView authorTextView, dateTextView, titleTextView;
         public ImageView mainImgView, starImgView;
+        public Bitmap coverBitmap;
+        public String coverUrl;
         public boolean isRead, isFavorite;
     }
 }

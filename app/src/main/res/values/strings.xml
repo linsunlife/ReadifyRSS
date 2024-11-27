@@ -60,6 +60,7 @@
     <string name="popup_menu_unread_below">Mark below as unread</string>
     <string name="popup_menu_toggle_read_state">Toggle read state</string>
     <string name="popup_menu_toggle_favorite_state">Toggle favorite state</string>
+    <string name="popup_menu_save_cover">Save the cover image</string>
     <string name="menu_add_group">Add group</string>
     <string name="menu_import">Import from OPML</string>
     <string name="menu_export">Export to OPML</string>
