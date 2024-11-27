@@ -60,6 +60,7 @@ import android.widget.*;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -73,7 +74,6 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.utils.NetworkUtils;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.utils.StringUtils;
-import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 import java.util.ArrayList;
@@ -140,9 +140,13 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             TextDrawable textDrawable = TextDrawable.builder().buildRoundRect("!", Color.GRAY, radius);
             boolean setReferer = cursor.getInt(mSetRefererPos) == 1;
             GlideUrl glideUrl = new GlideUrl(mainImgUrl, new LazyHeaders.Builder().addHeader("Referer", link).build());
+            RoundedCornersTransformation roundedCornersTransformation = new RoundedCornersTransformation(context, radius, margin);
+            Transformation[] transformations = !fitCenter
+                    ? new Transformation[]{new CenterCrop(context), roundedCornersTransformation}
+                    : new Transformation[]{roundedCornersTransformation};
             Glide.with(context)
                     .load(setReferer ? glideUrl : mainImgUrl)
-                    .bitmapTransform(fitCenter ? new FitCenter(context) : new CenterCrop(context), new RoundedCornersTransformation(context, radius, margin))
+                    .bitmapTransform(transformations)
                     .error(textDrawable)
                     .into(holder.mainImgView);
         } else {
