@@ -229,49 +229,89 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         view.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(final View v) {
-                PopupMenu popupMenu = new PopupMenu(v.getContext(), v);
-                Menu menu = popupMenu.getMenu();
-                popupMenu.getMenuInflater().inflate(R.menu.entry_list_popup_menu, menu);
-                popupMenu.setGravity(Gravity.END);
+                LayoutInflater inflater = (LayoutInflater) v.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View popupView = inflater.inflate(R.layout.item_entry_list_popup_menu, null);
+                final PopupWindow popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
                 final ViewHolder holder = (ViewHolder) view.getTag(R.id.holder);
                 if (holder != null && holder.coverBitmap != null)
-                    menu.findItem(R.id.save_cover).setVisible(true);
+                    popupView.findViewById(R.id.save_cover).setVisibility(View.VISIBLE);
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                View.OnClickListener menuItemClickListener = new View.OnClickListener() {
                     @Override
-                    public boolean onMenuItemClick(MenuItem item) {
+                    public void onClick(View menuItem) {
+                        int menuItemId = menuItem.getId();
                         List<Long> ids = new ArrayList<>();
-                        switch (item.getItemId()) {
+                        switch (menuItemId) {
                             case R.id.read_above:
                             case R.id.unread_above:
                                 for (int i = 0; i <= position; i++) {
                                     ids.add(getItemId(i));
                                 }
-                                toggleReadState(ids, item.getItemId() == R.id.read_above);
-                                return true;
+                                toggleReadState(ids, menuItemId == R.id.read_above);
+                                break;
                             case R.id.read_below:
                             case R.id.unread_below:
                                 for (int i = position; i < getCount(); i++) {
                                     ids.add(getItemId(i));
                                 }
-                                toggleReadState(ids, item.getItemId() == R.id.read_below);
-                                return true;
+                                toggleReadState(ids, menuItemId == R.id.read_below);
+                                break;
                             case R.id.toggle_read_state:
                                 toggleReadState(id, v);
-                                return true;
+                                break;
                             case R.id.toggle_favorite_state:
                                 toggleFavoriteState(id, v);
-                                return true;
+                                break;
                             case R.id.save_cover:
                                 saveCoverImage(holder.coverBitmap, holder.coverUrl);
-                                return true;
-                            default:
-                                return false;
+                                break;
                         }
+                        popupWindow.dismiss();
                     }
-                });
-                popupMenu.show();
+                };
+
+                int[] menuItemIds = new int[]{
+                        R.id.read_above,
+                        R.id.unread_above,
+                        R.id.read_below,
+                        R.id.unread_below,
+                        R.id.toggle_read_state,
+                        R.id.toggle_favorite_state,
+                        R.id.save_cover
+                };
+                for (int menuItemId : menuItemIds) {
+                    popupView.findViewById(menuItemId).setOnClickListener(menuItemClickListener);
+                }
+
+                popupWindow.setFocusable(true);
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setElevation(4);
+
+                int parentHeight = parent.getHeight();
+                int itemTopPosition = v.getTop();
+                int itemBottomPosition = v.getBottom();
+                // The distance between the popup window and the view's edges
+                int distance = 100;
+
+                // Determine the popup window's position based on the visibility of the view's top and bottom edges
+                // If the view's top and bottom edges are both invisible, display the popup window at the center of the screen
+                if (itemTopPosition < -1 && itemBottomPosition > parentHeight)
+                    popupWindow.showAtLocation(v, Gravity.END, 0, 0);
+                else {
+                    // Position the popup window near the top edge of the view, or the bottom edge if the top edge is invisible
+                    int relativePosition = itemTopPosition >= -1 ? itemTopPosition + distance : itemBottomPosition - distance;
+                    // If the position is at the top of the screen, it is relative to the top; otherwise, it is relative to the bottom
+                    if (relativePosition <= parentHeight / 2) {
+                        int[] location = new int[2];
+                        parent.getLocationOnScreen(location);
+                        int parentOffset = location[1] - 1;
+                        popupWindow.showAtLocation(v, Gravity.END | Gravity.TOP, 0, parentOffset + relativePosition);
+                    }
+                    else
+                        popupWindow.showAtLocation(v, Gravity.END | Gravity.BOTTOM, 0, parentHeight - relativePosition);
+                }
+
                 return true;
             }
         });

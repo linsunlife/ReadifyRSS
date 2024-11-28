@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:background="@drawable/entry_list_popup_background">
+
+    <TextView
+            android:id="@+id/read_above"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/popup_menu_read_above"
+            android:textColor="?android:attr/textColor" />
+    <TextView
+            android:id="@+id/unread_above"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/popup_menu_unread_above"
+            android:textColor="?android:attr/textColor" />
+    <TextView
+            android:id="@+id/read_below"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/popup_menu_read_below"
+            android:textColor="?android:attr/textColor" />
+    <TextView
+            android:id="@+id/unread_below"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/popup_menu_unread_below"
+            android:textColor="?android:attr/textColor" />
+    <TextView
+            android:id="@+id/toggle_read_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/popup_menu_toggle_read_state"
+            android:textColor="?android:attr/textColor" />
+    <TextView
+            android:id="@+id/toggle_favorite_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/popup_menu_toggle_favorite_state"
+            android:textColor="?android:attr/textColor" />
+    <TextView
+            android:id="@+id/save_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/popup_menu_save_cover"
+            android:textColor="?android:attr/textColor"
+            android:visibility="gone" />
+
+</LinearLayout>
