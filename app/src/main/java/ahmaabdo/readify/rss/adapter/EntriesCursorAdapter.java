@@ -347,7 +347,8 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                     default:
                         isPressed = false;
                         handler.removeCallbacks(longPressRunnable);
-                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        if (v.getParent() != null)
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
                         if (v.getTranslationX() != 0)
                             v.animate().translationX(0).setDuration(200).start();
                         return false;
