@@ -7,8 +7,8 @@ android {
         applicationId "ahmaabdo.readify.rss"
         minSdk 23
         targetSdk 27
-        versionCode 9
-        versionName "1.5.4"
+        versionCode Integer.parseInt('git rev-list HEAD --count'.execute().text.trim())
+        versionName "2." + new Date().format("yy.MMdd", TimeZone.getTimeZone("GMT+8"))
         vectorDrawables.useSupportLibrary = true
     }
 
@@ -42,6 +42,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "readify-${name}-${defaultConfig.versionCode}.apk"
+        }
+    }
+
     lint {
         disable 'MissingTranslation'
     }
