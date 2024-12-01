@@ -197,9 +197,18 @@ public class EntryView extends WebView {
         content.append("<script>\n" +
                 "var images = document.getElementsByTagName('img');" +
                 "for (var i = 0; i < images.length; i++) {" +
-                "    images[i].onerror = function() {" +
+                "    var image = images[i];" +
+                "    image.onerror = function() {" +
                 "        this.style.width = '100%';" +
                 "        this.style.height = '150px';" +
+                "        this.onclick = function() {" +
+                "            this.src = this.src;" +
+                "        };" +
+                "    };" +
+                "    image.onload = function() {" +
+                "        this.style.width = 'auto';" +
+                "        this.style.height = 'auto';" +
+                "        this.onclick = null;" +
                 "    };" +
                 "}" +
                 "</script>");
