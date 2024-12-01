@@ -45,7 +45,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "readify-${name}-${defaultConfig.versionCode}.apk"
+            outputFileName = "readify-${defaultConfig.versionCode}-${name}.apk"
         }
     }
 
