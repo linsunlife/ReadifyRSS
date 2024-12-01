@@ -46,13 +46,12 @@
 package ahmaabdo.readify.rss.adapter;
 
 import ahmaabdo.readify.rss.activity.EntryActivity;
-import ahmaabdo.readify.rss.utils.ToastUtils;
+import ahmaabdo.readify.rss.utils.ImageUtils;
 import android.content.*;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.BaseColumns;
@@ -80,13 +79,7 @@ import ahmaabdo.readify.rss.utils.StringUtils;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class EntriesCursorAdapter extends ResourceCursorAdapter {
@@ -264,7 +257,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                                 toggleFavoriteState(id, v);
                                 break;
                             case R.id.save_cover:
-                                saveCoverImage(holder.coverBitmap, holder.coverUrl);
+                                ImageUtils.saveImage(holder.coverBitmap, holder.coverUrl);
                                 break;
                         }
                         popupWindow.dismiss();
@@ -454,58 +447,6 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                 }
             }.start();
         }
-    }
-
-    public void saveCoverImage(final Bitmap bitmap, final String url) {
-        new Thread() {
-            @Override
-            public void run() {
-                Context context = MainApplication.getContext();
-                try {
-                    String contentType = getContentType(url);
-                    Bitmap.CompressFormat format = determineFormat(contentType);
-                    String suffix = format == Bitmap.CompressFormat.JPEG ? "jpg" : format.name().toLowerCase();
-                    String name = new Date().getTime() + "." + suffix;
-                    File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), name);
-                    FileOutputStream outputStream = new FileOutputStream(file);
-                    bitmap.compress(format, 100, outputStream);
-                    outputStream.flush();
-                    outputStream.close();
-
-                    // 发送广播通知系统图库更新
-                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-                    ToastUtils.showShort(R.string.action_finished);
-                } catch (IOException e) {
-                    ToastUtils.showLong(String.format(context.getString(R.string.action_failed), e.getMessage()));
-                }
-            }
-        }.start();
-    }
-
-    private String getContentType(String url) {
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setRequestMethod("HEAD");
-            connection.connect();
-            return connection.getContentType();
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    private Bitmap.CompressFormat determineFormat(String contentType) {
-        if (contentType == null)
-            return Bitmap.CompressFormat.JPEG;
-
-        contentType = contentType.toLowerCase();
-        if (contentType.contains("png"))
-            return Bitmap.CompressFormat.PNG;
-        else if (contentType.contains("gif"))
-            return Bitmap.CompressFormat.PNG; // GIF 处理比较复杂，这里简化为 PNG
-        else if (contentType.contains("webp"))
-            return Bitmap.CompressFormat.WEBP;
-        else
-            return Bitmap.CompressFormat.JPEG;
     }
 
     @Override
