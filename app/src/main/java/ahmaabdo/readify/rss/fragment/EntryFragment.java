@@ -20,6 +20,7 @@
 
 package ahmaabdo.readify.rss.fragment;
 
+import ahmaabdo.readify.rss.utils.ImageUtils;
 import ahmaabdo.readify.rss.utils.ToastUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -37,22 +38,21 @@ import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -66,6 +66,9 @@ import ahmaabdo.readify.rss.provider.FeedData.FeedColumns;
 import ahmaabdo.readify.rss.service.FetcherService;
 import ahmaabdo.readify.rss.utils.PrefUtils;
 import ahmaabdo.readify.rss.view.EntryView;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 public class EntryFragment extends SwipeRefreshFragment implements
         BaseActivity.OnFullScreenListener,
@@ -315,12 +318,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
                 }
                 case R.id.menu_copy_clipboard: {
                     Cursor cursor = mEntryPagerAdapter.getCursor(mCurrentPagerPos);
-                    String link = cursor.getString(mLinkPos);
-                    ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("Copied Text", link);
-                    clipboard.setPrimaryClip(clip);
-
-                    ToastUtils.showShort(R.string.copied_clipboard);
+                    copyLinkToClipboard(cursor.getString(mLinkPos));
                     break;
                 }
                 case R.id.menu_mark_as_unread: {
@@ -354,6 +352,12 @@ public class EntryFragment extends SwipeRefreshFragment implements
         return super.onOptionsItemSelected(item);
     }
 
+    private void copyLinkToClipboard(String link) {
+        ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Copied Text", link);
+        clipboard.setPrimaryClip(clip);
+        ToastUtils.showShort(R.string.copied_clipboard);
+    }
 
     public void setData(Uri uri, long entriesListDisplayDate) {
         mCurrentPagerPos = -1;
@@ -610,6 +614,7 @@ public class EntryFragment extends SwipeRefreshFragment implements
         public void displayEntry(int pagerPos, Cursor newCursor, boolean forceUpdate) {
             Log.d(TAG, "displayEntry() called with: " + "pagerPos = [" + pagerPos + "], newCursor = [" + newCursor + "], forceUpdate = [" + forceUpdate + "]");
             EntryView view = mEntryViews.get(pagerPos);
+            registerForContextMenu(view);
             if (view != null) {
                 if (newCursor == null) {
                     newCursor = (Cursor) view.getTag(); // get the old one
@@ -702,5 +707,72 @@ public class EntryFragment extends SwipeRefreshFragment implements
             hideSwipeProgress();
         }
     }
-}
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        EntryView entryView = (EntryView) v;
+        final WebView.HitTestResult hitTestResult = entryView.getHitTestResult();
+
+        final int MENU_COPY_CLIPBOARD = 1;
+        final int MENU_SHARE = 2;
+        final int MENU_SAVE_IMAGE = 3;
+
+        MenuItem.OnMenuItemClickListener menuItemClickListener = new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                final String link = hitTestResult.getExtra();
+                switch (item.getItemId()) {
+                    case MENU_COPY_CLIPBOARD:
+                        copyLinkToClipboard(link);
+                        return true;
+                    case MENU_SHARE:
+                        Intent sendIntent = new Intent(Intent.ACTION_SEND)
+                                .putExtra(Intent.EXTRA_TEXT, link)
+                                .setType(Constants.MIMETYPE_TEXT_PLAIN);
+                        Intent shareIntent = Intent.createChooser(sendIntent, null);
+                        startActivity(shareIntent);
+                        return true;
+                    case MENU_SAVE_IMAGE:
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Glide.with(getContext())
+                                        .load(link)
+                                        .asBitmap()
+                                        .into(new SimpleTarget<Bitmap>() {
+                                            @Override
+                                            public void onResourceReady(final Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                                ImageUtils.saveImage(resource, link);
+                                            }
+
+                                            @Override
+                                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                                ToastUtils.showLong(String.format(getString(R.string.action_failed), e.getMessage()));
+                                            }
+                                        });
+                            }
+                        });
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        };
+
+        int type = hitTestResult.getType();
+        if (type == WebView.HitTestResult.SRC_ANCHOR_TYPE) {
+            addMenu(menu, menuItemClickListener, MENU_COPY_CLIPBOARD, R.string.menu_copy_clipboard);
+            addMenu(menu, menuItemClickListener, MENU_SHARE, R.string.menu_share);
+        }
+        else if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+            addMenu(menu, menuItemClickListener, MENU_COPY_CLIPBOARD, R.string.menu_copy_clipboard);
+            addMenu(menu, menuItemClickListener, MENU_SAVE_IMAGE, R.string.menu_save_image);
+        }
+    }
+
+    private void addMenu(ContextMenu menu, MenuItem.OnMenuItemClickListener menuItemClickListener, int itemId, @StringRes int titleRes) {
+        menu.add(Menu.NONE, itemId, Menu.NONE, titleRes).setOnMenuItemClickListener(menuItemClickListener);
+    }
+
+}

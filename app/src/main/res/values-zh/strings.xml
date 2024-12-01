@@ -114,6 +114,7 @@
     <string name="menu_full_screen">全屏</string>
     <string name="menu_copy_clipboard">复制链接</string>
     <string name="menu_mark_as_unread">保持未读</string>
+    <string name="menu_save_image">保存图片</string>
     <string name="copied_clipboard">链接复制成功</string>
     <string name="get_full_text">获取全文</string>
     <string name="see_enclosure">显示附件</string>

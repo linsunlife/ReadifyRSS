@@ -135,6 +135,7 @@
     <string name="menu_mark_as_unread">Mark as unread</string>
     <string name="menu_open_in_browser">Open in browser</string>
     <string name="menu_switch_full_original">Show full content</string>
+    <string name="menu_save_image">Save image</string>
     <string name="copied_clipboard">Link copied</string>
     <string name="get_full_text">Retrieve the full text</string>
     <string name="see_enclosure">See enclosure</string>
