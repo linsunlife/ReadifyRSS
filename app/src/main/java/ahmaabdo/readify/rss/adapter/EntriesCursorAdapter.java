@@ -285,7 +285,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                 int itemTopPosition = v.getTop();
                 int itemBottomPosition = v.getBottom();
                 // The distance between the popup window and the view's edges
-                int distance = 100;
+                int distance = 200;
 
                 // Determine the popup window's position based on the visibility of the view's top and bottom edges
                 // If the view's top and bottom edges are both invisible, display the popup window at the center of the screen
