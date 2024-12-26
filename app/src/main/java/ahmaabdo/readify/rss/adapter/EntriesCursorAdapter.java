@@ -86,7 +86,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     private final Uri mUri;
     private final boolean mShowFeedInfo;
-    private int mIdPos, mTitlePos, mMainImgPos, mLinkPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mFeedNamePos, mSetRefererPos, mFitCenterPos;
+    private int mIdPos, mTitlePos, mMainImgPos, mLinkPos, mDatePos, mAuthorPos, mIsReadPos, mFavoritePos, mLaterReadingPos, mFeedNamePos, mSetRefererPos, mFitCenterPos;
     private long mEntriesListDisplayDate;
 
     public EntriesCursorAdapter(Context context, Uri uri, Cursor cursor, boolean showFeedInfo, long entriesListDisplayDate) {
@@ -107,6 +107,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             holder.authorTextView = view.findViewById(R.id.author);
             holder.mainImgView = view.findViewById(R.id.main_icon);
             holder.starImgView = view.findViewById(R.id.favorite_icon);
+            holder.laterReadingImgView = view.findViewById(R.id.later_reading_icon);
             view.setTag(R.id.holder, holder);
         }
 
@@ -174,6 +175,15 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         }
         else {
             holder.starImgView.setVisibility(View.GONE);
+        }
+
+        holder.isLaterReading = cursor.getInt(mLaterReadingPos) == 1;
+        if (holder.isLaterReading) {
+            holder.laterReadingImgView.setImageResource(PrefUtils.getBoolean(PrefUtils.LIGHT_THEME, false) ? R.drawable.ic_book_black : R.drawable.ic_book_white);
+            holder.laterReadingImgView.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.laterReadingImgView.setVisibility(View.GONE);
         }
 
         if (mShowFeedInfo && mFeedNamePos > -1) {
@@ -371,7 +381,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                             toggleFavoriteState(id, v);
                         } else if (translationX < -MIN_SWIPE_DISTANCE) {
                             // 左滑操作
-                            toggleReadState(id, v);
+                            toggleLaterReadingState(id, v);
                         } else if (isPressed) {
                             v.performClick();
                             isPressed = false;
@@ -449,6 +459,25 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
         }
     }
 
+    public void toggleLaterReadingState(final long id, View view) {
+        final ViewHolder holder = (ViewHolder) view.getTag(R.id.holder);
+        if (holder != null) { // should not happen, but I had a crash with this on PlayStore...
+            holder.isLaterReading = !holder.isLaterReading;
+
+            new Thread() {
+                @Override
+                public void run() {
+                    ContentValues values = new ContentValues();
+                    values.put(EntryColumns.IS_LATER_READING, holder.isLaterReading ? 1 : 0);
+
+                    ContentResolver cr = MainApplication.getContext().getContentResolver();
+                    Uri entryUri = ContentUris.withAppendedId(mUri, id);
+                    cr.update(entryUri, values, null, null);
+                }
+            }.start();
+        }
+    }
+
     @Override
     public void changeCursor(Cursor cursor) {
         reinit(cursor);
@@ -483,6 +512,7 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
             mAuthorPos = cursor.getColumnIndex(EntryColumns.AUTHOR);
             mIsReadPos = cursor.getColumnIndex(EntryColumns.IS_READ);
             mFavoritePos = cursor.getColumnIndex(EntryColumns.IS_FAVORITE);
+            mLaterReadingPos = cursor.getColumnIndex(EntryColumns.IS_LATER_READING);
             mFeedNamePos = cursor.getColumnIndex(FeedColumns.NAME);
             mSetRefererPos = cursor.getColumnIndex(FeedColumns.SET_REFERER);
             mFitCenterPos = cursor.getColumnIndex(FeedColumns.FIT_CENTER);
@@ -491,9 +521,9 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
 
     private static class ViewHolder {
         public TextView authorTextView, dateTextView, titleTextView;
-        public ImageView mainImgView, starImgView;
+        public ImageView mainImgView, starImgView, laterReadingImgView;
         public Bitmap coverBitmap;
         public String coverUrl;
-        public boolean isRead, isFavorite;
+        public boolean isRead, isFavorite, isLaterReading;
     }
 }

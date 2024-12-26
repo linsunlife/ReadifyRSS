@@ -105,6 +105,7 @@
     <!-- ENTRIES -->
     <string name="all">全部</string>
     <string name="recent">最近</string>
+    <string name="later_reading">稍后阅读</string>
     <string name="no_entries">没有消息</string>
     <string name="favorites">收藏</string>
     <string name="context_menu_show_read">显示已读消息</string>
@@ -123,7 +124,7 @@
     <string name="file">文件</string>
     <string name="download_and_save">下载并保存</string>
     <string name="open_link">打开链接</string>
-    <string name="tip_sentence">提示：左划标记已读，右划添加到收藏</string>
+    <string name="tip_sentence">提示：左划标记稍后阅读，右划添加到收藏</string>
 
     <!-- WIDGET -->
 

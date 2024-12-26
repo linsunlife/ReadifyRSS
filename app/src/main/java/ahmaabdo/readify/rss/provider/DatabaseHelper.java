@@ -63,7 +63,7 @@ import ahmaabdo.readify.rss.provider.FeedData.TaskColumns;
 class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "DatabaseHelper";
 
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
 
     private static final String ALTER_TABLE = "ALTER TABLE ";
     private static final String ADD = " ADD ";
@@ -150,6 +150,9 @@ class DatabaseHelper extends SQLiteOpenHelper {
         }
         if (oldVersion < 15) {
             executeCatchedSQL(database, ALTER_TABLE + FeedColumns.TABLE_NAME + ADD + FeedColumns.FIT_CENTER + ' ' + FeedData.TYPE_BOOLEAN);
+        }
+        if (oldVersion < 16) {
+            executeCatchedSQL(database, ALTER_TABLE + EntryColumns.TABLE_NAME + ADD + EntryColumns.IS_LATER_READING + ' ' + FeedData.TYPE_BOOLEAN);
         }
     }
 

@@ -89,7 +89,7 @@ public class FeedData {
     }
 
     public static boolean shouldShowReadEntries(Uri uri) {
-        boolean alwaysShowRead = EntryColumns.FAVORITES_CONTENT_URI.equals(uri) || (FeedDataContentProvider.URI_MATCHER.match(uri) == FeedDataContentProvider.URI_SEARCH);
+        boolean alwaysShowRead = EntryColumns.LATER_READING_ENTRIES_CONTENT_URI.equals(uri) || EntryColumns.FAVORITES_CONTENT_URI.equals(uri) || (FeedDataContentProvider.URI_MATCHER.match(uri) == FeedDataContentProvider.URI_SEARCH);
         return alwaysShowRead || PrefUtils.getBoolean(PrefUtils.SHOW_READ, true);
     }
 
@@ -195,6 +195,7 @@ public class FeedData {
         public static final String READ_DATE = "read_date";
         public static final String LINK = "link";
         public static final String IS_FAVORITE = "favorite";
+        public static final String IS_LATER_READING = "is_later_reading";
         public static final String ENCLOSURE = "enclosure";
         public static final String GUID = "guid";
         public static final String AUTHOR = "author";
@@ -210,8 +211,8 @@ public class FeedData {
 
         public static final String[][] COLUMNS = new String[][]{{_ID, TYPE_PRIMARY_KEY}, {FEED_ID, TYPE_EXTERNAL_ID}, {TITLE, TYPE_TEXT},
                 {ABSTRACT, TYPE_TEXT}, {MOBILIZED_HTML, TYPE_TEXT}, {DATE, TYPE_DATE_TIME}, {FETCH_DATE, TYPE_DATE_TIME}, {IS_READ, TYPE_BOOLEAN},
-                {READ_DATE, TYPE_DATE_TIME}, {LINK, TYPE_TEXT}, {IS_FAVORITE, TYPE_BOOLEAN}, {ENCLOSURE, TYPE_TEXT}, {GUID, TYPE_TEXT},
-                {AUTHOR, TYPE_TEXT}, {IMAGE_URL, TYPE_TEXT}};
+                {READ_DATE, TYPE_DATE_TIME}, {LINK, TYPE_TEXT}, {IS_FAVORITE, TYPE_BOOLEAN}, {IS_LATER_READING, TYPE_BOOLEAN}, {ENCLOSURE, TYPE_TEXT},
+                {GUID, TYPE_TEXT}, {AUTHOR, TYPE_TEXT}, {IMAGE_URL, TYPE_TEXT}};
 
         public static Uri ENTRIES_FOR_FEED_CONTENT_URI(long feedId) {
             return Uri.parse(CONTENT_AUTHORITY + "/feeds/" + feedId + "/entries");
@@ -250,6 +251,7 @@ public class FeedData {
 
         public static final Uri ALL_ENTRIES_CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/all_entries");
         public static final Uri RECENT_ENTRIES_CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/recent_entries");
+        public static final Uri LATER_READING_ENTRIES_CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/later_reading_entries");
         public static final Uri FAVORITES_CONTENT_URI = Uri.parse(CONTENT_AUTHORITY + "/favorites");
 
         public static boolean isSearchUri(Uri uri) {

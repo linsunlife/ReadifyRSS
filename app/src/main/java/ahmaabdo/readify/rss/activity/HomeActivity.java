@@ -177,6 +177,10 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 showFeedInfo = true;
                 break;
             case 2:
+                newUri = EntryColumns.LATER_READING_ENTRIES_CONTENT_URI;
+                showFeedInfo = true;
+                break;
+            case 3:
                 newUri = EntryColumns.FAVORITES_CONTENT_URI;
                 showFeedInfo = true;
                 break;
@@ -343,6 +347,9 @@ public class HomeActivity extends BaseActivity implements LoaderManager.LoaderCa
                 getSupportActionBar().setTitle(R.string.recent);
                 break;
             case 2:
+                getSupportActionBar().setTitle(R.string.later_reading);
+                break;
+            case 3:
                 getSupportActionBar().setTitle(R.string.favorites);
                 break;
             default:

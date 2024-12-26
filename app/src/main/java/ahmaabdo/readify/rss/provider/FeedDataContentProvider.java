@@ -91,12 +91,14 @@ public class FeedDataContentProvider extends ContentProvider {
     public static final int URI_ALL_ENTRIES_ENTRY = 16;
     public static final int URI_RECENT_ENTRIES = 17;
     public static final int URI_RECENT_ENTRIES_ENTRY = 18;
-    public static final int URI_FAVORITES = 19;
-    public static final int URI_FAVORITES_ENTRY = 20;
-    public static final int URI_TASKS = 21;
-    public static final int URI_TASK = 22;
-    public static final int URI_SEARCH = 23;
-    public static final int URI_SEARCH_ENTRY = 24;
+    public static final int URI_LATER_READING_ENTRIES = 19;
+    public static final int URI_LATER_READING_ENTRIES_ENTRY = 20;
+    public static final int URI_FAVORITES = 21;
+    public static final int URI_FAVORITES_ENTRY = 22;
+    public static final int URI_TASKS = 23;
+    public static final int URI_TASK = 24;
+    public static final int URI_SEARCH = 25;
+    public static final int URI_SEARCH_ENTRY = 26;
 
     public static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -119,6 +121,8 @@ public class FeedDataContentProvider extends ContentProvider {
         URI_MATCHER.addURI(FeedData.AUTHORITY, "all_entries/#", URI_ALL_ENTRIES_ENTRY);
         URI_MATCHER.addURI(FeedData.AUTHORITY, "recent_entries", URI_RECENT_ENTRIES);
         URI_MATCHER.addURI(FeedData.AUTHORITY, "recent_entries/#", URI_RECENT_ENTRIES_ENTRY);
+        URI_MATCHER.addURI(FeedData.AUTHORITY, "later_reading_entries", URI_LATER_READING_ENTRIES);
+        URI_MATCHER.addURI(FeedData.AUTHORITY, "later_reading_entries/#", URI_LATER_READING_ENTRIES_ENTRY);
         URI_MATCHER.addURI(FeedData.AUTHORITY, "favorites", URI_FAVORITES);
         URI_MATCHER.addURI(FeedData.AUTHORITY, "favorites/#", URI_FAVORITES_ENTRY);
         URI_MATCHER.addURI(FeedData.AUTHORITY, "tasks", URI_TASKS);
@@ -222,6 +226,7 @@ public class FeedDataContentProvider extends ContentProvider {
             case URI_FAVORITES:
             case URI_ALL_ENTRIES:
             case URI_RECENT_ENTRIES:
+            case URI_LATER_READING_ENTRIES:
             case URI_ENTRIES:
             case URI_ENTRIES_FOR_FEED:
             case URI_ENTRIES_FOR_GROUP:
@@ -231,6 +236,7 @@ public class FeedDataContentProvider extends ContentProvider {
             case URI_ENTRY:
             case URI_ALL_ENTRIES_ENTRY:
             case URI_RECENT_ENTRIES_ENTRY:
+            case URI_LATER_READING_ENTRIES_ENTRY:
             case URI_ENTRY_FOR_FEED:
             case URI_ENTRY_FOR_GROUP:
             case URI_SEARCH_ENTRY:
@@ -332,6 +338,11 @@ public class FeedDataContentProvider extends ContentProvider {
                 queryBuilder.appendWhere(new StringBuilder(EntryColumns.DATE).append('>').append(System.currentTimeMillis() - Constants.RECENT_ENTRIES_TIME));
                 break;
             }
+            case URI_LATER_READING_ENTRIES: {
+                queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
+                queryBuilder.appendWhere(new StringBuilder(EntryColumns.IS_LATER_READING).append(Constants.DB_IS_TRUE));
+                break;
+            }
             case URI_SEARCH: {
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
                 queryBuilder.appendWhere(getSearchWhereClause(uri.getPathSegments().get(2)));
@@ -340,6 +351,7 @@ public class FeedDataContentProvider extends ContentProvider {
             case URI_FAVORITES_ENTRY:
             case URI_ALL_ENTRIES_ENTRY:
             case URI_RECENT_ENTRIES_ENTRY:
+            case URI_LATER_READING_ENTRIES_ENTRY:
             case URI_ENTRY: {
                 queryBuilder.setTables(FeedData.ENTRIES_TABLE_WITH_FEED_INFO);
                 queryBuilder.appendWhere(new StringBuilder(EntryColumns._ID).append('=').append(uri.getPathSegments().get(1)));
@@ -543,6 +555,11 @@ public class FeedDataContentProvider extends ContentProvider {
                 where.append(EntryColumns.DATE).append('>').append(System.currentTimeMillis() - Constants.RECENT_ENTRIES_TIME);
                 break;
             }
+            case URI_LATER_READING_ENTRIES: {
+                table = EntryColumns.TABLE_NAME;
+                where.append(EntryColumns.IS_LATER_READING).append(Constants.DB_IS_TRUE);
+                break;
+            }
             case URI_SEARCH: {
                 table = EntryColumns.TABLE_NAME;
                 where.append(getSearchWhereClause(uri.getPathSegments().get(2)));
@@ -551,6 +568,7 @@ public class FeedDataContentProvider extends ContentProvider {
             case URI_FAVORITES_ENTRY:
             case URI_ALL_ENTRIES_ENTRY:
             case URI_RECENT_ENTRIES_ENTRY:
+            case URI_LATER_READING_ENTRIES_ENTRY:
             case URI_ENTRY: {
                 table = EntryColumns.TABLE_NAME;
                 where.append(EntryColumns._ID).append('=').append(uri.getPathSegments().get(1));
@@ -726,9 +744,15 @@ public class FeedDataContentProvider extends ContentProvider {
                 where.append(EntryColumns.DATE).append('>').append(System.currentTimeMillis() - Constants.RECENT_ENTRIES_TIME);
                 break;
             }
+            case URI_LATER_READING_ENTRIES: {
+                table = EntryColumns.TABLE_NAME;
+                where.append(EntryColumns.IS_LATER_READING).append(Constants.DB_IS_TRUE);
+                break;
+            }
             case URI_FAVORITES_ENTRY:
             case URI_ALL_ENTRIES_ENTRY:
             case URI_RECENT_ENTRIES_ENTRY:
+            case URI_LATER_READING_ENTRIES_ENTRY:
             case URI_ENTRY: {
                 table = EntryColumns.TABLE_NAME;
                 where.append(EntryColumns._ID).append('=').append(uri.getPathSegments().get(1));
@@ -790,6 +814,8 @@ public class FeedDataContentProvider extends ContentProvider {
                 cr.notifyChange(EntryColumns.ALL_ENTRIES_CONTENT_URI, null);
             if (!path.startsWith(EntryColumns.RECENT_ENTRIES_CONTENT_URI.getPath()))
                 cr.notifyChange(EntryColumns.RECENT_ENTRIES_CONTENT_URI, null);
+            if (!path.startsWith(EntryColumns.LATER_READING_ENTRIES_CONTENT_URI.getPath()))
+                cr.notifyChange(EntryColumns.LATER_READING_ENTRIES_CONTENT_URI, null);
             if (!path.startsWith(EntryColumns.FAVORITES_CONTENT_URI.getPath()))
                 cr.notifyChange(EntryColumns.FAVORITES_CONTENT_URI, null);
             if (!path.startsWith(FeedColumns.CONTENT_URI.getPath()))
