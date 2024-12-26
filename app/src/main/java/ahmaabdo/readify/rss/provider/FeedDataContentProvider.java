@@ -809,19 +809,19 @@ public class FeedDataContentProvider extends ContentProvider {
             // Notify everything else (except EntryColumns.CONTENT_URI to not update the
             // entry WebView when clicking on "favorite" button)
             cr.notifyChange(FeedColumns.GROUPED_FEEDS_CONTENT_URI, null);
+            Uri[] uris = {
+                    EntryColumns.ALL_ENTRIES_CONTENT_URI,
+                    EntryColumns.RECENT_ENTRIES_CONTENT_URI,
+                    EntryColumns.LATER_READING_ENTRIES_CONTENT_URI,
+                    EntryColumns.FAVORITES_CONTENT_URI,
+                    FeedColumns.CONTENT_URI,
+                    FeedColumns.GROUPS_CONTENT_URI
+            };
             String path = uri.getPath();
-            if (!path.startsWith(EntryColumns.ALL_ENTRIES_CONTENT_URI.getPath()))
-                cr.notifyChange(EntryColumns.ALL_ENTRIES_CONTENT_URI, null);
-            if (!path.startsWith(EntryColumns.RECENT_ENTRIES_CONTENT_URI.getPath()))
-                cr.notifyChange(EntryColumns.RECENT_ENTRIES_CONTENT_URI, null);
-            if (!path.startsWith(EntryColumns.LATER_READING_ENTRIES_CONTENT_URI.getPath()))
-                cr.notifyChange(EntryColumns.LATER_READING_ENTRIES_CONTENT_URI, null);
-            if (!path.startsWith(EntryColumns.FAVORITES_CONTENT_URI.getPath()))
-                cr.notifyChange(EntryColumns.FAVORITES_CONTENT_URI, null);
-            if (!path.startsWith(FeedColumns.CONTENT_URI.getPath()))
-                cr.notifyChange(FeedColumns.CONTENT_URI, null);
-            if (!path.startsWith(FeedColumns.GROUPS_CONTENT_URI.getPath()))
-                cr.notifyChange(FeedColumns.GROUPS_CONTENT_URI, null);
+            for (Uri u : uris) {
+                if (!path.startsWith(u.getPath()))
+                    cr.notifyChange(u, null);
+            }
         }
     }
 }
