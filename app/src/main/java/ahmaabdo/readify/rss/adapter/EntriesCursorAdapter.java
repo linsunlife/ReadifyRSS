@@ -263,9 +263,6 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                             case R.id.toggle_read_state:
                                 toggleReadState(id, v);
                                 break;
-                            case R.id.toggle_favorite_state:
-                                toggleFavoriteState(id, v);
-                                break;
                             case R.id.save_cover:
                                 ImageUtils.saveImage(holder.coverBitmap, holder.coverUrl);
                                 break;
@@ -280,7 +277,6 @@ public class EntriesCursorAdapter extends ResourceCursorAdapter {
                         R.id.read_below,
                         R.id.unread_below,
                         R.id.toggle_read_state,
-                        R.id.toggle_favorite_state,
                         R.id.save_cover
                 };
                 for (int menuItemId : menuItemIds) {

@@ -41,13 +41,6 @@
             android:text="@string/popup_menu_toggle_read_state"
             android:textColor="?android:attr/textColor" />
     <TextView
-            android:id="@+id/toggle_favorite_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:text="@string/popup_menu_toggle_favorite_state"
-            android:textColor="?android:attr/textColor" />
-    <TextView
             android:id="@+id/save_cover"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
