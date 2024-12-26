@@ -658,8 +658,8 @@ public class FeedDataContentProvider extends ContentProvider {
                 new Thread() {
                     @Override
                     public void run() {
-                        database.execSQL("UPDATE " + EntryColumns.TABLE_NAME + " SET " + EntryColumns.FEED_ID + "=NULL WHERE " + EntryColumns.FEED_ID
-                                + "=" + feedId + Constants.DB_AND + EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE);
+                        database.execSQL("UPDATE " + EntryColumns.TABLE_NAME + " SET " + EntryColumns.FEED_ID + "=NULL WHERE " + EntryColumns.FEED_ID + "=" + feedId
+                                + Constants.DB_AND + "(" + EntryColumns.IS_FAVORITE + Constants.DB_IS_TRUE + Constants.DB_OR + EntryColumns.IS_LATER_READING + Constants.DB_IS_TRUE + ")");
                         Uri entriesUri = EntryColumns.ENTRIES_FOR_FEED_CONTENT_URI(feedId);
                         delete(entriesUri, null, null);
                         delete(FilterColumns.FILTERS_FOR_FEED_CONTENT_URI(feedId), null, null);

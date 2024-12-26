@@ -375,6 +375,7 @@ public class FetcherService extends IntentService {
             String where = EntryColumns.DATE + '<' + keepDateBorderTime +
                     Constants.DB_AND + EntryColumns.WHERE_READ +
                     Constants.DB_AND + EntryColumns.WHERE_NOT_FAVORITE +
+                    Constants.DB_AND + EntryColumns.WHERE_NOT_LATER_READING +
                     Constants.DB_AND + EntryColumns.FEED_ID + (feedId == null ? Constants.DB_IS_NULL : "=" + feedId);
             deleteEntryImagesCache(where);
             MainApplication.getContext().getContentResolver().delete(EntryColumns.CONTENT_URI, where, null);

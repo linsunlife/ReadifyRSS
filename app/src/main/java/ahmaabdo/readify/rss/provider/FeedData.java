@@ -204,6 +204,7 @@ public class FeedData {
         public static final String WHERE_READ = EntryColumns.IS_READ + Constants.DB_IS_TRUE;
         public static final String WHERE_UNREAD = "(" + EntryColumns.IS_READ + Constants.DB_IS_NULL + Constants.DB_OR + EntryColumns.IS_READ + Constants.DB_IS_FALSE + ')';
         public static final String WHERE_NOT_FAVORITE = "(" + EntryColumns.IS_FAVORITE + Constants.DB_IS_NULL + Constants.DB_OR + EntryColumns.IS_FAVORITE + Constants.DB_IS_FALSE + ')';
+        public static final String WHERE_NOT_LATER_READING = "(" + EntryColumns.IS_LATER_READING + Constants.DB_IS_NULL + Constants.DB_OR + EntryColumns.IS_LATER_READING + Constants.DB_IS_FALSE + ')';
 
         public static Uri ENTRIES_FOR_FEED_CONTENT_URI(String feedId) {
             return Uri.parse(CONTENT_AUTHORITY + "/feeds/" + feedId + "/entries");
